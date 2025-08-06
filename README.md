@@ -5,6 +5,8 @@ A free and open-source re-implementation of the "classic" macOS Launchpad.
 
 _As I'm sure everyone's heard by now, as of the newest release of macOS 26 (Beta 1), Apple has removed the fullscreen Launchpad grid application in favor of an integrated Spotlight app drawer. Fortunately, there are ways to bring it back as of Beta 1 with terminal commands and apps on various online sources, but seeing as those will likely be patched or rendered unusable in the future... I've started making my own for everyone._
 
+## UPDATE: As of Beta 5, the terminal commands no longer work. Classic Launchpad is officially dead. Good thing LaunchBack's 100% independent of Spotlight and the new "Apps" menu's settings, and is thus fully functional!
+
 **LaunchBack (or "LaunchpadGlass", as the icon shows in this demo per my original name concept as “Launchpad but Liquid Glass”) is just that – a free and open source clone of Launchpad written in Swift with the newest Xcode 16, meant to be a fully–featured drop-in replacement for the original going forward in the style of apps like OpenShell and others for the Windows Start Menu. It is entirely independent of all Spotlight and Launchpad (or now "Apps" as it is called in Tahoe Beta 1) code and dependencies, so even if both of those were entirely ripped out of macOS (highly unlikely but just making a point), this app would still be 100% functional!**
 
 https://github.com/user-attachments/assets/3154a711-82d1-440c-ab2b-2827f7a734d9
