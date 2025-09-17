@@ -11,29 +11,38 @@ import AppKit
 // MARK: - AutoFocusSearchField
 struct AutoFocusSearchField: NSViewRepresentable {
     @Binding var text: String
+
     class Coordinator: NSObject, NSSearchFieldDelegate {
         var parent: AutoFocusSearchField
         init(_ parent: AutoFocusSearchField) {
             self.parent = parent
         }
         func controlTextDidChange(_ obj: Notification) {
-                if let field = obj.object as? NSSearchField {
-                    parent.text = field.stringValue
-                }
+            if let field = obj.object as? NSSearchField {
+                parent.text = field.stringValue
             }
         }
+    }
+
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
+
     func makeNSView(context: Context) -> NSSearchField {
         let searchField = NSSearchField(string: "")
         searchField.delegate = context.coordinator
         searchField.focusRingType = .none
+        searchField.bezelStyle = .roundedBezel
+        searchField.placeholderString = "Search"
+        searchField.cell?.wraps = false
+        searchField.cell?.isScrollable = true
+
         DispatchQueue.main.async {
             searchField.becomeFirstResponder()
         }
         return searchField
     }
+
     func updateNSView(_ nsView: NSSearchField, context: Context) {
         if nsView.stringValue != text {
             nsView.stringValue = text
@@ -74,12 +83,13 @@ struct PagedGridView: View {
                 HStack {
                     Spacer()
                     AutoFocusSearchField(text: $searchText)
-                        .background()
-                        .frame(width: 250, height: 30)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 5)
-         
-                        .shadow(color: Color.black.opacity(0.4), radius: 5, x: 0, y: 2)
+                        .padding(.horizontal, 12)
+                        .frame(width: 360, height: 36)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(Color(NSColor.windowBackgroundColor).opacity(0.85))
+                        )
+                        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 2)
                     Spacer()
                 }
                 .padding(.top, 40)
