@@ -42,7 +42,7 @@ struct ContentView: View {
                 }()
             let totalSpacing = CGFloat(columns - 1) * spacing
             let cellWidth = (geo.size.width - (hPadding * 2) - totalSpacing) / CGFloat(columns)
-            let iconSize = cellWidth * 0.5
+            let iconSize = cellWidth * 0.6
             let fontSize = max(10, cellWidth * 0.04)
 
                 // App grid

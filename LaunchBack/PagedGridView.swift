@@ -124,16 +124,10 @@ struct PagedGridView: View {
                     // 🔍 Search results — disable scrolling and hide scrollbars
                     GeometryReader { geo in
                         ScrollView(.vertical, showsIndicators: false) {
-                            LazyVGrid(
-                                columns: Array(repeating: GridItem(.flexible(), spacing: 30), count: columns),
-                                spacing: 20
-                            ) {
-                                ForEach(filteredApps(), id: \.id) { app in
-                                    AppIconView(app: app)
-                                }
-                            }
-                            .padding(.horizontal, 50)
-                            .padding(.vertical, 40)
+                                ContentView(apps: filteredApps(), columns: columns)
+                                    .frame(width: geo.size.width, height: geo.size.height)
+                        }.onTapGesture {
+                            NSApp.terminate(nil)
                         }
                     }
                 }
