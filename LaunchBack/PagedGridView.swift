@@ -113,9 +113,9 @@ struct PagedGridView: View {
                                     var newPage = currentPage
 
                                     if -value.translation.width > threshold {
-                                        newPage = (currentPage + 1) % pages.count
+                                        newPage = min(currentPage + 1, pages.count - 1)
                                     } else if value.translation.width > threshold {
-                                        newPage = (currentPage - 1 + pages.count) % pages.count
+                                        newPage = max(currentPage - 1, 0)
                                     }
 
                                     currentPage = newPage
@@ -144,12 +144,12 @@ struct PagedGridView: View {
                                 accumulatedScrollX += event.scrollingDeltaX
 
                                 if accumulatedScrollX <= -scrollActivationThreshold {
-                                    currentPage = (currentPage + 1) % pages.count
+                                    currentPage = min(currentPage + 1, pages.count-1)
                                     lastScrollTime = now
                                     accumulatedScrollX = 0
                                     return nil
                                 } else if accumulatedScrollX >= scrollActivationThreshold {
-                                    currentPage = (currentPage - 1 + pages.count) % pages.count
+                                    currentPage = max(currentPage - 1, 0)
                                     lastScrollTime = now
                                     accumulatedScrollX = 0
                                     return nil
