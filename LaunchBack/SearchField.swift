@@ -18,21 +18,20 @@ struct SearchField: NSViewRepresentable {
     }
 
     func makeNSView(context: Context) -> NSSearchField {
-        let searchField = NSSearchField(string: "")
+        let searchField = NSSearchField()
         searchField.delegate = context.coordinator
         searchField.focusRingType = .none
         searchField.bezelStyle = .roundedBezel
         searchField.placeholderString = "Search"
-        searchField.cell?.wraps = false
-        searchField.cell?.isScrollable = true
         searchField.font = NSFont.systemFont(ofSize: 16, weight: .regular)
+        
         if let cell = searchField.cell as? NSSearchFieldCell {
             cell.controlSize = .large
             cell.usesSingleLineMode = true
+            cell.wraps = false
+            cell.isScrollable = true
         }
-        let heightConstraint = searchField.heightAnchor.constraint(greaterThanOrEqualToConstant: 144)
-        heightConstraint.priority = .required
-        heightConstraint.isActive = true
+        
         DispatchQueue.main.async { searchField.becomeFirstResponder() }
         return searchField
     }

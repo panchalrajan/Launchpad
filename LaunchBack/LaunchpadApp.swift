@@ -11,21 +11,15 @@ extension Array {
 @main
 struct LaunchpadApp: App {
     @State private var apps: [AppInfo] = Self.loadApps()
-    @State private var selectedCategory: String = "All"
-    @State private var showSettings = false
-
-    var filteredApps: [AppInfo] {
-        selectedCategory == "All" ? apps : apps.filter { $0.category == selectedCategory }
-    }
-
+    
     var body: some Scene {
         WindowGroup {
             ZStack(alignment: .topTrailing) {
-                WindowAccessor() // <- Enables fullscreen frameless behavior
-                PagedGridView(pages: filteredApps.chunked(into: 35))
+                WindowAccessor()
+                PagedGridView(pages: apps.chunked(into: 35))
                     .frame(minWidth: 800, minHeight: 600)
                     .ignoresSafeArea()
-                }
+            }
         }
         .windowStyle(.hiddenTitleBar)
     }

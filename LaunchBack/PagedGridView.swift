@@ -5,16 +5,17 @@ struct PagedGridView: View {
     let pages: [[AppInfo]]
     let columns = 7
     let rows = 5
+    
     @State private var currentPage = 0
     @GestureState private var dragOffset: CGFloat = 0
     @State private var isDragging = false
-
     @State private var lastScrollTime = Date.distantPast
-    let scrollDebounceInterval: TimeInterval = 0.8
     @State private var accumulatedScrollX: CGFloat = 0
-    let scrollActivationThreshold: CGFloat = 80
     @State private var eventMonitor: Any?
     @State private var searchText = ""
+    
+    private let scrollDebounceInterval: TimeInterval = 0.8
+    private let scrollActivationThreshold: CGFloat = 80
 
     var body: some View {
         ZStack {
@@ -58,39 +59,10 @@ struct PagedGridView: View {
                         .offset(x: dragOffset)
                         .animation(.interpolatingSpring(stiffness: 300, damping: 100), value: currentPage)
                         .onAppear {
-                            eventMonitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { event in
-                                let absX = abs(event.scrollingDeltaX)
-                                let absY = abs(event.scrollingDeltaY)
-                                guard absX > absY, absX > 0 else { return event }
-                                let now = Date()
-                                if now.timeIntervalSince(lastScrollTime) < scrollDebounceInterval { return event }
-                                accumulatedScrollX += event.scrollingDeltaX
-                                if accumulatedScrollX <= -scrollActivationThreshold {
-                                    currentPage = min(currentPage + 1, pages.count-1)
-                                    lastScrollTime = now
-                                    accumulatedScrollX = 0
-                                    return nil
-                                } else if accumulatedScrollX >= scrollActivationThreshold {
-                                    currentPage = max(currentPage - 1, 0)
-                                    lastScrollTime = now
-                                    accumulatedScrollX = 0
-                                    return nil
-                                }
-                                return event
-                            }
-                            NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-                                if event.keyCode == 53 {
-                                    NSApp.terminate(nil)
-                                    return nil
-                                }
-                                return event
-                            }
+                            setupEventMonitoring()
                         }
                         .onDisappear {
-                            if let monitor = eventMonitor {
-                                NSEvent.removeMonitor(monitor)
-                                eventMonitor = nil
-                            }
+                            cleanupEventMonitoring()
                         }
                     }
 
@@ -124,5 +96,61 @@ struct PagedGridView: View {
         pages.flatMap { $0 }.filter {
             $0.name.lowercased().contains(searchText.lowercased())
         }
+    }
+    
+    private func setupEventMonitoring() {
+        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.scrollWheel, .keyDown]) { event in
+            switch event.type {
+            case .scrollWheel:
+                return handleScrollEvent(event)
+            case .keyDown:
+                return handleKeyEvent(event)
+            default:
+                return event
+            }
+        }
+    }
+    
+    private func cleanupEventMonitoring() {
+        if let monitor = eventMonitor {
+            NSEvent.removeMonitor(monitor)
+            eventMonitor = nil
+        }
+    }
+    
+    private func handleScrollEvent(_ event: NSEvent) -> NSEvent? {
+        let absX = abs(event.scrollingDeltaX)
+        let absY = abs(event.scrollingDeltaY)
+        guard absX > absY, absX > 0 else { return event }
+        
+        let now = Date()
+        if now.timeIntervalSince(lastScrollTime) < scrollDebounceInterval { return event }
+        
+        accumulatedScrollX += event.scrollingDeltaX
+        
+        if accumulatedScrollX <= -scrollActivationThreshold {
+            currentPage = min(currentPage + 1, pages.count - 1)
+            resetScrollState(at: now)
+            return nil
+        } else if accumulatedScrollX >= scrollActivationThreshold {
+            currentPage = max(currentPage - 1, 0)
+            resetScrollState(at: now)
+            return nil
+        }
+        
+        return event
+    }
+    
+    private func handleKeyEvent(_ event: NSEvent) -> NSEvent? {
+        if event.keyCode == 53 { // ESC key
+            NSApp.terminate(nil)
+            return nil
+        }
+        return event
+    }
+    
+    private func resetScrollState(at time: Date) {
+        lastScrollTime = time
+        accumulatedScrollX = 0
     }
 }
