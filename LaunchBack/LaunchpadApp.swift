@@ -11,14 +11,22 @@ extension Array {
 @main
 struct LaunchpadApp: App {
     @State private var apps: [AppInfo] = Self.loadApps()
+    @State private var appPages: [[AppInfo]] = []
     
     var body: some Scene {
         WindowGroup {
             ZStack(alignment: .topTrailing) {
                 WindowAccessor()
-                PagedGridView(pages: apps.chunked(into: 35))
+                PagedGridView(pages: $appPages)
                     .frame(minWidth: 800, minHeight: 600)
                     .ignoresSafeArea()
+                    .onAppear {
+                        appPages = apps.chunked(into: 35)
+                    }
+                    .onChange(of: appPages) { newPages in
+                        // Flatten pages back to apps array when order changes
+                        apps = newPages.flatMap { $0 }
+                    }
             }
         }
         .windowStyle(.hiddenTitleBar)

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AppInfo: Identifiable {
+struct AppInfo: Identifiable, Equatable {
     let id = UUID()
     let name: String
     let icon: NSImage

@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 
 struct PagedGridView: View {
-    let pages: [[AppInfo]]
+    @Binding var pages: [[AppInfo]]
     let columns = 7
     let rows = 5
     
@@ -49,7 +49,7 @@ struct PagedGridView: View {
                     GeometryReader { geo in
                         HStack(spacing: 0) {
                             ForEach(0..<pages.count, id: \.self) { pageIndex in
-                                AppGridView(apps: pages[pageIndex], columns: columns)
+                                AppGridView(apps: $pages[pageIndex], columns: columns)
                                     .frame(width: geo.size.width, height: geo.size.height)
                             }
                         }.onTapGesture {
@@ -81,8 +81,9 @@ struct PagedGridView: View {
                     // Search results
                     GeometryReader { geo in
                         ScrollView(.vertical, showsIndicators: false) {
-                                AppGridView(apps: filteredApps(), columns: columns)
-                                    .frame(width: geo.size.width, height: geo.size.height)
+                            let searchResults = filteredApps()
+                            AppGridView(apps: .constant(searchResults), columns: columns)
+                                .frame(width: geo.size.width, height: geo.size.height)
                         }.onTapGesture {
                             NSApp.terminate(nil)
                         }

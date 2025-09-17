@@ -2,9 +2,10 @@ import SwiftUI
 import AppKit
 
 struct AppGridView: View {
-    let apps: [AppInfo]
+    @Binding var apps: [AppInfo]
     let columns: Int
     @State private var isVisible = false
+    @State private var draggedApp: AppInfo?
     
     var body: some View {
         GeometryReader { geo in
@@ -16,21 +17,20 @@ struct AppGridView: View {
                     spacing: layout.spacing
                 ) {
                     ForEach(apps) { app in
-                        VStack(spacing: 10) {
-                            Image(nsImage: app.icon)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: layout.iconSize, height: layout.iconSize)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                            Text(app.name)
-                                .font(.system(size: layout.fontSize))
-                                .multilineTextAlignment(.center)
-                                .frame(width: layout.cellWidth)
+                        AppIconView(
+                            app: app,
+                            layout: layout,
+                            isDragged: draggedApp?.id == app.id
+                        )
+                        .onDrag {
+                            draggedApp = app
+                            return NSItemProvider(object: app.id.uuidString as NSString)
                         }
-                        .onTapGesture {
-                            NSWorkspace.shared.open(URL(fileURLWithPath: app.path))
-                            NSApp.terminate(nil)
-                        }
+                        .onDrop(of: [.text], delegate: AppDropDelegate(
+                            app: app,
+                            apps: $apps,
+                            draggedApp: $draggedApp
+                        ))
                     }
                 }
                 .padding(.horizontal, layout.hPadding)
@@ -45,24 +45,57 @@ struct AppGridView: View {
     }
 }
 
-private struct LayoutMetrics {
-    let hPadding: CGFloat
-    let vPadding: CGFloat
-    let spacing: CGFloat
-    let cellWidth: CGFloat
-    let iconSize: CGFloat
-    let fontSize: CGFloat
+struct AppIconView: View {
+    let app: AppInfo
+    let layout: LayoutMetrics
+    let isDragged: Bool
     
-    init(size: CGSize, columns: Int) {
-        let aspect = size.width / size.height
-        
-        hPadding = size.width * 0.06
-        vPadding = aspect > 2.0 ? 0 : (size.height < 800 ? size.height * 0.05 : size.height * 0.08)
-        spacing = aspect > 2.0 ? size.height * 0.02 : (size.height < 800 ? size.height * 0.04 : size.height * 0.03)
-        
-        let totalSpacing = CGFloat(columns - 1) * spacing
-        cellWidth = (size.width - (hPadding * 2) - totalSpacing) / CGFloat(columns)
-        iconSize = cellWidth * 0.6
-        fontSize = max(10, cellWidth * 0.04)
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(nsImage: app.icon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: layout.iconSize, height: layout.iconSize)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            Text(app.name)
+                .font(.system(size: layout.fontSize))
+                .multilineTextAlignment(.center)
+                .frame(width: layout.cellWidth)
+        }
+        .scaleEffect(isDragged ? 0.8 : 1.0)
+        .opacity(isDragged ? 0.5 : 1.0)
+        .animation(.easeInOut(duration: 0.2), value: isDragged)
+        .onTapGesture {
+            NSWorkspace.shared.open(URL(fileURLWithPath: app.path))
+            NSApp.terminate(nil)
+        }
     }
 }
+
+struct AppDropDelegate: DropDelegate {
+    let app: AppInfo
+    @Binding var apps: [AppInfo]
+    @Binding var draggedApp: AppInfo?
+    
+    func performDrop(info: DropInfo) -> Bool {
+        draggedApp = nil
+        return true
+    }
+    
+    func dropEntered(info: DropInfo) {
+        guard let draggedApp = draggedApp,
+              draggedApp.id != app.id,
+              let fromIndex = apps.firstIndex(where: { $0.id == draggedApp.id }),
+              let toIndex = apps.firstIndex(where: { $0.id == app.id }) else { return }
+        
+        withAnimation(.easeInOut(duration: 0.2)) {
+            apps.move(fromOffsets: IndexSet([fromIndex]), toOffset: toIndex > fromIndex ? toIndex + 1 : toIndex)
+        }
+    }
+    
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        return DropProposal(operation: .move)
+    }
+}
+
+
