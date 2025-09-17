@@ -34,33 +34,11 @@ struct LaunchpadApp: App {
                 let appName = item.replacingOccurrences(of: ".app", with: "")
                 let icon = NSWorkspace.shared.icon(forFile: fullPath)
                 icon.size = NSSize(width: 64, height: 64)
-                let category = Self.categorizeApp(name: appName)
-                foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath, category: category))
+                foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath))
             }
         }
         return foundApps.sorted { $0.name.lowercased() < $1.name.lowercased() }
     }
-
-    static func categorizeApp(name: String) -> String {
-        let categories: [String: String] = [
-            "Safari": "Internet",
-            "Mail": "Internet",
-            "FaceTime": "Internet",
-            "Terminal": "Utilities",
-            "System Settings": "System",
-            "Preview": "Utilities",
-            "Photos": "Creative",
-            "GarageBand": "Creative",
-            "Final Cut Pro": "Creative"
-        ]
-        return categories[name] ?? "Utilities"
-    }
 }
 
-struct AppInfo: Identifiable {
-    let id = UUID()
-    let name: String
-    let icon: NSImage
-    let path: String
-    let category: String
-}
+

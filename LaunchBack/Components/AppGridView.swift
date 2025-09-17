@@ -1,7 +1,7 @@
 import SwiftUI
 import AppKit
 
-struct ContentView: View {
+struct AppGridView: View {
     let apps: [AppInfo]
     let columns: Int
     @State private var isVisible = false
