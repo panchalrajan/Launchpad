@@ -30,7 +30,7 @@ struct PagedGridView: View {
                 // Search bar
                 HStack {
                     Spacer()
-                    AutoFocusSearchField(text: $searchText)
+                    SearchField(text: $searchText)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .frame(width: 480, height: 36)
@@ -51,6 +51,8 @@ struct PagedGridView: View {
                                 ContentView(apps: pages[pageIndex], columns: columns)
                                     .frame(width: geo.size.width, height: geo.size.height)
                             }
+                        }.onTapGesture {
+                            NSApp.terminate(nil)
                         }
                         .offset(x: -CGFloat(currentPage) * geo.size.width)
                         .offset(x: dragOffset)
@@ -92,7 +94,7 @@ struct PagedGridView: View {
                         }
                     }
 
-                    // 🔘 Page indicator dots
+                    // Page indicator dots
                     HStack(spacing: 8) {
                         ForEach(0..<pages.count, id: \.self) { index in
                             Circle()
@@ -104,7 +106,7 @@ struct PagedGridView: View {
                     .padding(.bottom, 90)
 
                 } else {
-                    // 🔍 Search results — disable scrolling and hide scrollbars
+                    // Search results
                     GeometryReader { geo in
                         ScrollView(.vertical, showsIndicators: false) {
                                 ContentView(apps: filteredApps(), columns: columns)

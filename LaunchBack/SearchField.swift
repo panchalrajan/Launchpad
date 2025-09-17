@@ -1,12 +1,12 @@
 import SwiftUI
 import AppKit
 
-struct AutoFocusSearchField: NSViewRepresentable {
+struct SearchField: NSViewRepresentable {
     @Binding var text: String
 
     class Coordinator: NSObject, NSSearchFieldDelegate {
-        var parent: AutoFocusSearchField
-        init(_ parent: AutoFocusSearchField) { self.parent = parent }
+        var parent: SearchField
+        init(_ parent: SearchField) { self.parent = parent }
         func controlTextDidChange(_ obj: Notification) {
             guard let field = obj.object as? NSSearchField else { return }
             parent.text = field.stringValue

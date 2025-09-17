@@ -9,7 +9,7 @@ extension Array {
 }
 
 @main
-struct LaunchpadGlassApp: App {
+struct LaunchpadApp: App {
     @State private var apps: [AppInfo] = Self.loadApps()
     @State private var selectedCategory: String = "All"
     @State private var showSettings = false
@@ -28,16 +28,6 @@ struct LaunchpadGlassApp: App {
                 }
         }
         .windowStyle(.hiddenTitleBar)
-
-        // Add this to show "Settings…" in the app menu with ⌘,
-        .commands {
-            CommandGroup(replacing: .appSettings) {
-                Button("Settings…") {
-                    showSettings = true
-                }
-                .keyboardShortcut(",", modifiers: [.command])
-            }
-        }
     }
 
     static func loadApps() -> [AppInfo] {
