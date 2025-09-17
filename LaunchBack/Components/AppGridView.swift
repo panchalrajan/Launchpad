@@ -79,6 +79,9 @@ struct AppDropDelegate: DropDelegate {
     
     func performDrop(info: DropInfo) -> Bool {
         draggedApp = nil
+        // Save the new order to persistent storage
+        print("Saving app order after drag and drop...")
+        AppOrderManager.shared.saveAppOrder(apps)
         return true
     }
     

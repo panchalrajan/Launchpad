@@ -23,13 +23,28 @@ struct LaunchpadApp: App {
                     .onAppear {
                         appPages = apps.chunked(into: 35)
                     }
-                    .onChange(of: appPages) { newPages in
+                    .onChange(of: appPages) { oldPages, newPages in
                         // Flatten pages back to apps array when order changes
-                        apps = newPages.flatMap { $0 }
+                        let newAppsOrder = newPages.flatMap { $0 }
+                        apps = newAppsOrder
+                        // Save the new order to persistent storage
+                        AppOrderManager.shared.saveAppOrder(newAppsOrder)
                     }
             }
         }
         .windowStyle(.hiddenTitleBar)
+        .commands {
+            CommandGroup(replacing: .appSettings) {
+                Button("Reset App Order") {
+                    AppOrderManager.shared.clearAppOrder()
+                    // Reload apps in default order
+                    let defaultApps = Self.loadDefaultApps()
+                    apps = defaultApps
+                    appPages = defaultApps.chunked(into: 35)
+                }
+                .keyboardShortcut("r", modifiers: [.command, .shift])
+            }
+        }
     }
 
     static func loadApps() -> [AppInfo] {
@@ -45,8 +60,27 @@ struct LaunchpadApp: App {
                 foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath))
             }
         }
+        
+        // Sort apps alphabetically first, then apply saved order
+        let sortedApps = foundApps.sorted { $0.name.lowercased() < $1.name.lowercased() }
+        
+        // Load and apply saved app order
+        return AppOrderManager.shared.loadAppOrder(for: sortedApps)
+    }
+    
+    static func loadDefaultApps() -> [AppInfo] {
+        let appPaths = ["/Applications", "/System/Applications"]
+        var foundApps: [AppInfo] = []
+        for basePath in appPaths {
+            guard let contents = try? FileManager.default.contentsOfDirectory(atPath: basePath) else { continue }
+            for item in contents where item.hasSuffix(".app") {
+                let fullPath = basePath + "/" + item
+                let appName = item.replacingOccurrences(of: ".app", with: "")
+                let icon = NSWorkspace.shared.icon(forFile: fullPath)
+                icon.size = NSSize(width: 64, height: 64)
+                foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath))
+            }
+        }
         return foundApps.sorted { $0.name.lowercased() < $1.name.lowercased() }
     }
 }
-
-

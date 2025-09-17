@@ -10,6 +10,17 @@ DerivedData/
 *.perspectivev3
 xcuserdata/
 *.xcscmblueprint
+*.xccheckout
+*.xcuserstate
+
+# Xcode user data files
+project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
+xcschemes/
+*.xcschemes/
+UserInterfaceState.xcuserstate
+xcschememanagement.plist
+WorkspaceSettings.xcsettings
 
 # Swift Package Manager
 /.build
@@ -48,6 +59,6 @@ fastlane/test_output
 *.swo
 *.tmp
 *.log
-*.xcuserstate
+
 # Test output
 TestResults/
