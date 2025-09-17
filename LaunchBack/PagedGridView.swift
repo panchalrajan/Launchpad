@@ -1,14 +1,7 @@
-//
-//  PagedGridView.swift
-//  LaunchBack
-//
-//  Created by Thomas Aldridge II on 6/22/25.
-//
 
 import SwiftUI
 import AppKit
 
-// MARK: - AutoFocusSearchField
 struct AutoFocusSearchField: NSViewRepresentable {
     @Binding var text: String
 
@@ -43,9 +36,6 @@ struct AutoFocusSearchField: NSViewRepresentable {
             // Increase vertical padding to make the field taller
             cell.controlSize = .large
             cell.usesSingleLineMode = true
-            // NSSearchFieldCell doesn’t expose direct contentInsets, but we can
-            // mimic height increase by setting a larger control size and font.
-            // If more height is desired, we can apply a constraint:
         }
 
         // Add a hard height constraint to ensure the AppKit view is tall
@@ -79,7 +69,7 @@ struct PagedGridView: View {
     @State private var lastScrollTime = Date.distantPast
     let scrollDebounceInterval: TimeInterval = 0.8
     @State private var accumulatedScrollX: CGFloat = 0
-    let scrollActivationThreshold: CGFloat = 80 // require a meaningful horizontal scroll
+    let scrollActivationThreshold: CGFloat = 80
     @State private var eventMonitor: Any?
 
     @State private var searchText = ""
@@ -87,7 +77,7 @@ struct PagedGridView: View {
     var body: some View {
         ZStack {
             Color.clear
-                .background(VisualEffectView(material: .underWindowBackground, blendingMode: .behindWindow))
+                .background(VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow))
                 .ignoresSafeArea()
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -104,7 +94,7 @@ struct PagedGridView: View {
                         .frame(width: 480, height: 36)
                         .background(
                             RoundedRectangle(cornerRadius: 30, style: .continuous)
-                                .fill(Color(NSColor.windowBackgroundColor).opacity(0.9))
+                                .fill(Color(NSColor.windowBackgroundColor).opacity(0.6))
                         )
                         .shadow(color: Color.black.opacity(0.18), radius: 10, x: 0, y: 3)
                     Spacer()
