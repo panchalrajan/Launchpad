@@ -37,6 +37,22 @@ struct AutoFocusSearchField: NSViewRepresentable {
         searchField.cell?.wraps = false
         searchField.cell?.isScrollable = true
 
+        // Increase intrinsic height by using a larger font and vertical padding
+        searchField.font = NSFont.systemFont(ofSize: 16, weight: .regular)
+        if let cell = searchField.cell as? NSSearchFieldCell {
+            // Increase vertical padding to make the field taller
+            cell.controlSize = .large
+            cell.usesSingleLineMode = true
+            // NSSearchFieldCell doesn’t expose direct contentInsets, but we can
+            // mimic height increase by setting a larger control size and font.
+            // If more height is desired, we can apply a constraint:
+        }
+
+        // Add a hard height constraint to ensure the AppKit view is tall
+        let heightConstraint = searchField.heightAnchor.constraint(greaterThanOrEqualToConstant: 144)
+        heightConstraint.priority = .required
+        heightConstraint.isActive = true
+
         DispatchQueue.main.async {
             searchField.becomeFirstResponder()
         }
@@ -83,8 +99,9 @@ struct PagedGridView: View {
                 HStack {
                     Spacer()
                     AutoFocusSearchField(text: $searchText)
-                        .padding(.horizontal, 14)
-                        .frame(width: 480, height: 44)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .frame(width: 480, height: 36)
                         .background(
                             RoundedRectangle(cornerRadius: 30, style: .continuous)
                                 .fill(Color(NSColor.windowBackgroundColor).opacity(0.9))
