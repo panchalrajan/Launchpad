@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		628E29352E7B2AE9006DA22A /* LaunchBack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LaunchBack.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		628E29352E7B2AE9006DA22A /* Launchpad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Launchpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		84DD945A2E08882300F7E52A /* LaunchBack */ = {
+		84DD945A2E08882300F7E52A /* Launchpad */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LaunchBack;
+			path = Launchpad;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,17 +32,17 @@
 		84DD944F2E08882300F7E52A = {
 			isa = PBXGroup;
 			children = (
-				84DD945A2E08882300F7E52A /* LaunchBack */,
-				628E29352E7B2AE9006DA22A /* LaunchBack.app */,
+				84DD945A2E08882300F7E52A /* Launchpad */,
+				628E29352E7B2AE9006DA22A /* Launchpad.app */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		84DD94572E08882300F7E52A /* LaunchBack */ = {
+		84DD94572E08882300F7E52A /* Launchpad */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 84DD947A2E08882400F7E52A /* Build configuration list for PBXNativeTarget "LaunchBack" */;
+			buildConfigurationList = 84DD947A2E08882400F7E52A /* Build configuration list for PBXNativeTarget "Launchpad" */;
 			buildPhases = (
 				84DD94542E08882300F7E52A /* Sources */,
 				84DD94552E08882300F7E52A /* Frameworks */,
@@ -53,13 +53,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				84DD945A2E08882300F7E52A /* LaunchBack */,
+				84DD945A2E08882300F7E52A /* Launchpad */,
 			);
-			name = LaunchBack;
+			name = Launchpad;
 			packageProductDependencies = (
 			);
 			productName = LaunchBack;
-			productReference = 628E29352E7B2AE9006DA22A /* LaunchBack.app */;
+			productReference = 628E29352E7B2AE9006DA22A /* Launchpad.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -77,7 +77,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 84DD94532E08882300F7E52A /* Build configuration list for PBXProject "LaunchBack" */;
+			buildConfigurationList = 84DD94532E08882300F7E52A /* Build configuration list for PBXProject "Launchpad" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -91,7 +91,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				84DD94572E08882300F7E52A /* LaunchBack */,
+				84DD94572E08882300F7E52A /* Launchpad */,
 			);
 		};
 /* End PBXProject section */
@@ -247,7 +247,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = LaunchBack/LaunchBack.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Launchpad/Launchpad.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -267,7 +267,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 3.0;
-				PRODUCT_BUNDLE_IDENTIFIER = program.LaunchBack;
+				PRODUCT_BUNDLE_IDENTIFIER = program.Launchpad;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -281,7 +281,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = LaunchBack/LaunchBack.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Launchpad/Launchpad.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -301,7 +301,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 3.0;
-				PRODUCT_BUNDLE_IDENTIFIER = program.LaunchBack;
+				PRODUCT_BUNDLE_IDENTIFIER = program.Launchpad;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -312,7 +312,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		84DD94532E08882300F7E52A /* Build configuration list for PBXProject "LaunchBack" */ = {
+		84DD94532E08882300F7E52A /* Build configuration list for PBXProject "Launchpad" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				84DD94782E08882400F7E52A /* Debug */,
@@ -321,7 +321,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		84DD947A2E08882400F7E52A /* Build configuration list for PBXNativeTarget "LaunchBack" */ = {
+		84DD947A2E08882400F7E52A /* Build configuration list for PBXNativeTarget "Launchpad" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				84DD947B2E08882400F7E52A /* Debug */,
