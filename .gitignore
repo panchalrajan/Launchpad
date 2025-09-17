@@ -48,7 +48,6 @@ fastlane/test_output
 *.swo
 *.tmp
 *.log
-
+*.xcuserstate
 # Test output
 TestResults/
-LaunchBack.xcodeproj/project.xcworkspace/xcuserdata/pappkristof.xcuserdatad/UserInterfaceState.xcuserstate
