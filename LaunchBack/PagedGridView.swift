@@ -52,9 +52,9 @@ struct PagedGridView: View {
 
     // Scroll wheel handling
     @State private var lastScrollTime = Date.distantPast
-    let scrollDebounceInterval: TimeInterval = 1.0
+    let scrollDebounceInterval: TimeInterval = 0.8
     @State private var accumulatedScrollX: CGFloat = 0
-    let scrollActivationThreshold: CGFloat = 120 // require a meaningful horizontal scroll
+    let scrollActivationThreshold: CGFloat = 80 // require a meaningful horizontal scroll
     @State private var eventMonitor: Any?
 
     @State private var searchText = ""
@@ -78,10 +78,7 @@ struct PagedGridView: View {
                         .frame(width: 250, height: 30)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 5)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 14)
-                                .stroke(Color.white.opacity(0.3), lineWidth: 1)
-                        )
+         
                         .shadow(color: Color.black.opacity(0.4), radius: 5, x: 0, y: 2)
                     Spacer()
                 }
@@ -99,34 +96,9 @@ struct PagedGridView: View {
                         .offset(x: -CGFloat(currentPage) * geo.size.width)
                         .offset(x: dragOffset)
                         .animation(.interpolatingSpring(stiffness: 300, damping: 100), value: currentPage)
-                        .gesture(
-                            DragGesture()
-                                .updating($dragOffset) { value, state, _ in
-                                    state = value.translation.width
-                                }
-                                .onChanged { _ in
-                                    if !isDragging { isDragging = true }
-                                }
-                                .onEnded { value in
-                                    isDragging = false
-                                    let threshold = geo.size.width / 3
-                                    var newPage = currentPage
-
-                                    if -value.translation.width > threshold {
-                                        newPage = min(currentPage + 1, pages.count - 1)
-                                    } else if value.translation.width > threshold {
-                                        newPage = max(currentPage - 1, 0)
-                                    }
-
-                                    currentPage = newPage
-                                }
-                        )
                         .onAppear {
                             // Monitor scroll wheel only when not dragging, and only horizontal intent
                             eventMonitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { event in
-                                // Ignore if a drag gesture is active
-                                if isDragging { return event }
-
                                 // Prefer horizontal paging only when horizontal dominates
                                 let absX = abs(event.scrollingDeltaX)
                                 let absY = abs(event.scrollingDeltaY)
