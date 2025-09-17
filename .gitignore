@@ -1,0 +1,53 @@
+# macOS
+.DS_Store
+
+# Xcode
+build/
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+*.xcscmblueprint
+
+# Swift Package Manager
+/.build
+/Packages
+Package.resolved
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Archives
+*.xcarchive
+
+# App files
+*.ipa
+*.dSYM
+
+# Other
+*.swp
+*.swo
+
+# Asset catalog generated files
+*.xcassets
+
+# User-specific files
+*.orig
+*.swp
+*.swo
+*.tmp
+*.log
+
+# Test output
+TestResults/

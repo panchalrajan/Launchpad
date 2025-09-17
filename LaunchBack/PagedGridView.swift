@@ -17,11 +17,11 @@ struct AutoFocusSearchField: NSViewRepresentable {
             self.parent = parent
         }
         func controlTextDidChange(_ obj: Notification) {
-            if let field = obj.object as? NSSearchField {
-                parent.text = field.stringValue
+                if let field = obj.object as? NSSearchField {
+                    parent.text = field.stringValue
+                }
             }
         }
-    }
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
@@ -48,10 +48,16 @@ struct PagedGridView: View {
     let rows = 5
     @State private var currentPage = 0
     @GestureState private var dragOffset: CGFloat = 0
+    @State private var isDragging = false
+
+    // Scroll wheel handling
     @State private var lastScrollTime = Date.distantPast
-    let scrollDebounceInterval: TimeInterval = 0.4
-    @State private var searchText = ""
+    let scrollDebounceInterval: TimeInterval = 1.0
+    @State private var accumulatedScrollX: CGFloat = 0
+    let scrollActivationThreshold: CGFloat = 120 // require a meaningful horizontal scroll
     @State private var eventMonitor: Any?
+
+    @State private var searchText = ""
 
     var body: some View {
         ZStack {
@@ -98,45 +104,60 @@ struct PagedGridView: View {
                                 .updating($dragOffset) { value, state, _ in
                                     state = value.translation.width
                                 }
+                                .onChanged { _ in
+                                    if !isDragging { isDragging = true }
+                                }
                                 .onEnded { value in
+                                    isDragging = false
                                     let threshold = geo.size.width / 3
                                     var newPage = currentPage
-                                    
+
                                     if -value.translation.width > threshold {
                                         newPage = (currentPage + 1) % pages.count
                                     } else if value.translation.width > threshold {
                                         newPage = (currentPage - 1 + pages.count) % pages.count
                                     }
-                                    
+
                                     currentPage = newPage
                                 }
                         )
                         .onAppear {
+                            // Monitor scroll wheel only when not dragging, and only horizontal intent
                             eventMonitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { event in
+                                // Ignore if a drag gesture is active
+                                if isDragging { return event }
+
+                                // Prefer horizontal paging only when horizontal dominates
+                                let absX = abs(event.scrollingDeltaX)
+                                let absY = abs(event.scrollingDeltaY)
+                                guard absX > absY, absX > 0 else {
+                                    return event
+                                }
+
+                                // Debounce by time to limit to one page per gesture burst
                                 let now = Date()
                                 if now.timeIntervalSince(lastScrollTime) < scrollDebounceInterval {
                                     return event
                                 }
-                                
-                                let scrollThreshold: CGFloat = 10
-                                let x = event.scrollingDeltaX
-                                let y = event.scrollingDeltaY
-                                
-                                if abs(x) > abs(y) || abs(y) > scrollThreshold {
-                                    if x < -scrollThreshold || y < scrollThreshold {
-                                        currentPage = (currentPage + 1) % pages.count
-                                        lastScrollTime = now
-                                        return nil
-                                    } else if x > scrollThreshold || y > -scrollThreshold {
-                                        currentPage = (currentPage - 1 + pages.count) % pages.count
-                                        lastScrollTime = now
-                                        return nil
-                                    }
+
+                                // Accumulate horizontal delta; require a threshold
+                                accumulatedScrollX += event.scrollingDeltaX
+
+                                if accumulatedScrollX <= -scrollActivationThreshold {
+                                    currentPage = (currentPage + 1) % pages.count
+                                    lastScrollTime = now
+                                    accumulatedScrollX = 0
+                                    return nil
+                                } else if accumulatedScrollX >= scrollActivationThreshold {
+                                    currentPage = (currentPage - 1 + pages.count) % pages.count
+                                    lastScrollTime = now
+                                    accumulatedScrollX = 0
+                                    return nil
                                 }
-                                
+
                                 return event
                             }
-                            
+
                             NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
                                 if event.keyCode == 53 { // ESC
                                     NSApp.terminate(nil)
@@ -152,7 +173,7 @@ struct PagedGridView: View {
                             }
                         }
                     }
-                    
+
                     // 🔘 Page indicator dots
                     HStack(spacing: 8) {
                         ForEach(0..<pages.count, id: \.self) { index in
@@ -163,7 +184,6 @@ struct PagedGridView: View {
                     }
                     .padding(.top, 15)
                     .padding(.bottom, 90)
-            
 
                 } else {
                     // 🔍 Search results — disable scrolling and hide scrollbars
