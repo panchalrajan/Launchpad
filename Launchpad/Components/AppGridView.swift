@@ -44,9 +44,3 @@ struct AppGridView: View {
         .onDisappear { isVisible = false }
     }
 }
-
-
-
-
-
-

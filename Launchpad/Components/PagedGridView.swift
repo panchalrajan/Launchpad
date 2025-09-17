@@ -152,9 +152,31 @@ struct PagedGridView: View {
     }
     
     private func handleKeyEvent(_ event: NSEvent) -> NSEvent? {
-        if event.keyCode == 53 { // ESC key
+        // Don't handle arrow keys when in search mode - let them work in the search field
+        if !searchText.isEmpty && (event.keyCode == 123 || event.keyCode == 124) {
+            return event
+        }
+        
+        switch event.keyCode {
+        case 53: // ESC key
             NSApp.terminate(nil)
             return nil
+        case 123: // Left arrow key
+            if currentPage > 0 {
+                withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+                    currentPage = currentPage - 1
+                }
+                return nil // Consume the event
+            }
+        case 124: // Right arrow key
+            if currentPage < pages.count - 1 {
+                withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+                    currentPage = currentPage + 1
+                }
+                return nil // Consume the event
+            }
+        default:
+            break
         }
         return event
     }
