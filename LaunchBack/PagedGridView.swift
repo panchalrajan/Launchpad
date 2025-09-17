@@ -83,13 +83,13 @@ struct PagedGridView: View {
                 HStack {
                     Spacer()
                     AutoFocusSearchField(text: $searchText)
-                        .padding(.horizontal, 12)
-                        .frame(width: 360, height: 36)
+                        .padding(.horizontal, 14)
+                        .frame(width: 480, height: 44)
                         .background(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .fill(Color(NSColor.windowBackgroundColor).opacity(0.85))
+                            RoundedRectangle(cornerRadius: 30, style: .continuous)
+                                .fill(Color(NSColor.windowBackgroundColor).opacity(0.9))
                         )
-                        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 2)
+                        .shadow(color: Color.black.opacity(0.18), radius: 10, x: 0, y: 3)
                     Spacer()
                 }
                 .padding(.top, 40)
