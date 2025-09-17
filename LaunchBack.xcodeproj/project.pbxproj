@@ -6,27 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		84DD94672E08882400F7E52A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 84DD94502E08882300F7E52A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 84DD94572E08882300F7E52A;
-			remoteInfo = LaunchBack;
-		};
-		84DD94712E08882400F7E52A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 84DD94502E08882300F7E52A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 84DD94572E08882300F7E52A;
-			remoteInfo = LaunchBack;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		628E29352E7B2AE9006DA22A /* LaunchBack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LaunchBack.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		628E29362E7B2AE9006DA22A /* LaunchBackTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LaunchBackTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		628E29372E7B2AE9006DA22A /* LaunchBackUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LaunchBackUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -45,20 +26,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		84DD94632E08882400F7E52A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		84DD946D2E08882400F7E52A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -67,8 +34,6 @@
 			children = (
 				84DD945A2E08882300F7E52A /* LaunchBack */,
 				628E29352E7B2AE9006DA22A /* LaunchBack.app */,
-				628E29362E7B2AE9006DA22A /* LaunchBackTests.xctest */,
-				628E29372E7B2AE9006DA22A /* LaunchBackUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,46 +62,6 @@
 			productReference = 628E29352E7B2AE9006DA22A /* LaunchBack.app */;
 			productType = "com.apple.product-type.application";
 		};
-		84DD94652E08882400F7E52A /* LaunchBackTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 84DD947D2E08882400F7E52A /* Build configuration list for PBXNativeTarget "LaunchBackTests" */;
-			buildPhases = (
-				84DD94622E08882400F7E52A /* Sources */,
-				84DD94632E08882400F7E52A /* Frameworks */,
-				84DD94642E08882400F7E52A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				84DD94682E08882400F7E52A /* PBXTargetDependency */,
-			);
-			name = LaunchBackTests;
-			packageProductDependencies = (
-			);
-			productName = LaunchBackTests;
-			productReference = 628E29362E7B2AE9006DA22A /* LaunchBackTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		84DD946F2E08882400F7E52A /* LaunchBackUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 84DD94802E08882400F7E52A /* Build configuration list for PBXNativeTarget "LaunchBackUITests" */;
-			buildPhases = (
-				84DD946C2E08882400F7E52A /* Sources */,
-				84DD946D2E08882400F7E52A /* Frameworks */,
-				84DD946E2E08882400F7E52A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				84DD94722E08882400F7E52A /* PBXTargetDependency */,
-			);
-			name = LaunchBackUITests;
-			packageProductDependencies = (
-			);
-			productName = LaunchBackUITests;
-			productReference = 628E29372E7B2AE9006DA22A /* LaunchBackUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -149,14 +74,6 @@
 				TargetAttributes = {
 					84DD94572E08882300F7E52A = {
 						CreatedOnToolsVersion = 16.4;
-					};
-					84DD94652E08882400F7E52A = {
-						CreatedOnToolsVersion = 16.4;
-						TestTargetID = 84DD94572E08882300F7E52A;
-					};
-					84DD946F2E08882400F7E52A = {
-						CreatedOnToolsVersion = 16.4;
-						TestTargetID = 84DD94572E08882300F7E52A;
 					};
 				};
 			};
@@ -175,28 +92,12 @@
 			projectRoot = "";
 			targets = (
 				84DD94572E08882300F7E52A /* LaunchBack */,
-				84DD94652E08882400F7E52A /* LaunchBackTests */,
-				84DD946F2E08882400F7E52A /* LaunchBackUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		84DD94562E08882300F7E52A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		84DD94642E08882400F7E52A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		84DD946E2E08882400F7E52A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -213,34 +114,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		84DD94622E08882400F7E52A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		84DD946C2E08882400F7E52A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		84DD94682E08882400F7E52A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 84DD94572E08882300F7E52A /* LaunchBack */;
-			targetProxy = 84DD94672E08882400F7E52A /* PBXContainerItemProxy */;
-		};
-		84DD94722E08882400F7E52A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 84DD94572E08882300F7E52A /* LaunchBack */;
-			targetProxy = 84DD94712E08882400F7E52A /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		84DD94782E08882400F7E52A /* Debug */ = {
@@ -384,19 +258,20 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Launchpad;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.4;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = program.LaunchBack;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -417,91 +292,20 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Launchpad;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.4;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = program.LaunchBack;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
-		84DD947E2E08882400F7E52A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = A746D2P36V;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.5;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = program.LaunchBackTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LaunchBack.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LaunchBack";
-			};
-			name = Debug;
-		};
-		84DD947F2E08882400F7E52A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = A746D2P36V;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.5;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = program.LaunchBackTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LaunchBack.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LaunchBack";
-			};
-			name = Release;
-		};
-		84DD94812E08882400F7E52A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = A746D2P36V;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = program.LaunchBackUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = LaunchBack;
-			};
-			name = Debug;
-		};
-		84DD94822E08882400F7E52A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = A746D2P36V;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = program.LaunchBackUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = LaunchBack;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -522,24 +326,6 @@
 			buildConfigurations = (
 				84DD947B2E08882400F7E52A /* Debug */,
 				84DD947C2E08882400F7E52A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		84DD947D2E08882400F7E52A /* Build configuration list for PBXNativeTarget "LaunchBackTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				84DD947E2E08882400F7E52A /* Debug */,
-				84DD947F2E08882400F7E52A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		84DD94802E08882400F7E52A /* Build configuration list for PBXNativeTarget "LaunchBackUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				84DD94812E08882400F7E52A /* Debug */,
-				84DD94822E08882400F7E52A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
