@@ -80,13 +80,9 @@ struct PagedGridView: View {
                 } else {
                     // Search results
                     GeometryReader { geo in
-                        ScrollView(.vertical, showsIndicators: false) {
-                            let searchResults = filteredApps()
-                            AppGridView(apps: .constant(searchResults), columns: columns)
-                                .frame(width: geo.size.width, height: geo.size.height)
-                        }.onTapGesture {
-                            NSApp.terminate(nil)
-                        }
+                        let searchResults = filteredApps()
+                        SearchResultsView(apps: searchResults, columns: columns)
+                            .frame(width: geo.size.width, height: geo.size.height)
                     }
                 }
             }
@@ -120,6 +116,12 @@ struct PagedGridView: View {
     }
     
     private func handleScrollEvent(_ event: NSEvent) -> NSEvent? {
+        // If in search mode, allow vertical scrolling to pass through
+        if !searchText.isEmpty {
+            return event
+        }
+        
+        // Normal horizontal paging for main grid
         let absX = abs(event.scrollingDeltaX)
         let absY = abs(event.scrollingDeltaY)
         guard absX > absY, absX > 0 else { return event }
@@ -153,5 +155,68 @@ struct PagedGridView: View {
     private func resetScrollState(at time: Date) {
         lastScrollTime = time
         accumulatedScrollX = 0
+    }
+}
+
+struct SearchResultsView: View {
+    let apps: [AppInfo]
+    let columns: Int
+    @State private var isVisible = false
+    
+    var body: some View {
+        GeometryReader { geo in
+            let layout = LayoutMetrics(size: geo.size, columns: columns)
+            
+            if apps.isEmpty {
+                // No search results found
+                VStack {
+                    Spacer()
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 48))
+                        .foregroundColor(.gray)
+                    Text("No apps found")
+                        .font(.title2)
+                        .foregroundColor(.gray)
+                        .padding(.top, 10)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ScrollView(.vertical, showsIndicators: false) {
+                    LazyVGrid(
+                        columns: Array(repeating: GridItem(.fixed(layout.cellWidth), spacing: layout.spacing), count: columns),
+                        spacing: layout.spacing
+                    ) {
+                        ForEach(apps) { app in
+                            VStack(spacing: 10) {
+                                Image(nsImage: app.icon)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: layout.iconSize, height: layout.iconSize)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                Text(app.name)
+                                    .font(.system(size: layout.fontSize))
+                                    .multilineTextAlignment(.center)
+                                    .frame(width: layout.cellWidth)
+                            }
+                            .onTapGesture {
+                                NSWorkspace.shared.open(URL(fileURLWithPath: app.path))
+                                NSApp.terminate(nil)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, layout.hPadding)
+                    .padding(.vertical, layout.vPadding)
+                }
+                .onTapGesture {
+                    NSApp.terminate(nil)
+                }
+            }
+        }
+        .scaleEffect(isVisible ? 1 : 0.85)
+        .opacity(isVisible ? 1 : 0)
+        .animation(.easeInOut(duration: 0.3), value: isVisible)
+        .onAppear { isVisible = true }
+        .onDisappear { isVisible = false }
     }
 }
