@@ -29,11 +29,6 @@ struct LaunchpadGlassApp: App {
                 PagedGridView(pages: filteredApps.chunked(into: 35))
                     .frame(minWidth: 800, minHeight: 600)
                     .ignoresSafeArea()
-                    .sheet(isPresented: $showSettings) {
-                        SettingsView {
-                            showSettings = false
-                        }
-                    }
                 }
         }
         .windowStyle(.hiddenTitleBar)

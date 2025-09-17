@@ -1,11 +1,3 @@
-//
-//  WindowAccessor.swift
-//  LaunchBack
-//
-//  Created by Thomas Aldridge II on 6/22/25.
-//
-
-
 import SwiftUI
 
 struct WindowAccessor: NSViewRepresentable {

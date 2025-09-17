@@ -24,25 +24,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		84DD94582E08882300F7E52A /* LaunchBack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LaunchBack.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		84DD94662E08882400F7E52A /* LaunchBackTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LaunchBackTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		84DD94702E08882400F7E52A /* LaunchBackUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LaunchBackUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		84DD94582E08882300F7E52A /* LaunchBack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = LaunchBack.app; path = /Users/pappkristof/Developer/LaunchPad/build/Debug/LaunchBack.app; sourceTree = "<absolute>"; };
+		84DD94662E08882400F7E52A /* LaunchBackTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = LaunchBackTests.xctest; path = /Users/pappkristof/Developer/LaunchPad/build/Debug/LaunchBack.app/Contents/PlugIns/LaunchBackTests.xctest; sourceTree = "<absolute>"; };
+		84DD94702E08882400F7E52A /* LaunchBackUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = LaunchBackUITests.xctest; path = "/Users/pappkristof/Developer/LaunchPad/build/Debug/LaunchBackUITests-Runner.app/Contents/PlugIns/LaunchBackUITests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		84DD945A2E08882300F7E52A /* LaunchBack */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = LaunchBack;
-			sourceTree = "<group>";
-		};
-		84DD94692E08882400F7E52A /* LaunchBackTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LaunchBackTests;
-			sourceTree = "<group>";
-		};
-		84DD94732E08882400F7E52A /* LaunchBackUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LaunchBackUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -76,20 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				84DD945A2E08882300F7E52A /* LaunchBack */,
-				84DD94692E08882400F7E52A /* LaunchBackTests */,
-				84DD94732E08882400F7E52A /* LaunchBackUITests */,
-				84DD94592E08882300F7E52A /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		84DD94592E08882300F7E52A /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				84DD94582E08882300F7E52A /* LaunchBack.app */,
-				84DD94662E08882400F7E52A /* LaunchBackTests.xctest */,
-				84DD94702E08882400F7E52A /* LaunchBackUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -130,9 +107,6 @@
 			dependencies = (
 				84DD94682E08882400F7E52A /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				84DD94692E08882400F7E52A /* LaunchBackTests */,
-			);
 			name = LaunchBackTests;
 			packageProductDependencies = (
 			);
@@ -152,9 +126,6 @@
 			);
 			dependencies = (
 				84DD94722E08882400F7E52A /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				84DD94732E08882400F7E52A /* LaunchBackUITests */,
 			);
 			name = LaunchBackUITests;
 			packageProductDependencies = (
@@ -196,7 +167,7 @@
 			mainGroup = 84DD944F2E08882300F7E52A;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 84DD94592E08882300F7E52A /* Products */;
+			productRefGroup = 84DD944F2E08882300F7E52A;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
