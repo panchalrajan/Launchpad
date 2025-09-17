@@ -17,6 +17,7 @@ struct AppIconView: View {
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: geo.size.width)
             }
+            .contentShape(Rectangle())
             .onTapGesture {
                 NSWorkspace.shared.open(URL(fileURLWithPath: app.path))
                 NSApp.terminate(nil)

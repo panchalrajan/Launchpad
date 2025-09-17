@@ -9,13 +9,11 @@ struct PagedGridView: View {
     @GestureState private var dragOffset: CGFloat = 0
     @State private var isDragging = false
 
-    // Scroll wheel handling
     @State private var lastScrollTime = Date.distantPast
     let scrollDebounceInterval: TimeInterval = 0.8
     @State private var accumulatedScrollX: CGFloat = 0
     let scrollActivationThreshold: CGFloat = 80
     @State private var eventMonitor: Any?
-
     @State private var searchText = ""
 
     var body: some View {
@@ -29,7 +27,7 @@ struct PagedGridView: View {
                 }
 
             VStack(spacing: 0) {
-                // 🔍 Search bar
+                // Search bar
                 HStack {
                     Spacer()
                     AutoFocusSearchField(text: $searchText)
@@ -53,31 +51,18 @@ struct PagedGridView: View {
                                 ContentView(apps: pages[pageIndex], columns: columns)
                                     .frame(width: geo.size.width, height: geo.size.height)
                             }
-                        }.onTapGesture {
-                            NSApp.terminate(nil)
                         }
                         .offset(x: -CGFloat(currentPage) * geo.size.width)
                         .offset(x: dragOffset)
                         .animation(.interpolatingSpring(stiffness: 300, damping: 100), value: currentPage)
                         .onAppear {
-                            // Monitor scroll wheel only when not dragging, and only horizontal intent
                             eventMonitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { event in
-                                // Prefer horizontal paging only when horizontal dominates
                                 let absX = abs(event.scrollingDeltaX)
                                 let absY = abs(event.scrollingDeltaY)
-                                guard absX > absY, absX > 0 else {
-                                    return event
-                                }
-
-                                // Debounce by time to limit to one page per gesture burst
+                                guard absX > absY, absX > 0 else { return event }
                                 let now = Date()
-                                if now.timeIntervalSince(lastScrollTime) < scrollDebounceInterval {
-                                    return event
-                                }
-
-                                // Accumulate horizontal delta; require a threshold
+                                if now.timeIntervalSince(lastScrollTime) < scrollDebounceInterval { return event }
                                 accumulatedScrollX += event.scrollingDeltaX
-
                                 if accumulatedScrollX <= -scrollActivationThreshold {
                                     currentPage = min(currentPage + 1, pages.count-1)
                                     lastScrollTime = now
@@ -89,12 +74,10 @@ struct PagedGridView: View {
                                     accumulatedScrollX = 0
                                     return nil
                                 }
-
                                 return event
                             }
-
                             NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-                                if event.keyCode == 53 { // ESC
+                                if event.keyCode == 53 {
                                     NSApp.terminate(nil)
                                     return nil
                                 }

@@ -15,11 +15,7 @@ struct LaunchpadGlassApp: App {
     @State private var showSettings = false
 
     var filteredApps: [AppInfo] {
-        if selectedCategory == "All" {
-            return apps
-        } else {
-            return apps.filter { $0.category == selectedCategory }
-        }
+        selectedCategory == "All" ? apps : apps.filter { $0.category == selectedCategory }
     }
 
     var body: some Scene {
@@ -47,10 +43,8 @@ struct LaunchpadGlassApp: App {
     static func loadApps() -> [AppInfo] {
         let appPaths = ["/Applications", "/System/Applications"]
         var foundApps: [AppInfo] = []
-
         for basePath in appPaths {
             guard let contents = try? FileManager.default.contentsOfDirectory(atPath: basePath) else { continue }
-
             for item in contents where item.hasSuffix(".app") {
                 let fullPath = basePath + "/" + item
                 let appName = item.replacingOccurrences(of: ".app", with: "")
@@ -60,7 +54,6 @@ struct LaunchpadGlassApp: App {
                 foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath, category: category))
             }
         }
-
         return foundApps.sorted { $0.name.lowercased() < $1.name.lowercased() }
     }
 
