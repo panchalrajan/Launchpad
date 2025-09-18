@@ -50,9 +50,6 @@ fastlane/test_output
 *.swp
 *.swo
 
-# Asset catalog generated files
-*.xcassets
-
 # User-specific files
 *.orig
 *.swp
