@@ -35,11 +35,15 @@ final class SettingsManager: ObservableObject {
         
         userDefaults.set(data, forKey: settingsKey)
         userDefaults.synchronize()
-        print("Settings saved: \(settings.columns) columns, \(settings.rows) rows")
+        print("Settings saved: \(settings.columns) columns, \(settings.rows) rows, icon size: \(settings.iconSizeMultiplier)")
+    }
+    
+    func updateSettings(columns: Int, rows: Int, iconSizeMultiplier: Double) {
+        settings = LaunchpadSettings(columns: columns, rows: rows, iconSizeMultiplier: iconSizeMultiplier)
     }
     
     func updateSettings(columns: Int, rows: Int) {
-        settings = LaunchpadSettings(columns: columns, rows: rows)
+        settings = LaunchpadSettings(columns: columns, rows: rows, iconSizeMultiplier: settings.iconSizeMultiplier)
     }
     
     func resetToDefaults() {

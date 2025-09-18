@@ -4,11 +4,12 @@ import AppKit
 struct SearchResultsView: View {
     let apps: [AppInfo]
     let columns: Int
+    let iconSizeMultiplier: Double
     @State private var isVisible = false
     
     var body: some View {
         GeometryReader { geo in
-            let layout = LayoutMetrics(size: geo.size, columns: columns)
+            let layout = LayoutMetrics(size: geo.size, columns: columns, iconSizeMultiplier: iconSizeMultiplier)
             
             if apps.isEmpty {
                 EmptySearchView()

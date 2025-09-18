@@ -4,12 +4,13 @@ import AppKit
 struct AppGridView: View {
     @Binding var apps: [AppInfo]
     let columns: Int
+    let iconSizeMultiplier: Double
     @State private var isVisible = false
     @State private var draggedApp: AppInfo?
     
     var body: some View {
         GeometryReader { geo in
-            let layout = LayoutMetrics(size: geo.size, columns: columns)
+            let layout = LayoutMetrics(size: geo.size, columns: columns, iconSizeMultiplier: iconSizeMultiplier)
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.fixed(layout.cellWidth), spacing: layout.spacing), count: columns),

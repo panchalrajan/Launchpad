@@ -14,7 +14,8 @@ struct LaunchpadApp: App {
                 PagedGridView(
                     pages: $appPages,
                     columns: settingsManager.settings.columns, 
-                    rows: settingsManager.settings.rows
+                    rows: settingsManager.settings.rows,
+                    iconSizeMultiplier: settingsManager.settings.iconSizeMultiplier
                 )
                 .ignoresSafeArea()
                 .onAppear {

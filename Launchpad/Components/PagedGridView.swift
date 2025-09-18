@@ -8,6 +8,7 @@ struct PagedGridView: View {
     @Binding var pages: [[AppInfo]]
     var columns: Int
     var rows: Int
+    var iconSizeMultiplier: Double
     @GestureState private var dragOffset: CGFloat = 0
     @State private var currentPage = 0
     @State private var isDragging = false
@@ -44,7 +45,7 @@ struct PagedGridView: View {
                         
                         HStack(spacing: 0) {
                             ForEach(0..<pages.count, id: \.self) { pageIndex in
-                                AppGridView(apps: $pages[pageIndex], columns: columns)
+                                AppGridView(apps: $pages[pageIndex], columns: columns, iconSizeMultiplier: iconSizeMultiplier)
                                     .frame(width: geo.size.width, height: geo.size.height)
                             }
                         }.onTapGesture {
@@ -64,7 +65,7 @@ struct PagedGridView: View {
                         
                         
                     } else {
-                        SearchResultsView(apps: filteredApps(), columns: columns)
+                        SearchResultsView(apps: filteredApps(), columns: columns, iconSizeMultiplier: iconSizeMultiplier)
                             .frame(width: geo.size.width, height: geo.size.height)
                         
                     }

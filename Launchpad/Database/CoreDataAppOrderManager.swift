@@ -31,20 +31,6 @@ class CoreDataManager {
     }
 }
 
-// Core Data Entity for App Order
-@objc(AppOrderEntity)
-class AppOrderEntity: NSManagedObject {
-    @NSManaged var appPath: String
-    @NSManaged var orderIndex: Int32
-    @NSManaged var dateModified: Date
-}
-
-extension AppOrderEntity {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<AppOrderEntity> {
-        return NSFetchRequest<AppOrderEntity>(entityName: "AppOrderEntity")
-    }
-}
-
 class CoreDataAppOrderManager {
     nonisolated(unsafe) static let shared = CoreDataAppOrderManager()
     private let coreData = CoreDataManager.shared
