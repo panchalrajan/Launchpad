@@ -22,13 +22,5 @@ struct AppIconView: View {
         .scaleEffect(isDragged ? 0.8 : 1.0)
         .opacity(isDragged ? 0.5 : 1.0)
         .animation(.easeInOut(duration: 0.2), value: isDragged)
-        .onTapGesture {
-            launchApp()
-        }
-    }
-    
-    private func launchApp() {
-        NSWorkspace.shared.open(URL(fileURLWithPath: app.path))
-        NSApp.terminate(nil)
     }
 }

@@ -108,8 +108,12 @@ struct FolderDetailView: View {
                                 Circle()
                                     .stroke(Color.white, lineWidth: folder.color == color ? 2 : 0)
                             )
+                            .scaleEffect(folder.color == color ? 1.1 : 1.0)
+                            .animation(.easeInOut(duration: 0.2), value: folder.color)
                             .onTapGesture {
-                                folder.color = color
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    folder.color = color
+                                }
                             }
                     }
                 }

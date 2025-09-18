@@ -14,7 +14,7 @@ struct Folder: Identifiable, Equatable {
     }
     
     var previewApps: [AppInfo] {
-        Array(apps.prefix(4))
+        Array(apps.prefix(9))
     }
     
     var isEmpty: Bool {

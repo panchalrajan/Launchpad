@@ -11,7 +11,7 @@ struct AppGridItemView: View {
         case .app(let app):
             AppIconView(app: app, layout: layout, isDragged: isDragged)
         case .folder(let folder):
-            FolderView(folder: folder, layout: layout, isDragged: isDragged)
+            FolderIconView(folder: folder, layout: layout, isDragged: isDragged)
         }
     }
 }
