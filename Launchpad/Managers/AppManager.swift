@@ -34,7 +34,6 @@ final class AppManager {
                     "type": "folder",
                     "id": folder.id.uuidString,
                     "name": folder.name,
-                    "color": folder.color.rawValue,
                     "apps": appsData
                 ]
             }
@@ -126,8 +125,6 @@ final class AppManager {
                 
             case "folder":
                 if let folderName = itemData["name"] as? String,
-                   let colorRaw = itemData["color"] as? String,
-                   let color = FolderColor(rawValue: colorRaw),
                    let appsData = itemData["apps"] as? [[String: String]] {
                     
                     var folderApps: [AppInfo] = []
@@ -140,7 +137,7 @@ final class AppManager {
                     }
                     
                     if !folderApps.isEmpty {
-                        let folder = Folder(name: folderName, apps: folderApps, color: color)
+                        let folder = Folder(name: folderName, apps: folderApps)
                         gridItems.append(.folder(folder))
                     }
                 }

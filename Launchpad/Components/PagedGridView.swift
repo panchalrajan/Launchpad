@@ -8,7 +8,7 @@ struct PagedGridView: View {
     @Binding var pages: [[AppGridItem]]
     var columns: Int
     var rows: Int
-    var iconSizeMultiplier: Double
+    var iconSize: Double
     var dropDelay: Double
     @GestureState private var dragOffset: CGFloat = 0
     @State private var currentPage = 0
@@ -17,6 +17,7 @@ struct PagedGridView: View {
     @State private var accumulatedScrollX: CGFloat = 0
     @State private var eventMonitor: Any?
     @State private var searchText = ""
+    @State private var isFolderOpen = false
     
     var body: some View {
         ZStack {
@@ -28,29 +29,29 @@ struct PagedGridView: View {
                 HStack {             
                     Spacer()
                     SearchField(text: $searchText)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
                         .frame(width: 480, height: 36)
                         .background(
-                            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                                .fill(Color(NSColor.windowBackgroundColor).opacity(0.6))
+                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                .fill(Color(NSColor.windowBackgroundColor).opacity(0.4))
                         )
-                        .shadow(color: Color.black.opacity(0.18), radius: 10, x: 0, y: 3)
+                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 3)
                     Spacer()
                 }
                 .padding(.top, 40)
-                .padding(.bottom, 20)
+                .padding(.bottom, 24)
                 
                 GeometryReader { geo in
                     if searchText.isEmpty {
                         
                         HStack(spacing: 0) {
                             ForEach(0..<pages.count, id: \.self) { pageIndex in
-                                AppGridView(items: $pages[pageIndex], columns: columns, iconSizeMultiplier: iconSizeMultiplier, dropDelay: dropDelay)
+                                AppGridView(items: $pages[pageIndex], columns: columns, iconSize: iconSize, dropDelay: dropDelay, isFolderOpen: $isFolderOpen)
                                     .frame(width: geo.size.width, height: geo.size.height)
                             }
                         }.onTapGesture {
-                            NSApp.terminate(nil)
+                            AppLauncher.shared.exit()
                         }
                         .offset(x: -CGFloat(currentPage) * geo.size.width)
                         .offset(x: dragOffset)
@@ -62,28 +63,30 @@ struct PagedGridView: View {
                             cleanupEventMonitoring()
                         }
                     } else {
-                        SearchResultsView(apps: filteredApps(), columns: columns, iconSizeMultiplier: iconSizeMultiplier)
+                        SearchResultsView(apps: filteredApps(), columns: columns, iconSize: iconSize)
                             .frame(width: geo.size.width, height: geo.size.height)
                     }
                 }
                 
-                HStack(spacing: 12) {
+                HStack(spacing: 16) {
                     ForEach(0..<pages.count, id: \.self) { index in
                         Circle()
-                            .fill(index == currentPage ? Color.white : Color.gray.opacity(0.5))
-                            .frame(width: 10, height: 10)
+                            .fill(index == currentPage ? Color.white : Color.gray.opacity(0.4))
+                            .frame(width: 8, height: 8)
                             .scaleEffect(index == currentPage ? 1.2 : 1.0)
                             .animation(.easeInOut(duration: 0.2), value: currentPage)
                             .onTapGesture {
-                                withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
-                                    currentPage = index
+                                if !isFolderOpen {
+                                    withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+                                        currentPage = index
+                                    }
                                 }
                             }
                     }
                 }
-                .padding(.top, 15)
+                .padding(.top, 16)
                 .padding(.bottom, 120)
-                .opacity(searchText.isEmpty ? 1 : 0)
+                .opacity(searchText.isEmpty && !isFolderOpen ? 1 : 0)
             }
         }
     }
@@ -136,7 +139,7 @@ struct PagedGridView: View {
     }
     
     private func handleScrollEvent(_ event: NSEvent) -> NSEvent? {
-        if !searchText.isEmpty {
+        if !searchText.isEmpty || isFolderOpen {
             return event
         }
         
@@ -163,13 +166,13 @@ struct PagedGridView: View {
     }
     
     private func handleKeyEvent(_ event: NSEvent) -> NSEvent? {
-        if !searchText.isEmpty && (event.keyCode == 123 || event.keyCode == 124) {
+        if (!searchText.isEmpty && (event.keyCode == 123 || event.keyCode == 124)) || isFolderOpen {
             return event
         }
         
         switch event.keyCode {
         case 53: // ESC key
-            NSApp.terminate(nil)
+            AppLauncher.shared.exit()
             return nil
         case 123: // Left arrow key
             if currentPage > 0 {

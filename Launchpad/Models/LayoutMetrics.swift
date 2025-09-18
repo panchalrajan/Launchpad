@@ -9,7 +9,7 @@ struct LayoutMetrics {
     let iconSize: CGFloat
     let fontSize: CGFloat
     
-    init(size: CGSize, columns: Int, iconSizeMultiplier: Double = 0.6) {
+    init(size: CGSize, columns: Int, iconSize: Double) {
         let aspect = size.width / size.height
         
         hPadding = size.width * 0.06
@@ -18,7 +18,8 @@ struct LayoutMetrics {
         
         let totalSpacing = CGFloat(columns - 1) * spacing
         cellWidth = (size.width - (hPadding * 2) - totalSpacing) / CGFloat(columns)
-        iconSize = cellWidth * CGFloat(iconSizeMultiplier)
+        self.iconSize = iconSize
+        print("iconSize: \(self.iconSize)")
         fontSize = max(10, cellWidth * 0.04)
     }
 }

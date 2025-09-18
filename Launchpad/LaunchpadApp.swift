@@ -14,7 +14,7 @@ struct LaunchpadApp: App {
                     pages: $gridItemPages,
                     columns: settingsManager.settings.columns, 
                     rows: settingsManager.settings.rows,
-                    iconSizeMultiplier: settingsManager.settings.iconSize,
+                    iconSize: settingsManager.settings.iconSize,
                     dropDelay: settingsManager.settings.dropDelay
                 )
                 .ignoresSafeArea()

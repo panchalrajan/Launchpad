@@ -7,12 +7,12 @@ struct AppIconView: View {
     let isDragged: Bool
     
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 8) {
             Image(nsImage: app.icon)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: layout.iconSize, height: layout.iconSize)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
             
             Text(app.name)
                 .font(.system(size: layout.fontSize))
@@ -22,5 +22,8 @@ struct AppIconView: View {
         .scaleEffect(isDragged ? 0.8 : 1.0)
         .opacity(isDragged ? 0.5 : 1.0)
         .animation(.easeInOut(duration: 0.2), value: isDragged)
+        .onTapGesture {
+            AppLauncher.shared.launch(app.path)
+        }
     }
 }

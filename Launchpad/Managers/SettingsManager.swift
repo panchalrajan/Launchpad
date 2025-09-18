@@ -34,20 +34,13 @@ final class SettingsManager: ObservableObject {
         userDefaults.synchronize()
     }
     
-    func updateSettings(columns: Int, rows: Int, iconSize: Double, dropDelay: Double) {
-        settings = LaunchpadSettings(columns: columns, rows: rows, iconSize: iconSize, dropDelay: dropDelay)
-    }
-    
-    func updateSettings(columns: Int, rows: Int, iconSize: Double) {
-        settings = LaunchpadSettings(columns: columns, rows: rows, iconSize: iconSize, dropDelay: settings.dropDelay)
-    }
-    
-    func updateSettings(columns: Int, rows: Int) {
-        settings = LaunchpadSettings(columns: columns, rows: rows, iconSize: settings.iconSize, dropDelay: settings.dropDelay)
-    }
-    
-    func updateDropDelay(_ dropDelay: Double) {
-        settings = LaunchpadSettings(columns: settings.columns, rows: settings.rows, iconSize: settings.iconSize, dropDelay: dropDelay)
+    func updateSettings(columns: Int? = nil, rows: Int? = nil, iconSize: Double? = nil, dropDelay: Double? = nil) {
+        settings = LaunchpadSettings(
+            columns: columns ?? settings.columns,
+            rows: rows ?? settings.rows,
+            iconSize: iconSize ?? settings.iconSize,
+            dropDelay: dropDelay ?? settings.dropDelay
+        )
     }
     
     func resetToDefaults() {
