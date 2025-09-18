@@ -7,16 +7,23 @@ struct AppDropDelegate: DropDelegate {
     @Binding var draggedItem: AppGridItem?
     
     func dropEntered(info: DropInfo) {
-        // Visual feedback when hovering over a drop target
+        guard let draggedItem = draggedItem,
+              draggedItem.id != targetItem.id,
+              let fromIndex = items.firstIndex(where: { $0.id == draggedItem.id }),
+              let toIndex = items.firstIndex(where: { $0.id == targetItem.id }) else { return }
+        
+        withAnimation(.easeInOut(duration: 0.2)) {
+            items.move(fromOffsets: IndexSet([fromIndex]), toOffset: toIndex > fromIndex ? toIndex + 1 : toIndex)
+        }
     }
     
-    func dropExited(info: DropInfo) {
-        // Remove visual feedback
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        return DropProposal(operation: .move)
     }
     
     func performDrop(info: DropInfo) -> Bool {
-        guard let draggedItem = draggedItem else { 
-            return false 
+        guard let draggedItem = draggedItem else {
+            return false
         }
         
         // Don't allow dropping on self
@@ -46,10 +53,6 @@ struct AppDropDelegate: DropDelegate {
             reorderItems(draggedItem: draggedItem, targetItem: targetItem)
             return true
         }
-    }
-    
-    func dropUpdated(info: DropInfo) -> DropProposal? {
-        return DropProposal(operation: .move)
     }
     
     private func createFolder(with app1: AppInfo, and app2: AppInfo) {
