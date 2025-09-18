@@ -5,6 +5,8 @@ struct PagedGridView: View {
     @Binding var pages: [[AppInfo]]
     let columns = 7
     let rows = 5
+    let scrollDebounceInterval: TimeInterval = 0.8
+    let scrollActivationThreshold: CGFloat = 80
     
     @State private var currentPage = 0
     @GestureState private var dragOffset: CGFloat = 0
@@ -13,9 +15,6 @@ struct PagedGridView: View {
     @State private var accumulatedScrollX: CGFloat = 0
     @State private var eventMonitor: Any?
     @State private var searchText = ""
-    
-    private let scrollDebounceInterval: TimeInterval = 0.8
-    private let scrollActivationThreshold: CGFloat = 80
 
     var body: some View {
         ZStack {

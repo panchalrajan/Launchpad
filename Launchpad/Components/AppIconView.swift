@@ -13,6 +13,7 @@ struct AppIconView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: layout.iconSize, height: layout.iconSize)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
+            
             Text(app.name)
                 .font(.system(size: layout.fontSize))
                 .multilineTextAlignment(.center)
@@ -22,8 +23,12 @@ struct AppIconView: View {
         .opacity(isDragged ? 0.5 : 1.0)
         .animation(.easeInOut(duration: 0.2), value: isDragged)
         .onTapGesture {
-            NSWorkspace.shared.open(URL(fileURLWithPath: app.path))
-            NSApp.terminate(nil)
+            launchApp()
         }
+    }
+    
+    private func launchApp() {
+        NSWorkspace.shared.open(URL(fileURLWithPath: app.path))
+        NSApp.terminate(nil)
     }
 }

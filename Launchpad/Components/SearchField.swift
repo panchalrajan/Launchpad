@@ -3,20 +3,11 @@ import AppKit
 
 struct SearchField: NSViewRepresentable {
     @Binding var text: String
-
-    class Coordinator: NSObject, NSSearchFieldDelegate {
-        var parent: SearchField
-        init(_ parent: SearchField) { self.parent = parent }
-        func controlTextDidChange(_ obj: Notification) {
-            guard let field = obj.object as? NSSearchField else { return }
-            parent.text = field.stringValue
-        }
-    }
-
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-
+    
     func makeNSView(context: Context) -> NSSearchField {
         let searchField = NSSearchField()
         searchField.delegate = context.coordinator
@@ -32,13 +23,31 @@ struct SearchField: NSViewRepresentable {
             cell.isScrollable = true
         }
         
-        DispatchQueue.main.async { searchField.becomeFirstResponder() }
+        DispatchQueue.main.async { 
+            searchField.becomeFirstResponder() 
+        }
+        
         return searchField
     }
-
+    
     func updateNSView(_ nsView: NSSearchField, context: Context) {
         if nsView.stringValue != text {
             nsView.stringValue = text
+        }
+    }
+}
+
+extension SearchField {
+    final class Coordinator: NSObject, NSSearchFieldDelegate {
+        private let parent: SearchField
+        
+        init(_ parent: SearchField) { 
+            self.parent = parent 
+        }
+        
+        func controlTextDidChange(_ obj: Notification) {
+            guard let field = obj.object as? NSSearchField else { return }
+            parent.text = field.stringValue
         }
     }
 }

@@ -5,15 +5,13 @@ enum StorageType {
     case coreData
 }
 
-class AppOrderManager {
+final class AppOrderManager {
     nonisolated(unsafe) static let shared = AppOrderManager()
+    
     private let userDefaults = UserDefaults.standard
     private let appOrderKey = "LaunchpadAppOrder"
-    private let storageType: StorageType = .userDefaults // Change to .coreData for Core Data storage
+    private let storageType: StorageType = .userDefaults
     
-    private init() {}
-    
-    /// Save the current app order to the selected storage
     func saveAppOrder(_ apps: [AppInfo]) {
         switch storageType {
         case .userDefaults:
@@ -23,7 +21,6 @@ class AppOrderManager {
         }
     }
     
-    /// Load the saved app order and apply it to the given apps array
     func loadAppOrder(for apps: [AppInfo]) -> [AppInfo] {
         switch storageType {
         case .userDefaults:
@@ -33,7 +30,6 @@ class AppOrderManager {
         }
     }
     
-    /// Clear the saved app order
     func clearAppOrder() {
         switch storageType {
         case .userDefaults:
@@ -43,8 +39,6 @@ class AppOrderManager {
         }
     }
     
-    // MARK: - UserDefaults Implementation
-    
     private func saveToUserDefaults(_ apps: [AppInfo]) {
         let appData = apps.map { app in
             [
@@ -53,6 +47,7 @@ class AppOrderManager {
                 "path": app.path
             ]
         }
+        
         userDefaults.set(appData, forKey: appOrderKey)
         userDefaults.synchronize()
         print("App order saved to UserDefaults with \(apps.count) apps")
@@ -65,10 +60,7 @@ class AppOrderManager {
         }
         
         // Create a dictionary for quick lookup of apps by path
-        var appsByPath = [String: AppInfo]()
-        for app in apps {
-            appsByPath[app.path] = app
-        }
+        let appsByPath = Dictionary(uniqueKeysWithValues: apps.map { ($0.path, $0) })
         
         var orderedApps: [AppInfo] = []
         var usedPaths = Set<String>()
@@ -83,10 +75,8 @@ class AppOrderManager {
         }
         
         // Then, add any new apps that weren't in the saved order
-        for app in apps {
-            if !usedPaths.contains(app.path) {
-                orderedApps.append(app)
-            }
+        for app in apps where !usedPaths.contains(app.path) {
+            orderedApps.append(app)
         }
         
         print("App order loaded from UserDefaults with \(orderedApps.count) apps (\(savedData.count) from saved order)")
