@@ -82,6 +82,7 @@ LaunchPad offers comprehensive customization options to tailor your experience:
 - **Rearrange**: Drag apps to new positions
 
 ## 🙏 Acknowledgments
+- Bsed on LaunchBack project
 - Inspired by macOS Launchpad
 - Glass morphism design trends
 - SwiftUI community examples
