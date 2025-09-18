@@ -2,20 +2,20 @@ import SwiftUI
 import AppKit
 
 struct PagedGridView: View {
-    @Binding var pages: [[AppInfo]]
-    let columns = 7
-    let rows = 5
     let scrollDebounceInterval: TimeInterval = 0.8
     let scrollActivationThreshold: CGFloat = 80
     
-    @State private var currentPage = 0
+    @Binding var pages: [[AppInfo]]
+    var columns: Int
+    var rows: Int
     @GestureState private var dragOffset: CGFloat = 0
+    @State private var currentPage = 0
     @State private var isDragging = false
     @State private var lastScrollTime = Date.distantPast
     @State private var accumulatedScrollX: CGFloat = 0
     @State private var eventMonitor: Any?
     @State private var searchText = ""
-
+    
     var body: some View {
         ZStack {
             Color.clear
@@ -38,9 +38,10 @@ struct PagedGridView: View {
                 }
                 .padding(.top, 40)
                 .padding(.bottom, 20)
-
-                if searchText.isEmpty {
-                    GeometryReader { geo in
+                
+                GeometryReader { geo in
+                    if searchText.isEmpty {
+                        
                         HStack(spacing: 0) {
                             ForEach(0..<pages.count, id: \.self) { pageIndex in
                                 AppGridView(apps: $pages[pageIndex], columns: columns)
@@ -58,14 +59,14 @@ struct PagedGridView: View {
                         .onDisappear {
                             cleanupEventMonitoring()
                         }
-                    }
-
-
-
-                } else {
-                    GeometryReader { geo in
+                        
+                        
+                        
+                        
+                    } else {
                         SearchResultsView(apps: filteredApps(), columns: columns)
                             .frame(width: geo.size.width, height: geo.size.height)
+                        
                     }
                 }
                 
@@ -89,7 +90,7 @@ struct PagedGridView: View {
             }
         }
     }
-
+    
     func filteredApps() -> [AppInfo] {
         pages.flatMap { $0 }.filter {
             $0.name.lowercased().contains(searchText.lowercased())

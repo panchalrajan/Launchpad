@@ -19,6 +19,6 @@ struct WindowAccessor: NSViewRepresentable {
         }
         return view
     }
-
+    
     func updateNSView(_ nsView: NSView, context: Context) {}
 }

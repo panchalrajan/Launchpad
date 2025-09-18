@@ -2,16 +2,17 @@ import SwiftUI
 
 @main
 struct LaunchpadApp: App {
+    private let columns = 8
+    private let rows = 6
+    
     @State private var apps: [AppInfo] = []
     @State private var appPages: [[AppInfo]] = []
-    
-    private let appsPerPage = 35
     
     var body: some Scene {
         WindowGroup {
             ZStack(alignment: .topTrailing) {
                 WindowAccessor()
-                PagedGridView(pages: $appPages)
+                PagedGridView(pages: $appPages, columns: columns, rows: rows)
                     .ignoresSafeArea()
                     .onAppear {
                         loadApps()
@@ -27,7 +28,7 @@ struct LaunchpadApp: App {
     private func loadApps() {
         apps = discoverApps()
         let orderedApps = AppOrderManager.shared.loadAppOrder(for: apps)
-        appPages = orderedApps.chunked(into: appsPerPage)
+        appPages = orderedApps.chunked(into: columns * rows)
     }
     
     private func saveAppOrder(from pages: [[AppInfo]]) {
@@ -41,8 +42,8 @@ struct LaunchpadApp: App {
         var foundApps: [AppInfo] = []
         
         for basePath in appPaths {
-            guard let contents = try? FileManager.default.contentsOfDirectory(atPath: basePath) else { 
-                continue 
+            guard let contents = try? FileManager.default.contentsOfDirectory(atPath: basePath) else {
+                continue
             }
             
             for item in contents where item.hasSuffix(".app") {

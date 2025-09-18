@@ -14,21 +14,21 @@ struct AppGridView: View {
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.fixed(layout.cellWidth), spacing: layout.spacing), count: columns),
                     spacing: layout.spacing) {
-                    ForEach(apps) { app in
-                        AppIconView(app: app, layout: layout, isDragged: draggedApp?.id == app.id)
-                        .onDrag {
-                            draggedApp = app
-                            return NSItemProvider(object: app.id.uuidString as NSString)
+                        ForEach(apps) { app in
+                            AppIconView(app: app, layout: layout, isDragged: draggedApp?.id == app.id)
+                                .onDrag {
+                                    draggedApp = app
+                                    return NSItemProvider(object: app.id.uuidString as NSString)
+                                }
+                                .onDrop(of: [.text], delegate: AppDropDelegate(
+                                    app: app,
+                                    apps: $apps,
+                                    draggedApp: $draggedApp
+                                ))
                         }
-                        .onDrop(of: [.text], delegate: AppDropDelegate(
-                            app: app,
-                            apps: $apps,
-                            draggedApp: $draggedApp
-                        ))
                     }
-                }
-                .padding(.horizontal, layout.hPadding)
-                .padding(.vertical, layout.vPadding)
+                    .padding(.horizontal, layout.hPadding)
+                    .padding(.vertical, layout.vPadding)
             }
         }
         .scaleEffect(isVisible ? 1 : 0.85)
