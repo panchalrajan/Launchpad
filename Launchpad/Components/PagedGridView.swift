@@ -9,6 +9,7 @@ struct PagedGridView: View {
     var columns: Int
     var rows: Int
     var iconSizeMultiplier: Double
+    var dropDelay: Double
     @GestureState private var dragOffset: CGFloat = 0
     @State private var currentPage = 0
     @State private var isDragging = false
@@ -45,7 +46,7 @@ struct PagedGridView: View {
                         
                         HStack(spacing: 0) {
                             ForEach(0..<pages.count, id: \.self) { pageIndex in
-                                AppGridView(items: $pages[pageIndex], columns: columns, iconSizeMultiplier: iconSizeMultiplier)
+                                AppGridView(items: $pages[pageIndex], columns: columns, iconSizeMultiplier: iconSizeMultiplier, dropDelay: dropDelay)
                                     .frame(width: geo.size.width, height: geo.size.height)
                             }
                         }.onTapGesture {

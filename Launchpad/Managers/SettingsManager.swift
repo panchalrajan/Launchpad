@@ -19,31 +19,35 @@ final class SettingsManager: ObservableObject {
     private static func loadSettings() -> LaunchpadSettings {
         guard let data = UserDefaults.standard.data(forKey: "LaunchpadSettings"),
               let settings = try? JSONDecoder().decode(LaunchpadSettings.self, from: data) else {
-            print("No saved settings found, using defaults")
             return LaunchpadSettings()
         }
         
-        print("Settings loaded: \(settings.columns) columns, \(settings.rows) rows")
         return settings
     }
     
     private func saveSettings() {
         guard let data = try? JSONEncoder().encode(settings) else {
-            print("Failed to encode settings")
             return
         }
         
         userDefaults.set(data, forKey: settingsKey)
         userDefaults.synchronize()
-        print("Settings saved: \(settings.columns) columns, \(settings.rows) rows, icon size: \(settings.iconSizeMultiplier)")
     }
     
-    func updateSettings(columns: Int, rows: Int, iconSizeMultiplier: Double) {
-        settings = LaunchpadSettings(columns: columns, rows: rows, iconSizeMultiplier: iconSizeMultiplier)
+    func updateSettings(columns: Int, rows: Int, iconSize: Double, dropDelay: Double) {
+        settings = LaunchpadSettings(columns: columns, rows: rows, iconSize: iconSize, dropDelay: dropDelay)
+    }
+    
+    func updateSettings(columns: Int, rows: Int, iconSize: Double) {
+        settings = LaunchpadSettings(columns: columns, rows: rows, iconSize: iconSize, dropDelay: settings.dropDelay)
     }
     
     func updateSettings(columns: Int, rows: Int) {
-        settings = LaunchpadSettings(columns: columns, rows: rows, iconSizeMultiplier: settings.iconSizeMultiplier)
+        settings = LaunchpadSettings(columns: columns, rows: rows, iconSize: settings.iconSize, dropDelay: settings.dropDelay)
+    }
+    
+    func updateDropDelay(_ dropDelay: Double) {
+        settings = LaunchpadSettings(columns: settings.columns, rows: settings.rows, iconSize: settings.iconSize, dropDelay: dropDelay)
     }
     
     func resetToDefaults() {

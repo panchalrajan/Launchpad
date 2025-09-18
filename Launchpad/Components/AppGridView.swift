@@ -5,6 +5,7 @@ struct AppGridView: View {
     @Binding var items: [AppGridItem]
     let columns: Int
     let iconSizeMultiplier: Double
+    let dropDelay: Double
     @State private var isVisible = false
     @State private var draggedItem: AppGridItem?
     @State private var selectedFolder: Folder?
@@ -31,6 +32,7 @@ struct AppGridView: View {
                                 return NSItemProvider(object: item.id.uuidString as NSString)
                             }
                             .onDrop(of: [.text], delegate: AppDropDelegate(
+                                dropDelay: dropDelay,
                                 targetItem: item,
                                 items: $items,
                                 draggedItem: $draggedItem

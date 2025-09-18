@@ -7,12 +7,14 @@ struct SettingsView: View {
     @State private var tempColumns: Int
     @State private var tempRows: Int
     @State private var tempIconSizeMultiplier: Double
+    @State private var tempDropDelay: Double
     
     init() {
         let currentSettings = SettingsManager.shared.settings
         _tempColumns = State(initialValue: currentSettings.columns)
         _tempRows = State(initialValue: currentSettings.rows)
-        _tempIconSizeMultiplier = State(initialValue: currentSettings.iconSizeMultiplier)
+        _tempIconSizeMultiplier = State(initialValue: currentSettings.iconSize)
+        _tempDropDelay = State(initialValue: currentSettings.dropDelay)
     }
     
     var body: some View {
@@ -105,6 +107,42 @@ struct SettingsView: View {
                         .accentColor(.blue)
                     }
                 }
+                
+                // Drop Delay Section
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Drop Animation Delay")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Delay")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text(String(format: "%.1fs", tempDropDelay))
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Slider(
+                            value: $tempDropDelay,
+                            in: 0.0...3.0,
+                            step: 0.1
+                        ) {
+                            Text("Drop Delay")
+                        } minimumValueLabel: {
+                            Text("0.0s")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        } maximumValueLabel: {
+                            Text("3.0s")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                        .accentColor(.blue)
+                    }
+                }
             }
             .padding(.horizontal, 4)
             
@@ -114,7 +152,8 @@ struct SettingsView: View {
                 Button("Reset to Defaults") {
                     tempColumns = LaunchpadSettings.defaultColumns
                     tempRows = LaunchpadSettings.defaultRows
-                    tempIconSizeMultiplier = LaunchpadSettings.defaultIconSizeMultiplier
+                    tempIconSizeMultiplier = LaunchpadSettings.defaultIconSize
+                    tempDropDelay = LaunchpadSettings.defaultDropDelay
                 }
                 .buttonStyle(.bordered)
                 
@@ -126,14 +165,14 @@ struct SettingsView: View {
                 .buttonStyle(.bordered)
                 
                 Button("Apply") {
-                    settingsManager.updateSettings(columns: tempColumns, rows: tempRows, iconSizeMultiplier: tempIconSizeMultiplier)
+                    settingsManager.updateSettings(columns: tempColumns, rows: tempRows, iconSize: tempIconSizeMultiplier, dropDelay: tempDropDelay)
                     dismiss()
                 }
                 .buttonStyle(.borderedProminent)
             }
         }
         .padding(20)
-        .frame(width: 350, height: 290)
+        .frame(width: 350, height: 360)
         .background(Color(NSColor.windowBackgroundColor))
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.2), radius: 20, x: 0, y: 10)

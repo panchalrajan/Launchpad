@@ -14,7 +14,8 @@ struct LaunchpadApp: App {
                     pages: $gridItemPages,
                     columns: settingsManager.settings.columns, 
                     rows: settingsManager.settings.rows,
-                    iconSizeMultiplier: settingsManager.settings.iconSizeMultiplier
+                    iconSizeMultiplier: settingsManager.settings.iconSize,
+                    dropDelay: settingsManager.settings.dropDelay
                 )
                 .ignoresSafeArea()
                 .onAppear {
@@ -38,6 +39,10 @@ struct LaunchpadApp: App {
                 Button("Settings") {
                     showSettings = true
                 }
+                Divider()
+                Button("Clear Grid Items") {
+                    clearGridItems()
+                }
             }
         }
     }
@@ -50,5 +55,10 @@ struct LaunchpadApp: App {
     private func saveGridItems(from pages: [[AppGridItem]]) {
         let gridItems = pages.flatMap { $0 }
         AppManager.shared.saveGridItems(gridItems)
+    }
+    
+    private func clearGridItems() {
+        AppManager.shared.clearGridItems()
+        loadGridItems()
     }
 }

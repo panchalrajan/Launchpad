@@ -2,6 +2,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct AppDropDelegate: DropDelegate {
+    let dropDelay: Double
     let targetItem: AppGridItem
     @Binding var items: [AppGridItem]
     @Binding var draggedItem: AppGridItem?
@@ -12,8 +13,11 @@ struct AppDropDelegate: DropDelegate {
               let fromIndex = items.firstIndex(where: { $0.id == draggedItem.id }),
               let toIndex = items.firstIndex(where: { $0.id == targetItem.id }) else { return }
         
-        withAnimation(.easeInOut(duration: 0.2)) {
-            items.move(fromOffsets: IndexSet([fromIndex]), toOffset: toIndex > fromIndex ? toIndex + 1 : toIndex)
+        // Delay the animation
+        DispatchQueue.main.asyncAfter(deadline: .now() + dropDelay) {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                items.move(fromOffsets: IndexSet([fromIndex]), toOffset: toIndex > fromIndex ? toIndex + 1 : toIndex)
+            }
         }
     }
     
@@ -23,109 +27,68 @@ struct AppDropDelegate: DropDelegate {
     
     func performDrop(info: DropInfo) -> Bool {
         guard let draggedItem = draggedItem else {
-            return false
+            print("No dragged item found")
+            self.draggedItem = nil
+            return true
         }
         
-        // Don't allow dropping on self
-        if draggedItem.id == targetItem.id {
-            return false
+        if draggedItem.id != targetItem.id {
+            switch (draggedItem, targetItem) {
+            case (.app(let draggedApp), .app(let targetApp)):
+                print("Creating folder with apps: \(draggedApp.name) + \(targetApp.name)")
+                createFolder(with: draggedApp, and: targetApp)
+                print("Folder creation completed")
+            case (.app(let draggedApp), .folder(let targetFolder)):
+                print("Adding app \(draggedApp.name) to folder \(targetFolder.name)")
+                addAppToFolder(draggedApp, targetFolder: targetFolder)
+                print("App added to folder completed")
+            default:
+                print("Default")
+            }
         }
         
-        // Handle different drop scenarios
-        switch (draggedItem, targetItem) {
-        case (.app(let draggedApp), .app(let targetApp)):
-            // App dropped on app - create folder
-            createFolder(with: draggedApp, and: targetApp)
-            return true
-            
-        case (.app(let draggedApp), .folder(let targetFolder)):
-            // App dropped on folder - add to folder
-            addAppToFolder(draggedApp, targetFolder: targetFolder)
-            return true
-            
-        case (.folder, .app):
-            // Folder dropped on app - just reorder
-            reorderItems(draggedItem: draggedItem, targetItem: targetItem)
-            return true
-            
-        case (.folder, .folder):
-            // Folder dropped on folder - just reorder (could implement merge later)
-            reorderItems(draggedItem: draggedItem, targetItem: targetItem)
-            return true
-        }
+        self.draggedItem = nil
+        return true
     }
     
     private func createFolder(with app1: AppInfo, and app2: AppInfo) {
-        // Find the position where the target app was before removing
-        let targetIndex = items.firstIndex(where: { $0.id == targetItem.id }) ?? items.count
+        var targetIndex = items.firstIndex(where: { $0.id == targetItem.id }) ?? items.count
+        let app1Index = items.firstIndex(where: { $0.id == app1.id }) ?? items.count
+        let app2Index = items.firstIndex(where: { $0.id == app2.id }) ?? items.count
         
-        // Remove both apps from the grid
-        items.removeAll { item in
-            item.id == app1.id || item.id == app2.id
+        if(app1Index > app2Index) {
+            targetIndex+=1
+        }
+        else {
+            targetIndex-=1
         }
         
-        // Create a new folder with both apps
-        let folderName = "New folder"
-        let newFolder = Folder(name: folderName, apps: [app1, app2])
+        items.removeAll { item in item.id == app1.id || item.id == app2.id }
         
-        // Insert the folder at the correct position
+        let newFolder = Folder(name: "New folder", apps: [app1, app2])
         let insertIndex = min(targetIndex, items.count)
         items.insert(.folder(newFolder), at: insertIndex)
-        
-        draggedItem = nil
     }
     
     private func addAppToFolder(_ app: AppInfo, targetFolder: Folder) {
-        // Find the folder in the items array and update it
-        guard let folderIndex = items.firstIndex(where: { $0.id == targetFolder.id }) else {
-            return
+        var targetIndex = items.firstIndex(where: { $0.id == targetFolder.id }) ?? items.count
+        let app1Index = items.firstIndex(where: { $0.id == app.id }) ?? items.count
+        
+        if(app1Index > targetIndex) {
+            targetIndex+=1
         }
         
-        // Get the current folder
-        guard case .folder(let currentFolder) = items[folderIndex] else {
-            return
-        }
+        var updatedApps = targetFolder.apps
+        updatedApps.append(app)
         
-        // Create a new folder with the app added (if not already present)
-        var updatedApps = currentFolder.apps
-        if !updatedApps.contains(where: { $0.id == app.id }) {
-            updatedApps.append(app)
-        } else {
-            return
-        }
-        
-        // Create new folder instance with updated apps
         let updatedFolder = Folder(
-            name: currentFolder.name,
+            name: targetFolder.name,
             apps: updatedApps,
-            color: currentFolder.color
+            color: targetFolder.color
         )
         
-        // Remove the app from the grid first
         items.removeAll { $0.id == app.id }
         
-        // Find the folder again (index might have changed after removal)
-        guard let newFolderIndex = items.firstIndex(where: { $0.id == targetFolder.id }) else {
-            return
-        }
-        
-        // Update the folder in the grid with new instance
-        items[newFolderIndex] = .folder(updatedFolder)
-        
-        draggedItem = nil
-    }
-    
-    private func reorderItems(draggedItem: AppGridItem, targetItem: AppGridItem) {
-        guard let draggedIndex = items.firstIndex(where: { $0.id == draggedItem.id }),
-              let targetIndex = items.firstIndex(where: { $0.id == targetItem.id }) else {
-            return
-        }
-        
-        let movedItem = items.remove(at: draggedIndex)
-        
-        let newIndex = draggedIndex < targetIndex ? targetIndex - 1 : targetIndex
-        items.insert(movedItem, at: newIndex)
-        
-        self.draggedItem = nil
+        items[targetIndex] = .folder(updatedFolder)
     }
 }

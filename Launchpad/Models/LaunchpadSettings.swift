@@ -3,17 +3,19 @@ import Foundation
 struct LaunchpadSettings: Codable, Equatable {
     var columns: Int
     var rows: Int
-    var iconSizeMultiplier: Double
+    var iconSize: Double
+    var dropDelay: Double
     
     static let defaultColumns = 7
     static let defaultRows = 5
-    static let defaultIconSizeMultiplier: Double = 0.6
+    static let defaultIconSize: Double = 0.6
+    static let defaultDropDelay: Double = 0.5
     
-    init(columns: Int = defaultColumns, rows: Int = defaultRows, iconSizeMultiplier: Double = defaultIconSizeMultiplier) {
-        // Ensure valid ranges
+    init(columns: Int = defaultColumns, rows: Int = defaultRows, iconSize: Double = defaultIconSize, dropDelay: Double = defaultDropDelay) {
         self.columns = max(4, min(12, columns))
         self.rows = max(3, min(10, rows))
-        self.iconSizeMultiplier = max(0.3, min(1.0, iconSizeMultiplier))
+        self.iconSize = max(0.3, min(1.0, iconSize))
+        self.dropDelay = max(0.0, min(3.0, dropDelay))
     }
     
     var appsPerPage: Int {
