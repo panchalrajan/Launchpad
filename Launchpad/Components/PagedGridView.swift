@@ -23,12 +23,7 @@ struct PagedGridView: View {
                 .background(VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow))
                 .ignoresSafeArea()
                 .contentShape(Rectangle())
-                .onTapGesture {
-                    NSApp.terminate(nil)
-                }
-
             VStack(spacing: 0) {
-                // Search bar
                 HStack {
                     Spacer()
                     SearchField(text: $searchText)
@@ -66,32 +61,32 @@ struct PagedGridView: View {
                         }
                     }
 
-                    // Page indicator dots
-                    HStack(spacing: 8) {
-                        ForEach(0..<pages.count, id: \.self) { index in
-                            Circle()
-                                .fill(index == currentPage ? Color.white : Color.gray.opacity(0.5))
-                                .frame(width: 8, height: 8)
-                                .scaleEffect(index == currentPage ? 1.2 : 1.0)
-                                .animation(.easeInOut(duration: 0.2), value: currentPage)
-                                .onTapGesture {
-                                    withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
-                                        currentPage = index
-                                    }
-                                }
-                        }
-                    }
-                    .padding(.top, 15)
-                    .padding(.bottom, 90)
+
 
                 } else {
-                    // Search results
                     GeometryReader { geo in
-                        let searchResults = filteredApps()
-                        SearchResultsView(apps: searchResults, columns: columns)
+                        SearchResultsView(apps: filteredApps(), columns: columns)
                             .frame(width: geo.size.width, height: geo.size.height)
                     }
                 }
+                
+                HStack(spacing: 12) {
+                    ForEach(0..<pages.count, id: \.self) { index in
+                        Circle()
+                            .fill(index == currentPage ? Color.white : Color.gray.opacity(0.5))
+                            .frame(width: 10, height: 10)
+                            .scaleEffect(index == currentPage ? 1.2 : 1.0)
+                            .animation(.easeInOut(duration: 0.2), value: currentPage)
+                            .onTapGesture {
+                                withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+                                    currentPage = index
+                                }
+                            }
+                    }
+                }
+                .padding(.top, 15)
+                .padding(.bottom, 90)
+                .opacity(searchText.isEmpty ? 1 : 0)
             }
         }
     }
@@ -123,12 +118,10 @@ struct PagedGridView: View {
     }
     
     private func handleScrollEvent(_ event: NSEvent) -> NSEvent? {
-        // If in search mode, allow vertical scrolling to pass through
         if !searchText.isEmpty {
             return event
         }
         
-        // Normal horizontal paging for main grid
         let absX = abs(event.scrollingDeltaX)
         let absY = abs(event.scrollingDeltaY)
         guard absX > absY, absX > 0 else { return event }
@@ -152,7 +145,6 @@ struct PagedGridView: View {
     }
     
     private func handleKeyEvent(_ event: NSEvent) -> NSEvent? {
-        // Don't handle arrow keys when in search mode - let them work in the search field
         if !searchText.isEmpty && (event.keyCode == 123 || event.keyCode == 124) {
             return event
         }
@@ -166,14 +158,14 @@ struct PagedGridView: View {
                 withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
                     currentPage = currentPage - 1
                 }
-                return nil // Consume the event
+                return nil
             }
         case 124: // Right arrow key
             if currentPage < pages.count - 1 {
                 withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
                     currentPage = currentPage + 1
                 }
-                return nil // Consume the event
+                return nil
             }
         default:
             break
@@ -186,5 +178,3 @@ struct PagedGridView: View {
         accumulatedScrollX = 0
     }
 }
-
-

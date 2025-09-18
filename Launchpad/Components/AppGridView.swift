@@ -10,18 +10,12 @@ struct AppGridView: View {
     var body: some View {
         GeometryReader { geo in
             let layout = LayoutMetrics(size: geo.size, columns: columns)
-            
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.fixed(layout.cellWidth), spacing: layout.spacing), count: columns),
-                    spacing: layout.spacing
-                ) {
+                    spacing: layout.spacing) {
                     ForEach(apps) { app in
-                        AppIconView(
-                            app: app,
-                            layout: layout,
-                            isDragged: draggedApp?.id == app.id
-                        )
+                        AppIconView(app: app, layout: layout, isDragged: draggedApp?.id == app.id)
                         .onDrag {
                             draggedApp = app
                             return NSItemProvider(object: app.id.uuidString as NSString)

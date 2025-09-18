@@ -11,7 +11,6 @@ struct SearchResultsView: View {
             let layout = LayoutMetrics(size: geo.size, columns: columns)
             
             if apps.isEmpty {
-                // No search results found
                 VStack {
                     Spacer()
                     Image(systemName: "magnifyingglass")
@@ -31,21 +30,7 @@ struct SearchResultsView: View {
                         spacing: layout.spacing
                     ) {
                         ForEach(apps) { app in
-                            VStack(spacing: 10) {
-                                Image(nsImage: app.icon)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: layout.iconSize, height: layout.iconSize)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                                Text(app.name)
-                                    .font(.system(size: layout.fontSize))
-                                    .multilineTextAlignment(.center)
-                                    .frame(width: layout.cellWidth)
-                            }
-                            .onTapGesture {
-                                NSWorkspace.shared.open(URL(fileURLWithPath: app.path))
-                                NSApp.terminate(nil)
-                            }
+                            AppIconView(app: app, layout: layout, isDragged: false)
                         }
                     }
                     .padding(.horizontal, layout.hPadding)
