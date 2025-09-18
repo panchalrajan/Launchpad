@@ -83,7 +83,7 @@ struct SettingsView: View {
                         in: 20...200,
                         step: 10
                     ) {
-                        Text("Icon Size")
+                
                     } minimumValueLabel: {
                         Text("10")
                             .font(.caption2)
@@ -106,7 +106,7 @@ struct SettingsView: View {
                         in: 0.0...3.0,
                         step: 0.1
                     ) {
-                        Text("Drop Delay")
+                        
                     } minimumValueLabel: {
                         Text("0.0s")
                             .font(.caption2)
