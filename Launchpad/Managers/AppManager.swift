@@ -5,28 +5,47 @@ final class AppManager {
     nonisolated(unsafe) static let shared = AppManager()
     
     private let userDefaults = UserDefaults.standard
-    private let appOrderKey = "LaunchpadAppOrder"
+    private let gridItemsKey = "LaunchpadGridItems"
     
-    func loadAppOrder() -> [AppInfo] {
+    func loadGridItems() -> [AppGridItem] {
         let apps = discoverApps()
         return loadFromUserDefaults(for: apps)
     }
     
-    func saveAppOrder(_ apps: [AppInfo]) {
-        let appList = apps.map { app in
-            [
-                "id": app.id.uuidString,
-                "name": app.name,
-                "path": app.path
-            ]
+    func saveGridItems(_ items: [AppGridItem]) {
+        let itemsData = items.map { item -> [String: Any] in
+            switch item {
+            case .app(let app):
+                return [
+                    "type": "app",
+                    "id": app.id.uuidString,
+                    "name": app.name,
+                    "path": app.path
+                ]
+            case .folder(let folder):
+                let appsData = folder.apps.map { app in
+                    [
+                        "id": app.id.uuidString,
+                        "name": app.name,
+                        "path": app.path
+                    ]
+                }
+                return [
+                    "type": "folder",
+                    "id": folder.id.uuidString,
+                    "name": folder.name,
+                    "color": folder.color.rawValue,
+                    "apps": appsData
+                ]
+            }
         }
         
-        userDefaults.set(appList, forKey: appOrderKey)
+        userDefaults.set(itemsData, forKey: gridItemsKey)
         userDefaults.synchronize()
     }
     
-    func clearAppOrder() {
-        userDefaults.removeObject(forKey: appOrderKey)
+    func clearGridItems() {
+        userDefaults.removeObject(forKey: gridItemsKey)
         userDefaults.synchronize()
     }
     
@@ -81,31 +100,60 @@ final class AppManager {
         return foundApps
     }
     
-    private func loadFromUserDefaults(for apps: [AppInfo]) -> [AppInfo] {
-        guard let savedData = userDefaults.array(forKey: appOrderKey) as? [[String: String]] else {
-            return apps
+    private func loadFromUserDefaults(for apps: [AppInfo]) -> [AppGridItem] {
+        guard let savedData = userDefaults.array(forKey: gridItemsKey) as? [[String: Any]] else {
+            // Convert apps to AppGridItems if no saved data
+            return apps.map { .app($0) }
         }
         
         // Create a dictionary for quick lookup of apps by path
         let appsByPath = Dictionary(uniqueKeysWithValues: apps.map { ($0.path, $0) })
         
-        var orderedApps: [AppInfo] = []
+        var gridItems: [AppGridItem] = []
         var usedPaths = Set<String>()
         
-        // First, add apps in saved order
-        for savedApp in savedData {
-            if let path = savedApp["path"],
-               let app = appsByPath[path] {
-                orderedApps.append(app)
-                usedPaths.insert(path)
+        // Reconstruct grid items from saved data
+        for itemData in savedData {
+            guard let type = itemData["type"] as? String else { continue }
+            
+            switch type {
+            case "app":
+                if let path = itemData["path"] as? String,
+                   let app = appsByPath[path] {
+                    gridItems.append(.app(app))
+                    usedPaths.insert(path)
+                }
+                
+            case "folder":
+                if let folderName = itemData["name"] as? String,
+                   let colorRaw = itemData["color"] as? String,
+                   let color = FolderColor(rawValue: colorRaw),
+                   let appsData = itemData["apps"] as? [[String: String]] {
+                    
+                    var folderApps: [AppInfo] = []
+                    for appData in appsData {
+                        if let path = appData["path"],
+                           let app = appsByPath[path] {
+                            folderApps.append(app)
+                            usedPaths.insert(path)
+                        }
+                    }
+                    
+                    if !folderApps.isEmpty {
+                        let folder = Folder(name: folderName, apps: folderApps, color: color)
+                        gridItems.append(.folder(folder))
+                    }
+                }
+            default:
+                break
             }
         }
         
-        // Then, add any new apps that weren't in the saved order
+        // Add any new apps that weren't in the saved data
         for app in apps where !usedPaths.contains(app.path) {
-            orderedApps.append(app)
+            gridItems.append(.app(app))
         }
         
-        return orderedApps
+        return gridItems
     }
 }

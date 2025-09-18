@@ -2,11 +2,13 @@ import SwiftUI
 import AppKit
 
 struct AppGridView: View {
-    @Binding var apps: [AppInfo]
+    @Binding var items: [AppGridItem]
     let columns: Int
     let iconSizeMultiplier: Double
     @State private var isVisible = false
-    @State private var draggedApp: AppInfo?
+    @State private var draggedItem: AppGridItem?
+    @State private var selectedFolder: Folder?
+    @State private var showingFolderDetail = false
     
     var body: some View {
         GeometryReader { geo in
@@ -15,17 +17,24 @@ struct AppGridView: View {
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.fixed(layout.cellWidth), spacing: layout.spacing), count: columns),
                     spacing: layout.spacing) {
-                        ForEach(apps) { app in
-                            AppIconView(app: app, layout: layout, isDragged: draggedApp?.id == app.id)
-                                .onDrag {
-                                    draggedApp = app
-                                    return NSItemProvider(object: app.id.uuidString as NSString)
-                                }
-                                .onDrop(of: [.text], delegate: AppDropDelegate(
-                                    app: app,
-                                    apps: $apps,
-                                    draggedApp: $draggedApp
-                                ))
+                        ForEach(items) { item in
+                            AppGridItemView(
+                                item: item,
+                                layout: layout,
+                                isDragged: draggedItem?.id == item.id
+                            )
+                            .onTapGesture {
+                                handleItemTap(item)
+                            }
+                            .onDrag {
+                                draggedItem = item
+                                return NSItemProvider(object: item.id.uuidString as NSString)
+                            }
+                            .onDrop(of: [.text], delegate: AppGridItemDropDelegate(
+                                targetItem: item,
+                                items: $items,
+                                draggedItem: $draggedItem
+                            ))
                         }
                     }
                     .padding(.horizontal, layout.hPadding)
@@ -37,5 +46,32 @@ struct AppGridView: View {
         .animation(.easeInOut(duration: 0.3), value: isVisible)
         .onAppear { isVisible = true }
         .onDisappear { isVisible = false }
+        .sheet(isPresented: $showingFolderDetail) {
+            if let folder = selectedFolder,
+               let index = items.firstIndex(where: { $0.id == folder.id }),
+               case .folder(let currentFolder) = items[index] {
+                FolderDetailView(
+                    folder: Binding(
+                        get: { currentFolder },
+                        set: { updatedFolder in
+                            items[index] = .folder(updatedFolder)
+                        }
+                    ),
+                    iconSizeMultiplier: iconSizeMultiplier
+                )
+            }
+        }
+    }
+    
+    private func handleItemTap(_ item: AppGridItem) {
+        switch item {
+        case .app(let app):
+            // Launch the app
+            NSWorkspace.shared.open(URL(fileURLWithPath: app.path))
+        case .folder(let folder):
+            // Open folder detail view
+            selectedFolder = folder
+            showingFolderDetail = true
+        }
     }
 }

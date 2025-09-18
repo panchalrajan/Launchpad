@@ -5,7 +5,7 @@ struct PagedGridView: View {
     let scrollDebounceInterval: TimeInterval = 0.8
     let scrollActivationThreshold: CGFloat = 80
     
-    @Binding var pages: [[AppInfo]]
+    @Binding var pages: [[AppGridItem]]
     var columns: Int
     var rows: Int
     var iconSizeMultiplier: Double
@@ -45,7 +45,7 @@ struct PagedGridView: View {
                         
                         HStack(spacing: 0) {
                             ForEach(0..<pages.count, id: \.self) { pageIndex in
-                                AppGridView(apps: $pages[pageIndex], columns: columns, iconSizeMultiplier: iconSizeMultiplier)
+                                AppGridView(items: $pages[pageIndex], columns: columns, iconSizeMultiplier: iconSizeMultiplier)
                                     .frame(width: geo.size.width, height: geo.size.height)
                             }
                         }.onTapGesture {
@@ -93,9 +93,30 @@ struct PagedGridView: View {
     }
     
     func filteredApps() -> [AppInfo] {
-        pages.flatMap { $0 }.filter {
-            $0.name.lowercased().contains(searchText.lowercased())
+        let allItems = pages.flatMap { $0 }
+        var matchingApps: [AppInfo] = []
+        
+        for item in allItems {
+            switch item {
+            case .app(let app):
+                if app.name.lowercased().contains(searchText.lowercased()) {
+                    matchingApps.append(app)
+                }
+            case .folder(let folder):
+                // Search folder name
+                if folder.name.lowercased().contains(searchText.lowercased()) {
+                    matchingApps.append(contentsOf: folder.apps)
+                } else {
+                    // Search apps within folder
+                    let matchingFolderApps = folder.apps.filter {
+                        $0.name.lowercased().contains(searchText.lowercased())
+                    }
+                    matchingApps.append(contentsOf: matchingFolderApps)
+                }
+            }
         }
+        
+        return matchingApps
     }
     
     private func setupEventMonitoring() {

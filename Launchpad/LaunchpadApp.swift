@@ -3,7 +3,7 @@ import SwiftUI
 @main
 struct LaunchpadApp: App {
     @StateObject private var settingsManager = SettingsManager.shared
-    @State private var appPages: [[AppInfo]] = []
+    @State private var gridItemPages: [[AppGridItem]] = []
     @State private var showSettings = false
     
     var body: some Scene {
@@ -11,20 +11,20 @@ struct LaunchpadApp: App {
             ZStack(alignment: .topTrailing) {
                 WindowAccessor()
                 PagedGridView(
-                    pages: $appPages,
+                    pages: $gridItemPages,
                     columns: settingsManager.settings.columns, 
                     rows: settingsManager.settings.rows,
                     iconSizeMultiplier: settingsManager.settings.iconSizeMultiplier
                 )
                 .ignoresSafeArea()
                 .onAppear {
-                    loadAppOrder()
+                    loadGridItems()
                 }
-                .onChange(of: appPages) { oldPages, newPages in
-                    saveAppOrder(from: newPages)
+                .onChange(of: gridItemPages) { oldPages, newPages in
+                    saveGridItems(from: newPages)
                 }
                 .onChange(of: settingsManager.settings) { oldSettings, newSettings in
-                    loadAppOrder()
+                    loadGridItems()
                 }
                 .sheet(isPresented: $showSettings) {
                     SettingsView()
@@ -42,13 +42,13 @@ struct LaunchpadApp: App {
         }
     }
     
-    private func loadAppOrder() {
-        let orderedApps = AppManager.shared.loadAppOrder()
-        appPages = orderedApps.chunked(into: settingsManager.settings.appsPerPage)
+    private func loadGridItems() {
+        let gridItems = AppManager.shared.loadGridItems()
+        gridItemPages = gridItems.chunked(into: settingsManager.settings.appsPerPage)
     }
     
-    private func saveAppOrder(from pages: [[AppInfo]]) {
-        let orderedApps = pages.flatMap { $0 }
-        AppManager.shared.saveAppOrder(orderedApps)
+    private func saveGridItems(from pages: [[AppGridItem]]) {
+        let gridItems = pages.flatMap { $0 }
+        AppManager.shared.saveGridItems(gridItems)
     }
 }
