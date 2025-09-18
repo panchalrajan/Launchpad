@@ -11,18 +11,7 @@ struct SearchResultsView: View {
             let layout = LayoutMetrics(size: geo.size, columns: columns)
             
             if apps.isEmpty {
-                VStack {
-                    Spacer()
-                    Image(systemName: "magnifyingglass")
-                        .font(.system(size: 48))
-                        .foregroundColor(.gray)
-                    Text("No apps found")
-                        .font(.title2)
-                        .foregroundColor(.gray)
-                        .padding(.top, 10)
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                EmptySearchView()
             } else {
                 ScrollView(.vertical, showsIndicators: false) {
                     LazyVGrid(

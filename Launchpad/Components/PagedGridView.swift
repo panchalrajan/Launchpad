@@ -23,7 +23,7 @@ struct PagedGridView: View {
                 .ignoresSafeArea()
                 .contentShape(Rectangle())
             VStack(spacing: 0) {
-                HStack {
+                HStack {             
                     Spacer()
                     SearchField(text: $searchText)
                         .padding(.horizontal, 6)

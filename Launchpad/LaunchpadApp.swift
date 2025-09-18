@@ -2,33 +2,51 @@ import SwiftUI
 
 @main
 struct LaunchpadApp: App {
-    private let columns = 8
-    private let rows = 6
-    
+    @StateObject private var settingsManager = SettingsManager.shared
     @State private var apps: [AppInfo] = []
     @State private var appPages: [[AppInfo]] = []
+    @State private var showSettings = false
     
     var body: some Scene {
         WindowGroup {
             ZStack(alignment: .topTrailing) {
                 WindowAccessor()
-                PagedGridView(pages: $appPages, columns: columns, rows: rows)
-                    .ignoresSafeArea()
-                    .onAppear {
-                        loadApps()
-                    }
-                    .onChange(of: appPages) { oldPages, newPages in
-                        saveAppOrder(from: newPages)
-                    }
+                PagedGridView(
+                    pages: $appPages,
+                    columns: settingsManager.settings.columns, 
+                    rows: settingsManager.settings.rows
+                )
+                .ignoresSafeArea()
+                .onAppear {
+                    loadApps()
+                }
+                .onChange(of: appPages) { oldPages, newPages in
+                    saveAppOrder(from: newPages)
+                }
+                .onChange(of: settingsManager.settings) { oldSettings, newSettings in
+                    loadApps()
+                }
+                .sheet(isPresented: $showSettings) {
+                    SettingsView()
+                        .interactiveDismissDisabled(false)
+                }
             }
         }
         .windowStyle(.hiddenTitleBar)
+        .commands {
+            CommandGroup(after: .appInfo) {
+                Button("Settings") {
+                    showSettings = true
+                }
+            }
+        }
     }
     
     private func loadApps() {
         apps = discoverApps()
         let orderedApps = AppOrderManager.shared.loadAppOrder(for: apps)
-        appPages = orderedApps.chunked(into: columns * rows)
+        let appsPerPage = settingsManager.settings.appsPerPage
+        appPages = orderedApps.chunked(into: appsPerPage)
     }
     
     private func saveAppOrder(from pages: [[AppInfo]]) {
