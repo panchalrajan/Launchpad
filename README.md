@@ -1,8 +1,8 @@
 # 🚀 LaunchPad
 
-A beautiful, modern macOS application launcher with glass morphism design, inspired by macOS Launchpad but with enhanced functionality and customization options.
+A beautiful, modern macOS application launcher with glass morphism design, inspired by macOS Launchpad but with enhanced functionality and customization options. As you might know Apple removed Launchpad in macOS 26, this app offers similar functionality. 
 
-![LaunchPad Main Interface](Documentation/Launchpad-1.png)
+If you like this project, and would like to have additional features, please support me:
 
 <a href="https://www.buymeacoffee.com/Waikiki.com" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
@@ -13,6 +13,8 @@ A beautiful, modern macOS application launcher with glass morphism design, inspi
 - **Smooth Animations** - Fluid transitions and spring animations throughout
 - **Adaptive Layout** - Responsive design that adapts to different screen sizes
 - **Visual Feedback** - Hover states, scaling effects, and interactive elements
+
+![LaunchPad Main Interface](Documentation/Launchpad-1.png)
 
 ### 🔍 **Smart Search**
 - **Real-time Search** - Instant filtering as you type
@@ -28,22 +30,14 @@ A beautiful, modern macOS application launcher with glass morphism design, inspi
 - **Persistent Order** - Your custom arrangement is automatically saved
 - **Smart Positioning** - Smooth animations when dropping apps
 
-### 📊 **Persistent Storage**
-- **UserDefaults Storage** - Lightweight storage for app arrangements
-- **Core Data Option** - Advanced database storage available
-- **Automatic Backup** - Order is preserved between app launches
-- **New App Handling** - Newly installed apps are automatically added
-
 ### 🎮 **Multiple Navigation Methods**
 
 #### ⌨️ **Keyboard Navigation**
 - `←/→` Arrow keys - Navigate between pages
 - `ESC` - Close application
-- Smart context awareness (doesn't interfere with search)
 
 #### 🖱️ **Mouse Navigation**
 - **Click Navigation** - Click page dots to jump to any page
-- **Arrow Buttons** - Previous/Next buttons with visual states
 - **Scroll Wheel** - Horizontal scrolling for page navigation
 - **Smart Scrolling** - Vertical scrolling in search mode
 
@@ -52,13 +46,26 @@ A beautiful, modern macOS application launcher with glass morphism design, inspi
 - **Drag to Rearrange** - Long press and drag to reorder
 - **Swipe Navigation** - Gesture-based page switching
 
-### 🔧 **Advanced Features**
-- **Auto-focus Search** - Search field automatically focused on launch
-- **Page Indicators** - Visual dots showing current page and total pages
-- **Boundary Detection** - Smart navigation that respects page limits
-- **Background Processing** - Non-blocking app discovery and loading
+## ⚙️ **Customizable Settings**
+
+LaunchPad offers comprehensive customization options to tailor your experience:
 
 ![Settings](Documentation/Launchpad-3.png)
+
+### 🔧 **Accessing Settings**
+- **Menu Bar**: `LaunchPad` → `Settings` (⌘,)
+
+### 📐 **Grid Layout Configuration**
+- **Columns**: Adjust from 4 to 12 columns per page
+- **Rows**: Configure from 3 to 10 rows per page  
+- **Apps per Page**: Automatically calculated (columns × rows)
+- **Real-time Preview**: See changes instantly in the grid
+
+### 🎨 **Icon Customization**
+- **Icon Size**: Fine-tune icon size from 30% to 100%
+- **Smooth Scaling**: Precise control with range slider
+- **Visual Feedback**: Real-time percentage display
+- **Optimal Sizing**: Default 60% provides perfect balance
 
 ## 🚀 Getting Started
 
@@ -68,30 +75,13 @@ A beautiful, modern macOS application launcher with glass morphism design, inspi
 3. Use drag & drop to customize your layout
 4. Your arrangement is automatically saved
 
-## 🎯 Usage
-
-### Basic Navigation
+### Usage
 - **Search**: Type to filter apps instantly
 - **Navigate Pages**: Use arrow keys, click dots, or scroll
 - **Launch Apps**: Click any app icon to open
 - **Rearrange**: Drag apps to new positions
 
-### Keyboard Shortcuts
-| Key | Action |
-|-----|--------|
-| `←` | Previous page |
-| `→` | Next page |
-| `ESC` | Close application |
-| `⌘⇧R` | Reset app order to default |
-
-### Advanced Features
-- **Persistent Layout**: Your custom arrangement is saved automatically
-- **New App Detection**: Newly installed apps appear at the end
-- **Search History**: Search field remembers focus state
-- **Visual Feedback**: All interactions provide smooth visual feedback
-
 ## 🙏 Acknowledgments
-
 - Inspired by macOS Launchpad
 - Glass morphism design trends
 - SwiftUI community examples
