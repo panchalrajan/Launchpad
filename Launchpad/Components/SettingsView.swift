@@ -8,6 +8,7 @@ struct SettingsView: View {
     @State private var tempRows: Int
     @State private var tempIconSize: Double
     @State private var tempDropDelay: Double
+    @Environment(\.colorScheme) private var colorScheme
     
     init() {
         let currentSettings = SettingsManager.shared.settings
@@ -147,8 +148,17 @@ struct SettingsView: View {
         }
         .padding(24)
         .frame(width: 350, height: 360)
-        .background(Color(NSColor.windowBackgroundColor))
+        .background(
+            colorScheme == .dark 
+            ? Color(NSColor.windowBackgroundColor)
+            : Color(NSColor.controlBackgroundColor)
+        )
         .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 10)
+        .shadow(
+            color: colorScheme == .dark 
+            ? Color.black.opacity(0.5) 
+            : Color.black.opacity(0.2), 
+            radius: 20, x: 0, y: 10
+        )
     }
 }

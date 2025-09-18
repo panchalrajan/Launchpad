@@ -10,6 +10,7 @@ struct AppGridView: View {
     @State private var isVisible = false
     @State private var draggedItem: AppGridItem?
     @State private var selectedFolder: Folder?
+    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         GeometryReader { geo in
@@ -56,14 +57,20 @@ struct AppGridView: View {
                         .ignoresSafeArea(.all)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            selectedFolder = nil
-                            isFolderOpen = false
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                isFolderOpen = false
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                selectedFolder = nil
+                                isFolderOpen = false
+                            }
                         }
                     
-                    VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow)
-                        .opacity(0.8)
+                    VisualEffectView(material: .fullScreenUI,  blendingMode: .behindWindow)
+                        .opacity(isFolderOpen ? 0.8 : 0)
                         .ignoresSafeArea(.all)
                         .allowsHitTesting(false)
+                        .animation(.easeInOut(duration: 0.4), value: isFolderOpen)
                     
                     FolderDetailView(
                         folder: Binding(
@@ -77,10 +84,30 @@ struct AppGridView: View {
                         columns: columns,
                         dropDelay: dropDelay,
                         onDismiss: {
-                            selectedFolder = nil
-                            isFolderOpen = false
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                isFolderOpen = false
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                selectedFolder = nil
+                                isFolderOpen = false
+                            }
                         }
                     )
+                    .scaleEffect(isFolderOpen ? 1.0 : 0.8)
+                    .opacity(isFolderOpen ? 1.0 : 0.0)
+                    .animation(.interpolatingSpring(stiffness: 300, damping: 30), value: isFolderOpen)
+                }
+                .onAppear {
+                    withAnimation(.easeInOut(duration: 0.4)) {
+                        isFolderOpen = true
+                    }
+                }
+            }
+        }
+        .onChange(of: isFolderOpen) { oldValue, newValue in
+            if newValue && !isFolderOpen {
+                withAnimation(.easeInOut(duration: 0.4)) {
+                    isFolderOpen = true
                 }
             }
         }
@@ -93,6 +120,9 @@ struct AppGridView: View {
         case .folder(let folder):
             selectedFolder = folder
             isFolderOpen = true
+            withAnimation(.interpolatingSpring(stiffness: 300, damping: 30)) {
+                isFolderOpen = true
+            }
         }
     }
 }

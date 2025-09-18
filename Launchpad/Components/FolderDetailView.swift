@@ -8,6 +8,8 @@ struct FolderDetailView: View {
     let onDismiss: () -> Void
     @State private var editingName = false
     @State private var draggedApp: AppInfo?
+    @State private var isAnimatingIn = false
+    @Environment(\.colorScheme) private var colorScheme
     
     init(folder: Binding<Folder>, iconSize: Double, columns: Int, dropDelay: Double, onDismiss: @escaping () -> Void) {
         self._folder = folder
@@ -34,7 +36,7 @@ struct FolderDetailView: View {
                     Text(folder.name)
                         .font(.title2)
                         .fontWeight(.semibold)
-                        .foregroundColor(.primary)
+                        .foregroundColor(colorScheme == .dark ? .white : .primary)
                         .onTapGesture {
                             editingName = true
                         }
@@ -80,9 +82,44 @@ struct FolderDetailView: View {
             }
         }
         .frame(width: 1000, height: 800)
-        .background(Color(NSColor.windowBackgroundColor).opacity(0.8))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.2), radius: 20, x: 0, y: 10)
+        .background(
+            ZStack {
+                VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
+                    .cornerRadius(16)
+                
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.ultraThinMaterial)
+                    .opacity(colorScheme == .dark ? 0.4 : 0.3)
+                
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(
+                        colorScheme == .dark 
+                        ? Color.white.opacity(0.15) 
+                        : Color.white.opacity(0.8), 
+                        lineWidth: 1
+                    )
+            }
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(
+            color: colorScheme == .dark 
+            ? Color.black.opacity(0.5) 
+            : Color.black.opacity(0.2), 
+            radius: 30, x: 0, y: 15
+        )
+        .shadow(
+            color: colorScheme == .dark 
+            ? Color.black.opacity(0.3) 
+            : Color.black.opacity(0.08), 
+            radius: 5, x: 0, y: 2
+        )
+        .scaleEffect(isAnimatingIn ? 1.0 : 0.9)
+        .opacity(isAnimatingIn ? 1.0 : 0.0)
+        .onAppear {
+            withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
+                isAnimatingIn = true
+            }
+        }
     }
     
     private func removeApp(_ app: AppInfo) {

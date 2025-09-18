@@ -18,6 +18,7 @@ struct PagedGridView: View {
     @State private var eventMonitor: Any?
     @State private var searchText = ""
     @State private var isFolderOpen = false
+    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         ZStack {
@@ -36,7 +37,12 @@ struct PagedGridView: View {
                             RoundedRectangle(cornerRadius: 24, style: .continuous)
                                 .fill(Color(NSColor.windowBackgroundColor).opacity(0.4))
                         )
-                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 3)
+                        .shadow(
+                            color: colorScheme == .dark 
+                            ? Color.black.opacity(0.2) 
+                            : Color.black.opacity(0.1), 
+                            radius: 10, x: 0, y: 3
+                        )
                     Spacer()
                 }
                 .padding(.top, 40)
@@ -71,7 +77,10 @@ struct PagedGridView: View {
                 HStack(spacing: 16) {
                     ForEach(0..<pages.count, id: \.self) { index in
                         Circle()
-                            .fill(index == currentPage ? Color.white : Color.gray.opacity(0.4))
+                            .fill(index == currentPage 
+                                  ? (colorScheme == .dark ? Color.white : Color.primary)
+                                  : (colorScheme == .dark ? Color.gray.opacity(0.4) : Color.gray.opacity(0.6))
+                            )
                             .frame(width: 8, height: 8)
                             .scaleEffect(index == currentPage ? 1.2 : 1.0)
                             .animation(.easeInOut(duration: 0.2), value: currentPage)
