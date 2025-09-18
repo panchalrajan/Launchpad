@@ -54,6 +54,7 @@ struct AppGridView: View {
                 ZStack {
                     Color.clear
                         .ignoresSafeArea(.all)
+                        .contentShape(Rectangle())
                         .onTapGesture {
                             selectedFolder = nil
                             isFolderOpen = false
