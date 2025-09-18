@@ -20,6 +20,12 @@ struct FolderIconView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(width: layout.iconSize * 0.2, height: layout.iconSize * 0.2)
                     }
+                    
+                    ForEach(folder.previewApps.count..<9, id: \.self) { _ in
+                         RoundedRectangle(cornerRadius: 4)
+                             .fill(Color.white.opacity(0))
+                             .frame(width: layout.iconSize * 0.2, height: layout.iconSize * 0.2)
+                     }
                 }
                 .frame(width: layout.iconSize * 0.7, height: layout.iconSize * 0.7)
             }
