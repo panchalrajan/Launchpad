@@ -70,6 +70,7 @@ struct AppGridView: View {
         case .app(let app):
             // Launch the app
             NSWorkspace.shared.open(URL(fileURLWithPath: app.path))
+            NSApp.terminate(nil)
         case .folder(let folder):
             // Open folder detail view
             selectedFolder = folder

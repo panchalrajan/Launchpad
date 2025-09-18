@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		628E29352E7B2AE9006DA22A /* Launchpad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Launchpad.app; path = "/Volumes/Samsung X5 SSD/Projektek/LaunchPad/build/Debug/Launchpad.app"; sourceTree = "<absolute>"; };
+		62592D982E7C03A8007A55C0 /* Launchpad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Launchpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,6 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				84DD945A2E08882300F7E52A /* Launchpad */,
+				62592D982E7C03A8007A55C0 /* Launchpad.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,7 +59,7 @@
 			packageProductDependencies = (
 			);
 			productName = LaunchBack;
-			productReference = 628E29352E7B2AE9006DA22A /* Launchpad.app */;
+			productReference = 62592D982E7C03A8007A55C0 /* Launchpad.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

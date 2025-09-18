@@ -61,14 +61,9 @@ struct PagedGridView: View {
                         .onDisappear {
                             cleanupEventMonitoring()
                         }
-                        
-                        
-                        
-                        
                     } else {
                         SearchResultsView(apps: filteredApps(), columns: columns, iconSizeMultiplier: iconSizeMultiplier)
                             .frame(width: geo.size.width, height: geo.size.height)
-                        
                     }
                 }
                 
