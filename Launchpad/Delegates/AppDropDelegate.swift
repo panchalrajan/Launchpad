@@ -62,7 +62,7 @@ struct AppDropDelegate: DropDelegate {
         }
         
         // Create a new folder with both apps
-        let folderName = suggestFolderName(for: [app1, app2])
+        let folderName = "New folder"
         let newFolder = Folder(name: folderName, apps: [app1, app2])
         
         // Insert the folder at the correct position
@@ -124,29 +124,5 @@ struct AppDropDelegate: DropDelegate {
         items.insert(movedItem, at: newIndex)
         
         self.draggedItem = nil
-    }
-    
-    private func suggestFolderName(for apps: [AppInfo]) -> String {
-        // Simple categorization based on app names
-        let appNames = apps.map { $0.name.lowercased() }
-        
-        let categories = [
-            "Utilities": ["terminal", "console", "activity monitor", "disk utility", "finder"],
-            "Development": ["xcode", "terminal", "git", "github", "vs code", "visual studio"],
-            "Graphics": ["photoshop", "illustrator", "sketch", "figma", "pixelmator"],
-            "Communication": ["slack", "discord", "teams", "zoom", "skype", "mail"],
-            "Entertainment": ["spotify", "music", "netflix", "youtube", "vlc"],
-            "Productivity": ["notes", "calendar", "reminders", "pages", "numbers", "keynote"]
-        ]
-        
-        for (category, keywords) in categories {
-            if appNames.contains(where: { appName in
-                keywords.contains { appName.contains($0) }
-            }) {
-                return category
-            }
-        }
-        
-        return "Folder"
     }
 }
