@@ -30,7 +30,7 @@ struct AppGridView: View {
                                 draggedItem = item
                                 return NSItemProvider(object: item.id.uuidString as NSString)
                             }
-                            .onDrop(of: [.text], delegate: AppGridItemDropDelegate(
+                            .onDrop(of: [.text], delegate: AppDropDelegate(
                                 targetItem: item,
                                 items: $items,
                                 draggedItem: $draggedItem

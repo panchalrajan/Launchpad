@@ -1,7 +1,7 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-struct AppGridItemDropDelegate: DropDelegate {
+struct AppDropDelegate: DropDelegate {
     let targetItem: AppGridItem
     @Binding var items: [AppGridItem]
     @Binding var draggedItem: AppGridItem?
