@@ -85,7 +85,7 @@ struct PagedGridView: View {
                     }
                 }
                 .padding(.top, 15)
-                .padding(.bottom, 90)
+                .padding(.bottom, 120)
                 .opacity(searchText.isEmpty ? 1 : 0)
             }
         }
