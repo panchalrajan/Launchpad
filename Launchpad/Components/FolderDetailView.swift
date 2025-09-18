@@ -81,7 +81,7 @@ struct FolderDetailView: View {
                 }
             }
         }
-        .frame(width: 1000, height: 800)
+        .frame(width: 1000, height: 700)
         .background(
             ZStack {
                 VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
@@ -90,14 +90,6 @@ struct FolderDetailView: View {
                 RoundedRectangle(cornerRadius: 16)
                     .fill(.ultraThinMaterial)
                     .opacity(colorScheme == .dark ? 0.4 : 0.3)
-                
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(
-                        colorScheme == .dark 
-                        ? Color.white.opacity(0.15) 
-                        : Color.white.opacity(0.8), 
-                        lineWidth: 1
-                    )
             }
         )
         .clipShape(RoundedRectangle(cornerRadius: 16))

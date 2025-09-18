@@ -25,6 +25,7 @@ struct AppGridView: View {
                                 layout: layout,
                                 isDragged: draggedItem?.id == item.id
                             )
+                            .opacity(isFolderOpen ? 0.2 : 1)
                             .onTapGesture {
                                 handleItemTap(item)
                             }
@@ -66,11 +67,7 @@ struct AppGridView: View {
                             }
                         }
                     
-                    VisualEffectView(material: .fullScreenUI,  blendingMode: .behindWindow)
-                        .opacity(isFolderOpen ? 0.8 : 0)
-                        .ignoresSafeArea(.all)
-                        .allowsHitTesting(false)
-                        .animation(.easeInOut(duration: 0.4), value: isFolderOpen)
+
                     
                     FolderDetailView(
                         folder: Binding(
