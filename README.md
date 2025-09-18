@@ -2,6 +2,8 @@
 
 A beautiful, modern macOS application launcher with glass morphism design, inspired by macOS Launchpad but with enhanced functionality and customization options.
 
+![LaunchPad Main Interface](Documentation/Launchpad-1.png)
+
 <a href="https://www.buymeacoffee.com/Waikiki.com" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 ## ✨ Features
@@ -17,6 +19,8 @@ A beautiful, modern macOS application launcher with glass morphism design, inspi
 - **Fuzzy Matching** - Find apps even with partial names
 - **Vertical Scrolling** - Smooth scrolling through search results
 - **No Results State** - Clean empty state with helpful messaging
+
+![Search Functionality](Documentation/Launchpad-2.png)
 
 ### 📱 **Drag & Drop**
 - **Rearrangeable Icons** - Drag and drop to customize app order
@@ -53,6 +57,10 @@ A beautiful, modern macOS application launcher with glass morphism design, inspi
 - **Page Indicators** - Visual dots showing current page and total pages
 - **Boundary Detection** - Smart navigation that respects page limits
 - **Background Processing** - Non-blocking app discovery and loading
+
+![Settings](Documentation/Launchpad-3.png)
+
+## 🚀 Getting Started
 
 ### First Launch
 1. The app will automatically scan `/Applications` and `/System/Applications`
