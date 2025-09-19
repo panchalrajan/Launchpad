@@ -14,6 +14,15 @@ enum AppGridItem: Identifiable, Equatable {
         }
     }
     
+    var page: Int {
+        switch self {
+        case .app(let app):
+            return app.page
+        case .folder(let folder):
+            return folder.page
+        }
+    }
+    
     var name: String {
         switch self {
         case .app(let app):

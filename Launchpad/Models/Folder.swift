@@ -4,11 +4,13 @@ import Foundation
 struct Folder: Identifiable, Equatable {
     let id = UUID()
     var name: String
+    var page: Int
     var apps: [AppInfo]
     
-    init(name: String, apps: [AppInfo]) {
+    init(name: String, page: Int, apps: [AppInfo]) {
         self.name = name
         self.apps = apps
+        self.page = page
     }
     
     var previewApps: [AppInfo] {

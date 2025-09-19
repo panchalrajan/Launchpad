@@ -1,10 +1,13 @@
+/*
 import SwiftUI
 
 struct GridDropDelegate: DropDelegate {
     let dropDelay: Double
     let targetItem: AppGridItem
+    let targetPage: Int
+    let appsPerPage: Int
     
-    @Binding var items: [AppGridItem]
+    @Binding var pages: [[AppGridItem]]
     @Binding var draggedItem: AppGridItem?
     
     func dropEntered(info: DropInfo) {
@@ -92,3 +95,4 @@ struct GridDropDelegate: DropDelegate {
         }
     }
 }
+*/

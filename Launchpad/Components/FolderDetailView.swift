@@ -116,7 +116,7 @@ struct FolderDetailView: View {
     
     private func removeApp(_ app: AppInfo) {
         let updatedApps = folder.apps.filter { $0.id != app.id }
-        let updatedFolder = Folder(name: folder.name, apps: updatedApps)
+        let updatedFolder = Folder(name: folder.name, page: folder.page, apps: updatedApps)
         folder = updatedFolder
     }
 }

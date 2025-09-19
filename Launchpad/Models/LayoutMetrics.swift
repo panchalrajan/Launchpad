@@ -19,7 +19,6 @@ struct LayoutMetrics {
         let totalSpacing = CGFloat(columns - 1) * spacing
         cellWidth = (size.width - (hPadding * 2) - totalSpacing) / CGFloat(columns)
         self.iconSize = iconSize
-        print("iconSize: \(self.iconSize)")
         fontSize = max(10, cellWidth * 0.04)
     }
 }

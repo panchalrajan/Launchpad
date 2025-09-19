@@ -7,9 +7,9 @@ final class AppManager {
     private let userDefaults = UserDefaults.standard
     private let gridItemsKey = "LaunchpadGridItems"
     
-    func loadGridItems() -> [AppGridItem] {
+    func loadGridItems(appsPerPage: Int = 35) -> [AppGridItem] {
         let apps = discoverApps()
-        return loadFromUserDefaults(for: apps)
+        return loadFromUserDefaults(for: apps, appsPerPage: appsPerPage)
     }
     
     func saveGridItems(_ items: [AppGridItem]) {
@@ -20,20 +20,23 @@ final class AppManager {
                     "type": "app",
                     "id": app.id.uuidString,
                     "name": app.name,
-                    "path": app.path
+                    "path": app.path,
+                    "page": app.page
                 ]
             case .folder(let folder):
                 let appsData = folder.apps.map { app in
                     [
                         "id": app.id.uuidString,
                         "name": app.name,
-                        "path": app.path
+                        "path": app.path,
+                        "page": app.page
                     ]
                 }
                 return [
                     "type": "folder",
                     "id": folder.id.uuidString,
                     "name": folder.name,
+                    "page": folder.page,
                     "apps": appsData
                 ]
             }
@@ -77,7 +80,7 @@ final class AppManager {
                 let appName = item.replacingOccurrences(of: ".app", with: "")
                 let icon = NSWorkspace.shared.icon(forFile: fullPath)
                 icon.size = NSSize(width: 64, height: 64)
-                foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath))
+                foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath, page: 0))
             } else {
                 // Check if it's a directory and recursively search it
                 var isDirectory: ObjCBool = false
@@ -99,7 +102,7 @@ final class AppManager {
         return foundApps
     }
     
-    private func loadFromUserDefaults(for apps: [AppInfo]) -> [AppGridItem] {
+    private func loadFromUserDefaults(for apps: [AppInfo], appsPerPage: Int) -> [AppGridItem] {
         guard let savedData = userDefaults.array(forKey: gridItemsKey) as? [[String: Any]] else {
             // Convert apps to AppGridItems if no saved data
             return apps.map { .app($0) }
@@ -118,26 +121,31 @@ final class AppManager {
             switch type {
             case "app":
                 if let path = itemData["path"] as? String,
-                   let app = appsByPath[path] {
-                    gridItems.append(.app(app))
+                   let baseApp = appsByPath[path] {
+                    let savedPage = itemData["page"] as? Int ?? 0
+                    let appWithPage = AppInfo(name: baseApp.name, icon: baseApp.icon, path: baseApp.path, page: savedPage)
+                    gridItems.append(.app(appWithPage))
                     usedPaths.insert(path)
                 }
                 
             case "folder":
                 if let folderName = itemData["name"] as? String,
-                   let appsData = itemData["apps"] as? [[String: String]] {
+                   let appsData = itemData["apps"] as? [[String: Any]] {
                     
                     var folderApps: [AppInfo] = []
                     for appData in appsData {
-                        if let path = appData["path"],
-                           let app = appsByPath[path] {
-                            folderApps.append(app)
+                        if let path = appData["path"] as? String,
+                           let baseApp = appsByPath[path] {
+                            let savedPage = appData["page"] as? Int ?? 0
+                            let appWithPage = AppInfo(name: baseApp.name, icon: baseApp.icon, path: baseApp.path, page: savedPage)
+                            folderApps.append(appWithPage)
                             usedPaths.insert(path)
                         }
                     }
                     
                     if !folderApps.isEmpty {
-                        let folder = Folder(name: folderName, apps: folderApps)
+                        let savedPage = itemData["page"] as? Int ?? 0
+                        let folder = Folder(name: folderName, page: savedPage, apps: folderApps)
                         gridItems.append(.folder(folder))
                     }
                 }
@@ -146,11 +154,52 @@ final class AppManager {
             }
         }
         
-        // Add any new apps that weren't in the saved data
+        // Add any new apps that weren't in the saved data with page 0
         for app in apps where !usedPaths.contains(app.path) {
-            gridItems.append(.app(app))
+            let appWithPage = AppInfo(name: app.name, icon: app.icon, path: app.path, page: 0)
+            gridItems.append(.app(appWithPage))
         }
         
-        return gridItems
+        // Redistribute items if any page exceeds the limit
+        return redistributeItemsToFitPageLimits(gridItems, appsPerPage: appsPerPage)
+    }
+    
+    private func redistributeItemsToFitPageLimits(_ items: [AppGridItem], appsPerPage: Int) -> [AppGridItem] {
+        // Group items by page
+        let groupedByPage = Dictionary(grouping: items) { $0.page }
+        var redistributedItems: [AppGridItem] = []
+        
+        // Process pages in order
+        let sortedPages = groupedByPage.keys.sorted()
+        var currentPage = 0
+        var itemsOnCurrentPage = 0
+        
+        for pageNum in sortedPages {
+            let pageItems = groupedByPage[pageNum] ?? []
+            
+            for item in pageItems {
+                // If current page is full, move to next page
+                if itemsOnCurrentPage >= appsPerPage {
+                    currentPage += 1
+                    itemsOnCurrentPage = 0
+                }
+                
+                // Update item's page if needed
+                var updatedItem = item
+                if item.page != currentPage {
+                    switch item {
+                    case .app(let app):
+                        updatedItem = .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: currentPage))
+                    case .folder(let folder):
+                        updatedItem = .folder(Folder(name: folder.name, page: currentPage, apps: folder.apps))
+                    }
+                }
+                
+                redistributedItems.append(updatedItem)
+                itemsOnCurrentPage += 1
+            }
+        }
+        
+        return redistributedItems
     }
 }

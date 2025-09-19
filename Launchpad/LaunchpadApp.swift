@@ -48,8 +48,31 @@ struct LaunchpadApp: App {
     }
     
     private func loadGridItems() {
-        let gridItems = AppManager.shared.loadGridItems()
-        gridItemPages = gridItems.chunked(into: settingsManager.settings.appsPerPage)
+        let gridItems = AppManager.shared.loadGridItems(appsPerPage: settingsManager.settings.appsPerPage)
+        gridItemPages = groupItemsByPage(gridItems)
+    }
+    
+    private func groupItemsByPage(_ items: [AppGridItem]) -> [[AppGridItem]] {
+        // Group items by their page attribute
+        let groupedDict = Dictionary(grouping: items) { $0.page }
+        
+        // Convert to sorted array of pages
+        let maxPage = groupedDict.keys.max() ?? 0
+        var pages: [[AppGridItem]] = []
+        
+        for pageIndex in 0...maxPage {
+            let pageItems = groupedDict[pageIndex] ?? []
+            if !pageItems.isEmpty || pageIndex == 0 {
+                pages.append(pageItems)
+            }
+        }
+        
+        // Ensure we have at least one page
+        if pages.isEmpty {
+            pages.append([])
+        }
+        
+        return pages
     }
     
     private func saveGridItems(from pages: [[AppGridItem]]) {
@@ -59,6 +82,6 @@ struct LaunchpadApp: App {
     
     private func clearGridItems() {
         AppManager.shared.clearGridItems()
-        loadGridItems()
+        NSApp.terminate(nil)
     }
 }

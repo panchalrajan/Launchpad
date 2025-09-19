@@ -19,7 +19,7 @@ struct FolderDropDelegate: DropDelegate {
                     var newApps = self.folder.apps
                     newApps.move(fromOffsets: IndexSet([fromIndex]), toOffset: DropAnimationHelper.calculateMoveOffset(fromIndex: fromIndex, toIndex: toIndex))
                     
-                    let updatedFolder = Folder(name: self.folder.name, apps: newApps)
+                                        let updatedFolder = Folder(name: self.folder.name, page: self.folder.page, apps: newApps)
                     self.folder = updatedFolder
                 }
             }
