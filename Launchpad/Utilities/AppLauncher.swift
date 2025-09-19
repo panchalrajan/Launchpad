@@ -6,10 +6,10 @@ final class AppLauncher {
     
     @MainActor func launch(_ path: String) {
         NSWorkspace.shared.open(URL(fileURLWithPath: path))
-        NSApp.terminate(nil)
+        NSApp.hide(nil)
     }
     
     @MainActor func exit() {
-        //NSApp.terminate(nil)
+        //NSApp.hide(nil)
     }
 }
