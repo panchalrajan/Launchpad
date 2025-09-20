@@ -7,12 +7,12 @@ struct AppIconView: View {
     let isDragged: Bool
     
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 8) {
             Image(nsImage: app.icon)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: layout.iconSize, height: layout.iconSize)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
             
             Text(app.name)
                 .font(.system(size: layout.fontSize))
@@ -23,12 +23,7 @@ struct AppIconView: View {
         .opacity(isDragged ? 0.5 : 1.0)
         .animation(.easeInOut(duration: 0.2), value: isDragged)
         .onTapGesture {
-            launchApp()
+            AppLauncher.shared.launch(app.path)
         }
-    }
-    
-    private func launchApp() {
-        NSWorkspace.shared.open(URL(fileURLWithPath: app.path))
-        NSApp.terminate(nil)
     }
 }

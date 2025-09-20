@@ -5,17 +5,22 @@ struct PagedGridView: View {
     let scrollDebounceInterval: TimeInterval = 0.8
     let scrollActivationThreshold: CGFloat = 80
     
-    @Binding var pages: [[AppInfo]]
+    @Binding var pages: [[AppGridItem]]
     var columns: Int
     var rows: Int
-    var iconSizeMultiplier: Double
+    var iconSize: Double
+    var dropDelay: Double
     @GestureState private var dragOffset: CGFloat = 0
     @State private var currentPage = 0
-    @State private var isDragging = false
+    @State private var draggedPage = 0
     @State private var lastScrollTime = Date.distantPast
     @State private var accumulatedScrollX: CGFloat = 0
     @State private var eventMonitor: Any?
     @State private var searchText = ""
+    @State private var isFolderOpen = false
+    @State private var draggedItem: AppGridItem?
+    @State private var selectedFolder: Folder?
+    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         ZStack {
@@ -24,32 +29,29 @@ struct PagedGridView: View {
                 .ignoresSafeArea()
                 .contentShape(Rectangle())
             VStack(spacing: 0) {
-                HStack {             
-                    Spacer()
-                    SearchField(text: $searchText)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .frame(width: 480, height: 36)
-                        .background(
-                            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                                .fill(Color(NSColor.windowBackgroundColor).opacity(0.6))
-                        )
-                        .shadow(color: Color.black.opacity(0.18), radius: 10, x: 0, y: 3)
-                    Spacer()
-                }
-                .padding(.top, 40)
-                .padding(.bottom, 20)
+                SearchBarView(searchText: $searchText)
                 
                 GeometryReader { geo in
                     if searchText.isEmpty {
-                        
                         HStack(spacing: 0) {
                             ForEach(0..<pages.count, id: \.self) { pageIndex in
-                                AppGridView(apps: $pages[pageIndex], columns: columns, iconSizeMultiplier: iconSizeMultiplier)
-                                    .frame(width: geo.size.width, height: geo.size.height)
+                                SinglePageView(
+                                    pageItems: pages[pageIndex],
+                                    pageIndex: pageIndex,
+                                    columns: columns,
+                                    rows: rows,
+                                    iconSize: iconSize,
+                                    dropDelay: dropDelay,
+                                    isFolderOpen: isFolderOpen,
+                                    pages: $pages,
+                                    draggedItem: $draggedItem,
+                                    onItemTap: handleItemTap
+                                )
+                                .frame(width: geo.size.width, height: geo.size.height)
                             }
-                        }.onTapGesture {
-                            NSApp.terminate(nil)
+                        }
+                        .onTapGesture {
+                            AppLauncher.shared.exit()
                         }
                         .offset(x: -CGFloat(currentPage) * geo.size.width)
                         .offset(x: dragOffset)
@@ -60,42 +62,89 @@ struct PagedGridView: View {
                         .onDisappear {
                             cleanupEventMonitoring()
                         }
-                        
-                        
-                        
-                        
+                        .overlay {
+                            FolderOverlayView(
+                                pages: $pages,
+                                selectedFolder: $selectedFolder,
+                                isFolderOpen: $isFolderOpen,
+                                iconSize: iconSize,
+                                columns: columns,
+                                dropDelay: dropDelay
+                            )
+                            
+                            
+                        }
                     } else {
-                        SearchResultsView(apps: filteredApps(), columns: columns, iconSizeMultiplier: iconSizeMultiplier)
+                        SearchResultsView(apps: filteredApps(), columns: columns, iconSize: iconSize)
                             .frame(width: geo.size.width, height: geo.size.height)
-                        
                     }
                 }
                 
-                HStack(spacing: 12) {
-                    ForEach(0..<pages.count, id: \.self) { index in
-                        Circle()
-                            .fill(index == currentPage ? Color.white : Color.gray.opacity(0.5))
-                            .frame(width: 10, height: 10)
-                            .scaleEffect(index == currentPage ? 1.2 : 1.0)
-                            .animation(.easeInOut(duration: 0.2), value: currentPage)
-                            .onTapGesture {
-                                withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
-                                    currentPage = index
-                                }
-                            }
-                    }
+                PageIndicatorView(
+                    pageCount: pages.count,
+                    currentPage: $currentPage,
+                    isFolderOpen: isFolderOpen,
+                    searchText: searchText
+                )
+            }                      .overlay {
+                if !isFolderOpen && pages.count > 1 {
+                    PageDropZonesView(
+                        currentPage: currentPage,
+                        totalPages: pages.count,
+                        draggedItem: draggedItem,
+                        onNavigateLeft: navigateToPreviousPage,
+                        onNavigateRight: navigateToNextPage
+                    )
                 }
-                .padding(.top, 15)
-                .padding(.bottom, 120)
-                .opacity(searchText.isEmpty ? 1 : 0)
+            }
+        }
+        .onChange(of: isFolderOpen) { oldValue, newValue in
+            if newValue && !isFolderOpen {
+                withAnimation(.easeInOut(duration: 0.4)) {
+                    isFolderOpen = true
+                }
+            }
+        }
+    }
+    
+    private func handleItemTap(_ item: AppGridItem) {
+        switch item {
+        case .app(_):
+            return
+        case .folder(let folder):
+            selectedFolder = folder
+            isFolderOpen = true
+            withAnimation(.interpolatingSpring(stiffness: 300, damping: 30)) {
+                isFolderOpen = true
             }
         }
     }
     
     func filteredApps() -> [AppInfo] {
-        pages.flatMap { $0 }.filter {
-            $0.name.lowercased().contains(searchText.lowercased())
+        let allItems = pages.flatMap { $0 }
+        var matchingApps: [AppInfo] = []
+        
+        for item in allItems {
+            switch item {
+            case .app(let app):
+                if app.name.lowercased().contains(searchText.lowercased()) {
+                    matchingApps.append(app)
+                }
+            case .folder(let folder):
+                // Search folder name
+                if folder.name.lowercased().contains(searchText.lowercased()) {
+                    matchingApps.append(contentsOf: folder.apps)
+                } else {
+                    // Search apps within folder
+                    let matchingFolderApps = folder.apps.filter {
+                        $0.name.lowercased().contains(searchText.lowercased())
+                    }
+                    matchingApps.append(contentsOf: matchingFolderApps)
+                }
+            }
         }
+        
+        return matchingApps
     }
     
     private func setupEventMonitoring() {
@@ -119,7 +168,7 @@ struct PagedGridView: View {
     }
     
     private func handleScrollEvent(_ event: NSEvent) -> NSEvent? {
-        if !searchText.isEmpty {
+        if !searchText.isEmpty || isFolderOpen {
             return event
         }
         
@@ -146,13 +195,13 @@ struct PagedGridView: View {
     }
     
     private func handleKeyEvent(_ event: NSEvent) -> NSEvent? {
-        if !searchText.isEmpty && (event.keyCode == 123 || event.keyCode == 124) {
+        if (!searchText.isEmpty && (event.keyCode == 123 || event.keyCode == 124)) || isFolderOpen {
             return event
         }
         
         switch event.keyCode {
         case 53: // ESC key
-            NSApp.terminate(nil)
+            AppLauncher.shared.exit()
             return nil
         case 123: // Left arrow key
             if currentPage > 0 {
@@ -177,5 +226,21 @@ struct PagedGridView: View {
     private func resetScrollState(at time: Date) {
         lastScrollTime = time
         accumulatedScrollX = 0
+    }
+    
+    private func navigateToPreviousPage() {
+        guard currentPage > 0 else { return }
+        
+        withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+            currentPage = currentPage - 1
+        }
+    }
+    
+    private func navigateToNextPage() {
+        guard currentPage < pages.count - 1 else { return }
+        
+        withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+            currentPage = currentPage + 1
+        }
     }
 }

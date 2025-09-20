@@ -15,6 +15,7 @@ struct SearchField: NSViewRepresentable {
         searchField.bezelStyle = .roundedBezel
         searchField.placeholderString = "Search"
         searchField.font = NSFont.systemFont(ofSize: 16, weight: .regular)
+        searchField.alphaValue = 0.7
         
         if let cell = searchField.cell as? NSSearchFieldCell {
             cell.controlSize = .large
