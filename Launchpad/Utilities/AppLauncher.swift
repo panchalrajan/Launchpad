@@ -10,6 +10,6 @@ final class AppLauncher {
     }
     
     @MainActor func exit() {
-        //NSApp.hide(nil)
+        NSApp.hide(nil)
     }
 }

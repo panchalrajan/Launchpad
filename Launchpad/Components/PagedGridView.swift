@@ -71,15 +71,8 @@ struct PagedGridView: View {
                                 columns: columns,
                                 dropDelay: dropDelay
                             )
-                        }
-                        .overlay {
-                            PageDropZonesView(
-                                currentPage: currentPage,
-                                totalPages: pages.count,
-                                draggedItem: draggedItem,
-                                onNavigateLeft: navigateToPreviousPage,
-                                onNavigateRight: navigateToNextPage
-                            )
+                            
+                            
                         }
                     } else {
                         SearchResultsView(apps: filteredApps(), columns: columns, iconSize: iconSize)
@@ -93,6 +86,16 @@ struct PagedGridView: View {
                     isFolderOpen: isFolderOpen,
                     searchText: searchText
                 )
+            }                      .overlay {
+                if !isFolderOpen && pages.count > 1 {
+                    PageDropZonesView(
+                        currentPage: currentPage,
+                        totalPages: pages.count,
+                        draggedItem: draggedItem,
+                        onNavigateLeft: navigateToPreviousPage,
+                        onNavigateRight: navigateToNextPage
+                    )
+                }
             }
         }
         .onChange(of: isFolderOpen) { oldValue, newValue in

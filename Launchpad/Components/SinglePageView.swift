@@ -24,7 +24,7 @@ struct SinglePageView: View {
                     columns: GridLayoutUtility.createGridColumns(count: columns, cellWidth: layout.cellWidth, spacing: layout.spacing),
                     spacing: layout.spacing) {
                         ForEach(pageItems) { item in
-                            AppGridItemView(
+                            GridItemView(
                                 item: item,
                                 layout: layout,
                                 isDragged: draggedItem?.id == item.id

@@ -1,7 +1,7 @@
 import SwiftUI
 import AppKit
 
-struct AppGridItemView: View {
+struct GridItemView: View {
     let item: AppGridItem
     let layout: LayoutMetrics
     let isDragged: Bool
