@@ -20,6 +20,7 @@ struct LaunchpadApp: App {
                 .ignoresSafeArea()
                 .onAppear {
                     loadGridItems()
+                    setupNotificationObserver()
                 }
                 .onChange(of: gridItemPages) { oldPages, newPages in
                     saveGridItems(from: newPages)
@@ -54,10 +55,9 @@ struct LaunchpadApp: App {
     
     private func groupItemsByPage(_ items: [AppGridItem]) -> [[AppGridItem]] {
         let groupedDict = Dictionary(grouping: items) { $0.page }
-        
         let maxPage = groupedDict.keys.max() ?? 0
-        var pages: [[AppGridItem]] = []
         
+        var pages: [[AppGridItem]] = []
         for pageIndex in 0...maxPage {
             let pageItems = groupedDict[pageIndex] ?? []
             if !pageItems.isEmpty || pageIndex == 0 {
@@ -65,20 +65,27 @@ struct LaunchpadApp: App {
             }
         }
         
-        if pages.isEmpty {
-            pages.append([])
-        }
-        
-        return pages
+        return pages.isEmpty ? [[]] : pages
     }
     
     private func saveGridItems(from pages: [[AppGridItem]]) {
-        let gridItems = pages.flatMap { $0 }
-        AppManager.shared.saveGridItems(gridItems)
+        AppManager.shared.saveGridItems(pages.flatMap { $0 })
     }
     
     private func clearGridItems() {
         AppManager.shared.clearGridItems()
         NSApp.terminate(nil)
+    }
+    
+    private func setupNotificationObserver() {
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name("SaveGridItems"),
+            object: nil,
+            queue: .main
+        ) { _ in
+            Task { @MainActor in
+                saveGridItems(from: gridItemPages)
+            }
+        }
     }
 }

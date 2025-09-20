@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 struct FolderDetailView: View {
     @Binding var folder: Folder
@@ -6,6 +7,7 @@ struct FolderDetailView: View {
     let columns: Int
     let dropDelay: Double
     let onDismiss: () -> Void
+    
     @State private var editingName = false
     @State private var draggedApp: AppInfo?
     @State private var isAnimatingIn = false
@@ -31,6 +33,7 @@ struct FolderDetailView: View {
                         .multilineTextAlignment(.center)
                         .onSubmit {
                             editingName = false
+                            saveFolderChanges()
                         }
                 } else {
                     Text(folder.name)
@@ -94,15 +97,11 @@ struct FolderDetailView: View {
         )
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(
-            color: colorScheme == .dark 
-            ? Color.black.opacity(0.5) 
-            : Color.black.opacity(0.2), 
+            color: colorScheme == .dark ? .black.opacity(0.5) : .black.opacity(0.2), 
             radius: 30, x: 0, y: 15
         )
         .shadow(
-            color: colorScheme == .dark 
-            ? Color.black.opacity(0.3) 
-            : Color.black.opacity(0.08), 
+            color: colorScheme == .dark ? .black.opacity(0.3) : .black.opacity(0.08), 
             radius: 5, x: 0, y: 2
         )
         .scaleEffect(isAnimatingIn ? 1.0 : 0.9)
@@ -115,8 +114,17 @@ struct FolderDetailView: View {
     }
     
     private func removeApp(_ app: AppInfo) {
-        let updatedApps = folder.apps.filter { $0.id != app.id }
-        let updatedFolder = Folder(name: folder.name, page: folder.page, apps: updatedApps)
-        folder = updatedFolder
+        folder = Folder(
+            name: folder.name,
+            page: folder.page,
+            apps: folder.apps.filter { $0.id != app.id }
+        )
+        saveFolderChanges()
+    }
+    
+    private func saveFolderChanges() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: NSNotification.Name("SaveGridItems"), object: nil)
+        }
     }
 }
