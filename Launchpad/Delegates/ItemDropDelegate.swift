@@ -23,7 +23,9 @@ struct ItemDropDelegate: DropDelegate {
         if draggedItem.page == targetItem.page {
             
             DropAnimationHelper.performDelayedMove(delay: dropDelay) {
-                pages[draggedItem.page].move(fromOffsets: IndexSet([fromIndex]), toOffset: DropAnimationHelper.calculateMoveOffset(fromIndex: fromIndex, toIndex: toIndex))
+                if(self.draggedItem != nil) {
+                    pages[draggedItem.page].move(fromOffsets: IndexSet([fromIndex]), toOffset: DropAnimationHelper.calculateMoveOffset(fromIndex: fromIndex, toIndex: toIndex))
+                }
             }
         } else {
             let item = pages[draggedItem.page][fromIndex]
@@ -102,7 +104,68 @@ struct ItemDropDelegate: DropDelegate {
         return true
     }
     
-    private func createFolder(with app1: AppInfo, and app2: AppInfo) {}
+    private func createFolder(with app1: AppInfo, and app2: AppInfo) {
+        // Find the indices of both apps
+        guard let app1Index = pages[app1.page].firstIndex(where: {
+            if case .app(let app) = $0 { return app.id == app1.id }
+            return false
+        }),
+              let app2Index = pages[app2.page].firstIndex(where: {
+                  if case .app(let app) = $0 { return app.id == app2.id }
+                  return false
+              }) else { return }
+        
+        // Create the new folder
+        let folderName = "New Folder"
+        let folder = Folder(name: folderName, page: app2.page, apps: [app1, app2])
+        let folderItem = AppGridItem.folder(folder)
+        let adjustedTargetIndex = app1Index < app2Index ? app2Index - 1 : app2Index
+        // Remove both apps from their current positions
+        // Remove in descending order to maintain correct indices
+        if app1.page == app2.page {
+            let indices = [app1Index, app2Index].sorted(by: >)
+            for index in indices {
+                pages[app1.page].remove(at: index)
+            }
+            // Insert folder at the position of the target app (app2)
+            let insertIndex = min(adjustedTargetIndex, pages[app2.page].count)
+            pages[app2.page].insert(folderItem, at: insertIndex)
+        } else {
+            // Apps are on different pages
+            pages[app1.page].remove(at: app1Index)
+            pages[app2.page].remove(at: app2Index)
+            
+            // Insert folder at the position of the target app (app2)
+            let insertIndex = min(app2Index, pages[app2.page].count)
+            pages[app2.page].insert(folderItem, at: insertIndex)
+        }
+        
+        self.draggedItem = nil
+    }
     
-    private func addAppToFolder(_ app: AppInfo, targetFolder: Folder) {}
+    private func addAppToFolder(_ app: AppInfo, targetFolder: Folder) {
+        // Find the indices of the app and folder
+        guard let appIndex = pages[app.page].firstIndex(where: {
+            if case .app(let appInfo) = $0 { return appInfo.id == app.id }
+            return false
+        }),
+              let folderIndex = pages[targetFolder.page].firstIndex(where: {
+                  if case .folder(let folderInfo) = $0 { return folderInfo.id == targetFolder.id }
+                  return false
+              }) else { return }
+        
+        // Create updated folder with the new app
+        var updatedApps = targetFolder.apps
+        updatedApps.append(app)
+        let updatedFolder = Folder(name: targetFolder.name, page: targetFolder.page, apps: updatedApps)
+        let updatedFolderItem = AppGridItem.folder(updatedFolder)
+        
+        // Remove the app from its current position
+        pages[app.page].remove(at: appIndex)
+        
+        // Update the folder in its position
+        pages[targetFolder.page][folderIndex] = updatedFolderItem
+        
+        self.draggedItem = nil
+    }
 }
