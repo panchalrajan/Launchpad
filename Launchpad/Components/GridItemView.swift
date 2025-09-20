@@ -1,5 +1,4 @@
 import SwiftUI
-import AppKit
 
 struct GridItemView: View {
     let item: AppGridItem

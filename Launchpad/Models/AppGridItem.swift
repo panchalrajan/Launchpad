@@ -1,5 +1,4 @@
 import SwiftUI
-import Foundation
 
 enum AppGridItem: Identifiable, Equatable {
     case app(AppInfo)

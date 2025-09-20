@@ -1,5 +1,4 @@
 import SwiftUI
-import Foundation
 
 struct Folder: Identifiable, Equatable {
     let id = UUID()
