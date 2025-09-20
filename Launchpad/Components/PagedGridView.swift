@@ -30,7 +30,6 @@ struct PagedGridView: View {
                 .contentShape(Rectangle())
             VStack(spacing: 0) {
                 SearchBarView(searchText: $searchText)
-                
                 GeometryReader { geo in
                     if searchText.isEmpty {
                         HStack(spacing: 0) {
@@ -62,18 +61,6 @@ struct PagedGridView: View {
                         .onDisappear {
                             cleanupEventMonitoring()
                         }
-                        .overlay {
-                            FolderOverlayView(
-                                pages: $pages,
-                                selectedFolder: $selectedFolder,
-                                isFolderOpen: $isFolderOpen,
-                                iconSize: iconSize,
-                                columns: columns,
-                                dropDelay: dropDelay
-                            )
-                            
-                            
-                        }
                     } else {
                         SearchResultsView(apps: filteredApps(), columns: columns, iconSize: iconSize)
                             .frame(width: geo.size.width, height: geo.size.height)
@@ -86,8 +73,19 @@ struct PagedGridView: View {
                     isFolderOpen: isFolderOpen,
                     searchText: searchText
                 )
-            }                      .overlay {
-                if !isFolderOpen && pages.count > 1 {
+            }
+            .overlay {
+                if  isFolderOpen {
+                    FolderOverlayView(
+                        pages: $pages,
+                        selectedFolder: $selectedFolder,
+                        isFolderOpen: $isFolderOpen,
+                        iconSize: iconSize,
+                        columns: columns,
+                        dropDelay: dropDelay
+                    )
+                    
+                } else{
                     PageDropZonesView(
                         currentPage: currentPage,
                         totalPages: pages.count,
