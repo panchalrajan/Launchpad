@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		62592D982E7C03A8007A55C0 /* Launchpad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Launchpad.app; path = /Users/pappkristof/Developer/LaunchPad/build/Debug/Launchpad.app; sourceTree = "<absolute>"; };
+		6D43C0B02E7F05EF00259811 /* Launchpad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Launchpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,6 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				84DD945A2E08882300F7E52A /* Launchpad */,
+				6D43C0B02E7F05EF00259811 /* Launchpad.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,7 +59,7 @@
 			packageProductDependencies = (
 			);
 			productName = LaunchBack;
-			productReference = 62592D982E7C03A8007A55C0 /* Launchpad.app */;
+			productReference = 6D43C0B02E7F05EF00259811 /* Launchpad.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
