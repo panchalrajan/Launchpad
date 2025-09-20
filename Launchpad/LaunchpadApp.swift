@@ -53,10 +53,8 @@ struct LaunchpadApp: App {
     }
     
     private func groupItemsByPage(_ items: [AppGridItem]) -> [[AppGridItem]] {
-        // Group items by their page attribute
         let groupedDict = Dictionary(grouping: items) { $0.page }
         
-        // Convert to sorted array of pages
         let maxPage = groupedDict.keys.max() ?? 0
         var pages: [[AppGridItem]] = []
         
@@ -67,7 +65,6 @@ struct LaunchpadApp: App {
             }
         }
         
-        // Ensure we have at least one page
         if pages.isEmpty {
             pages.append([])
         }

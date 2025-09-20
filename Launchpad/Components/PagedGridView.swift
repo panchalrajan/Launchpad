@@ -131,11 +131,9 @@ struct PagedGridView: View {
                     matchingApps.append(app)
                 }
             case .folder(let folder):
-                // Search folder name
                 if folder.name.lowercased().contains(searchText.lowercased()) {
                     matchingApps.append(contentsOf: folder.apps)
                 } else {
-                    // Search apps within folder
                     let matchingFolderApps = folder.apps.filter {
                         $0.name.lowercased().contains(searchText.lowercased())
                     }
