@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct AppInfo: Identifiable, Equatable {
     let id = UUID()

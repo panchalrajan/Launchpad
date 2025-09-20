@@ -1,5 +1,4 @@
 import SwiftUI
-import AppKit
 
 struct SearchResultsView: View {
     let apps: [AppInfo]
