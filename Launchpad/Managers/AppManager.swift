@@ -1,15 +1,17 @@
 import Foundation
 import AppKit
 
+@MainActor
 final class AppManager {
-    nonisolated(unsafe) static let shared = AppManager()
+    static let shared = AppManager()
     
     private let userDefaults = UserDefaults.standard
     private let gridItemsKey = "LaunchpadGridItems"
     
-    func loadGridItems(appsPerPage: Int = 35) -> [AppGridItem] {
+    func loadGridItems(appsPerPage: Int = 35) -> [[AppGridItem]] {
         let apps = discoverApps()
-        return loadFromUserDefaults(for: apps, appsPerPage: appsPerPage)
+        let gridItems = loadFromUserDefaults(for: apps, appsPerPage: appsPerPage)
+        return groupItemsByPage(gridItems)
     }
     
     func saveGridItems(_ items: [AppGridItem]) {
@@ -160,6 +162,21 @@ final class AppManager {
         let savedPage = itemData["page"] as? Int ?? 0
         let folder = Folder(name: folderName, page: savedPage, apps: folderApps)
         return .folder(folder)
+    }
+    
+    private func groupItemsByPage(_ items: [AppGridItem]) -> [[AppGridItem]] {
+        let groupedDict = Dictionary(grouping: items) { $0.page }
+        let maxPage = groupedDict.keys.max() ?? 0
+        
+        var pages: [[AppGridItem]] = []
+        for pageIndex in 0...maxPage {
+            let pageItems = groupedDict[pageIndex] ?? []
+            if !pageItems.isEmpty || pageIndex == 0 {
+                pages.append(pageItems)
+            }
+        }
+        
+        return pages.isEmpty ? [[]] : pages
     }
     
     private func redistributeItemsToFitPageLimits(_ items: [AppGridItem], appsPerPage: Int) -> [AppGridItem] {

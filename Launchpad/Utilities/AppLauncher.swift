@@ -1,15 +1,16 @@
 import Foundation
 import AppKit
 
+@MainActor
 final class AppLauncher {
-    @MainActor static let shared = AppLauncher()
+    static let shared = AppLauncher()
     
-    @MainActor func launch(_ path: String) {
+    func launch(_ path: String) {
         NSWorkspace.shared.open(URL(fileURLWithPath: path))
         NSApp.hide(nil)
     }
     
-    @MainActor func exit() {
+    func exit() {
         NSApp.hide(nil)
     }
 }

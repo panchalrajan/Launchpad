@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @ObservedObject var settingsManager = SettingsManager.shared
+    var settingsManager = SettingsManager.shared
     @Environment(\.dismiss) private var dismiss
     
     @State private var tempColumns: Int

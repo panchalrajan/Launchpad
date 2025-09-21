@@ -2,7 +2,8 @@ import SwiftUI
 
 @main
 struct LaunchpadApp: App {
-    @StateObject private var settingsManager = SettingsManager.shared
+    private var settingsManager = SettingsManager.shared
+    private var appManager = AppManager.shared
     @State private var gridItemPages: [[AppGridItem]] = []
     @State private var showSettings = false
     
@@ -12,7 +13,7 @@ struct LaunchpadApp: App {
                 WindowAccessor()
                 PagedGridView(
                     pages: $gridItemPages,
-                    columns: settingsManager.settings.columns, 
+                    columns: settingsManager.settings.columns,
                     rows: settingsManager.settings.rows,
                     iconSize: settingsManager.settings.iconSize,
                     dropDelay: settingsManager.settings.dropDelay
@@ -49,31 +50,15 @@ struct LaunchpadApp: App {
     }
     
     private func loadGridItems() {
-        let gridItems = AppManager.shared.loadGridItems(appsPerPage: settingsManager.settings.appsPerPage)
-        gridItemPages = groupItemsByPage(gridItems)
-    }
-    
-    private func groupItemsByPage(_ items: [AppGridItem]) -> [[AppGridItem]] {
-        let groupedDict = Dictionary(grouping: items) { $0.page }
-        let maxPage = groupedDict.keys.max() ?? 0
-        
-        var pages: [[AppGridItem]] = []
-        for pageIndex in 0...maxPage {
-            let pageItems = groupedDict[pageIndex] ?? []
-            if !pageItems.isEmpty || pageIndex == 0 {
-                pages.append(pageItems)
-            }
-        }
-        
-        return pages.isEmpty ? [[]] : pages
+        gridItemPages = appManager.loadGridItems(appsPerPage: settingsManager.settings.appsPerPage)
     }
     
     private func saveGridItems(from pages: [[AppGridItem]]) {
-        AppManager.shared.saveGridItems(pages.flatMap { $0 })
+        appManager.saveGridItems(pages.flatMap { $0 })
     }
     
     private func clearGridItems() {
-        AppManager.shared.clearGridItems()
+        appManager.clearGridItems()
         NSApp.terminate(nil)
     }
     
