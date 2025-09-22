@@ -6,10 +6,8 @@ struct PagedGridView: View {
   let scrollActivationThreshold: CGFloat = 80
 
   @Binding var pages: [[AppGridItem]]
-  var columns: Int
-  var rows: Int
-  var iconSize: Double
-  var dropDelay: Double
+  var settings: LaunchpadSettings
+    
   @GestureState private var dragOffset: CGFloat = 0
   @State private var currentPage = 0
   @State private var draggedPage = 0
@@ -35,15 +33,12 @@ struct PagedGridView: View {
             HStack(spacing: 0) {
               ForEach(0..<pages.count, id: \.self) { pageIndex in
                 SinglePageView(
-                  pageItems: pages[pageIndex],
+                    pages: $pages,
+                    draggedItem: $draggedItem,
                   pageIndex: pageIndex,
-                  columns: columns,
-                  rows: rows,
-                  iconSize: iconSize,
-                  dropDelay: dropDelay,
+                  settings: settings,
                   isFolderOpen: isFolderOpen,
-                  pages: $pages,
-                  draggedItem: $draggedItem,
+
                   onItemTap: handleItemTap
                 )
                 .frame(width: geo.size.width, height: geo.size.height)
@@ -59,7 +54,7 @@ struct PagedGridView: View {
               cleanupEventMonitoring()
             }
           } else {
-            SearchResultsView(apps: filteredApps(), columns: columns, iconSize: iconSize)
+              SearchResultsView(apps: filteredApps(), settings: settings)
               .frame(width: geo.size.width, height: geo.size.height)
           }
         }
@@ -77,10 +72,7 @@ struct PagedGridView: View {
             pages: $pages,
             selectedFolder: $selectedFolder,
             isFolderOpen: $isFolderOpen,
-            iconSize: iconSize,
-            columns: columns,
-            rows: rows,
-            dropDelay: dropDelay
+            settings: settings
           )
         } else {
           PageDropZonesView(
@@ -194,7 +186,7 @@ struct PagedGridView: View {
 
     switch event.keyCode {
     case 53:  // ESC key
-      AppLauncher.shared.exit()
+      AppLauncher.exit()
       return nil
     case 123:  // Left arrow key
       if currentPage > 0 {

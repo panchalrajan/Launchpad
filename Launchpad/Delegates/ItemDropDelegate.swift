@@ -24,10 +24,7 @@ struct ItemDropDelegate: DropDelegate {
 
       DropAnimationHelper.performDelayedMove(delay: dropDelay) {
         if self.draggedItem != nil {
-          pages[draggedItem.page].move(
-            fromOffsets: IndexSet([fromIndex]),
-            toOffset: DropAnimationHelper.calculateMoveOffset(
-              fromIndex: fromIndex, toIndex: toIndex))
+          pages[draggedItem.page].move( fromOffsets: IndexSet([fromIndex]), toOffset: DropAnimationHelper.calculateMoveOffset(fromIndex: fromIndex, toIndex: toIndex))
         }
       }
     } else {
@@ -37,10 +34,10 @@ struct ItemDropDelegate: DropDelegate {
       switch item {
       case .app(let app):
         updatedItem = .app(
-          AppInfo(id: app.id, name: app.name, icon: app.icon, path: app.path, page: targetPage))
+          AppInfo(name: app.name, icon: app.icon, path: app.path, page: targetPage))
       case .folder(let folder):
         updatedItem = .folder(
-          Folder(id: folder.id, name: folder.name, page: targetPage, apps: folder.apps))
+          Folder(name: folder.name, page: targetPage, apps: folder.apps))
       }
 
       pages[targetItem.page].insert(updatedItem, at: toIndex)
@@ -75,7 +72,7 @@ struct ItemDropDelegate: DropDelegate {
     }
 
     self.draggedItem = nil
-    appManager.savePages(pages: pages)
+      appManager.pages = pages
     return true
   }
 
@@ -89,10 +86,10 @@ struct ItemDropDelegate: DropDelegate {
       switch overflowItem {
       case .app(let app):
         updatedOverflowItem = .app(
-          AppInfo(id: app.id, name: app.name, icon: app.icon, path: app.path, page: nextPageNumber))
+          AppInfo(name: app.name, icon: app.icon, path: app.path, page: nextPageNumber))
       case .folder(let folder):
         updatedOverflowItem = .folder(
-          Folder(id: folder.id, name: folder.name, page: nextPageNumber, apps: folder.apps))
+          Folder(name: folder.name, page: nextPageNumber, apps: folder.apps))
       }
 
       if nextPageNumber >= pages.count {
@@ -151,8 +148,7 @@ struct ItemDropDelegate: DropDelegate {
 
     var updatedApps = targetFolder.apps
     updatedApps.append(app)
-    let updatedFolder = Folder(
-      id: targetFolder.id, name: targetFolder.name, page: targetFolder.page, apps: updatedApps)
+    let updatedFolder = Folder(name: targetFolder.name, page: targetFolder.page, apps: updatedApps)
     let updatedFolderItem = AppGridItem.folder(updatedFolder)
 
     pages[targetFolder.page][folderIndex] = updatedFolderItem

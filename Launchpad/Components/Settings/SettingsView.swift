@@ -8,6 +8,8 @@ struct SettingsView: View {
   @State private var tempRows: Int
   @State private var tempIconSize: Double
   @State private var tempDropDelay: Double
+  @State private var tempFolderColumns: Int
+  @State private var tempFolderRows: Int
   @Environment(\.colorScheme) private var colorScheme
 
   init() {
@@ -16,6 +18,8 @@ struct SettingsView: View {
     _tempRows = State(initialValue: currentSettings.rows)
     _tempIconSize = State(initialValue: currentSettings.iconSize)
     _tempDropDelay = State(initialValue: currentSettings.dropDelay)
+    _tempFolderColumns = State(initialValue: currentSettings.folderColumns)
+    _tempFolderRows = State(initialValue: currentSettings.folderRows)
   }
 
   var body: some View {
@@ -67,6 +71,44 @@ struct SettingsView: View {
                   .frame(width: 60)
 
                 Stepper("", value: $tempRows, in: 2...15)
+                  .labelsHidden()
+              }
+            }
+          }
+        }
+
+        VStack(alignment: .leading, spacing: 12) {
+          Text("Folder Grid Layout")
+            .font(.headline)
+            .foregroundColor(.primary)
+
+          HStack(spacing: 24) {
+            VStack(alignment: .leading, spacing: 8) {
+              Text("Folder Columns")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+
+              HStack {
+                TextField("Folder Columns", value: $tempFolderColumns, format: .number)
+                  .textFieldStyle(.roundedBorder)
+                  .frame(width: 60)
+
+                Stepper("", value: $tempFolderColumns, in: 2...8)
+                  .labelsHidden()
+              }
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+              Text("Folder Rows")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+
+              HStack {
+                TextField("Folder Rows", value: $tempFolderRows, format: .number)
+                  .textFieldStyle(.roundedBorder)
+                  .frame(width: 60)
+
+                Stepper("", value: $tempFolderRows, in: 1...6)
                   .labelsHidden()
               }
             }
@@ -128,6 +170,8 @@ struct SettingsView: View {
           tempRows = LaunchpadSettings.defaultRows
           tempIconSize = LaunchpadSettings.defaultIconSize
           tempDropDelay = LaunchpadSettings.defaultDropDelay
+          tempFolderColumns = LaunchpadSettings.defaultFolderColumns
+          tempFolderRows = LaunchpadSettings.defaultFolderRows
         }
         .buttonStyle(.bordered)
 
@@ -140,7 +184,12 @@ struct SettingsView: View {
 
         Button("Apply") {
           settingsManager.updateSettings(
-            columns: tempColumns, rows: tempRows, iconSize: tempIconSize, dropDelay: tempDropDelay)
+            columns: tempColumns,
+            rows: tempRows,
+            iconSize: tempIconSize,
+            dropDelay: tempDropDelay,
+            folderColumns: tempFolderColumns,
+            folderRows: tempFolderRows)
           dismiss()
         }
         .buttonStyle(.borderedProminent)

@@ -6,11 +6,7 @@ struct FolderOverlayView: View {
   @Binding var pages: [[AppGridItem]]
   @Binding var selectedFolder: Folder?
   @Binding var isFolderOpen: Bool
-
-  let iconSize: Double
-  let columns: Int
-  let rows: Int
-  let dropDelay: Double
+  let settings: LaunchpadSettings
 
   var body: some View {
     Group {
@@ -21,9 +17,7 @@ struct FolderOverlayView: View {
               get: { selectedFolder! },
               set: { selectedFolder = $0 }
             ),
-            iconSize: iconSize,
-            columns: columns,
-            dropDelay: dropDelay,
+            settings: settings,
             onSave: {
               saveFolder()
             },
@@ -53,17 +47,12 @@ struct FolderOverlayView: View {
       let itemIndex = pages[pageIndex].firstIndex(where: { $0.id == selectedFolder.id })
     else { return }
 
-    let newFolder = Folder(
-      id: selectedFolder.id,
-      name: selectedFolder.name,
-      page: selectedFolder.page,
-      apps: selectedFolder.apps
-    )
+    let newFolder = Folder(name: selectedFolder.name, page: selectedFolder.page, apps: selectedFolder.apps)
 
     selectedFolder = newFolder
     pages[pageIndex][itemIndex] = .folder(newFolder)
 
-    appManager.savePages(pages: pages)
+    appManager.pages = pages
 
     self.selectedFolder = nil
     isFolderOpen = false
@@ -75,16 +64,15 @@ struct FolderOverlayView: View {
         page.contains(where: { $0.id == selectedFolder.id })
       })
     else { return }
-    let updatedApp = AppInfo(
-      id: app.id, name: app.name, icon: app.icon, path: app.path, page: pageIndex)
+    let updatedApp = AppInfo(name: app.name, icon: app.icon, path: app.path, page: pageIndex)
     pages[pageIndex].append(.app(updatedApp))
 
     handlePageOverflow(targetPageIndex: pageIndex)
-    appManager.savePages(pages: pages)
+      appManager.pages = pages
   }
 
   private func handlePageOverflow(targetPageIndex: Int) {
-    while pages[targetPageIndex].count > columns * rows {
+      while pages[targetPageIndex].count > settings.appsPerPage {
       let overflowItem = pages[targetPageIndex].removeLast()
 
       let nextPageNumber = targetPageIndex + 1
@@ -93,10 +81,10 @@ struct FolderOverlayView: View {
       switch overflowItem {
       case .app(let app):
         updatedOverflowItem = .app(
-          AppInfo(id: app.id, name: app.name, icon: app.icon, path: app.path, page: nextPageNumber))
+          AppInfo(name: app.name, icon: app.icon, path: app.path, page: nextPageNumber))
       case .folder(let folder):
         updatedOverflowItem = .folder(
-          Folder(id: folder.id, name: folder.name, page: nextPageNumber, apps: folder.apps))
+          Folder(name: folder.name, page: nextPageNumber, apps: folder.apps))
       }
 
       if nextPageNumber >= pages.count {

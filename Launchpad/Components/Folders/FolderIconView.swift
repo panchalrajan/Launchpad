@@ -37,15 +37,11 @@ struct FolderIconView: View {
       .frame(width: layout.iconSize, height: layout.iconSize)
       .clipShape(RoundedRectangle(cornerRadius: 16))
       .shadow(
-        color: colorScheme == .dark
-          ? Color.black.opacity(0.6)
-          : Color.black.opacity(0.3),
+        color: colorScheme == .dark ? Color.black.opacity(0.6) : Color.black.opacity(0.3),
         radius: 12, x: 0, y: 6
       )
       .shadow(
-        color: colorScheme == .dark
-          ? Color.black.opacity(0.3)
-          : Color.black.opacity(0.1),
+        color: colorScheme == .dark ? Color.black.opacity(0.3) : Color.black.opacity(0.1),
         radius: 4, x: 0, y: 2
       )
 
