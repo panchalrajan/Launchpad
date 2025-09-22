@@ -78,7 +78,7 @@ struct SettingsView: View {
         }
 
         VStack(alignment: .leading, spacing: 12) {
-          Text("Folder Grid Layout")
+          Text("Folder Layout")
             .font(.headline)
             .foregroundColor(.primary)
 
@@ -196,11 +196,9 @@ struct SettingsView: View {
       }
     }
     .padding(24)
-    .frame(width: 350, height: 360)
+    .frame(width: 350, height: 400)
     .background(
-      colorScheme == .dark
-        ? Color(NSColor.windowBackgroundColor)
-        : Color(NSColor.controlBackgroundColor)
+      colorScheme == .dark ? Color(NSColor.windowBackgroundColor): Color(NSColor.controlBackgroundColor)
     )
     .cornerRadius(16)
     .shadow(
