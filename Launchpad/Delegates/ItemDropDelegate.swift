@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ItemDropDelegate: DropDelegate {
+    private let appManager = AppManager.shared
     let dropDelay: Double
     let targetItem: AppGridItem
     let targetPage: Int
@@ -24,6 +25,10 @@ struct ItemDropDelegate: DropDelegate {
             DropAnimationHelper.performDelayedMove(delay: dropDelay) {
                 if self.draggedItem != nil {
                     pages[draggedItem.page].move(fromOffsets: IndexSet([fromIndex]), toOffset: DropAnimationHelper.calculateMoveOffset(fromIndex: fromIndex, toIndex: toIndex))
+                    
+                    DispatchQueue.main.async {
+                        self.appManager.saveGridItems(items: self.pages.flatMap { $0 })
+                    }
                 }
             }
         } else {
@@ -43,6 +48,11 @@ struct ItemDropDelegate: DropDelegate {
             self.draggedItem = updatedItem
             
             handlePageOverflow(targetPageIndex: targetItem.page)
+            
+            // Save after cross-page move
+            DispatchQueue.main.async {
+                self.appManager.saveGridItems(items: self.pages.flatMap { $0 })
+            }
         }
     }
     
@@ -89,6 +99,9 @@ struct ItemDropDelegate: DropDelegate {
             default:
                 break
             }
+            
+            // Save after any folder operations
+            appManager.saveGridItems(items: pages.flatMap { $0 })
         }
         
         self.draggedItem = nil
@@ -110,23 +123,19 @@ struct ItemDropDelegate: DropDelegate {
         let folderItem = AppGridItem.folder(folder)
         let adjustedTargetIndex = app1Index < app2Index ? app2Index - 1 : app2Index
         
-        do {
-            if app1.page == app2.page {
-                let indices = [app1Index, app2Index].sorted(by: >)
-                for index in indices {
-                    pages[app1.page].remove(at: index)
-                }
-                let insertIndex = min(adjustedTargetIndex, pages[app2.page].count)
-                pages[app2.page].insert(folderItem, at: insertIndex)
-            } else {
-                pages[app1.page].remove(at: app1Index)
-                pages[app2.page].remove(at: app2Index)
-                
-                let insertIndex = min(app2Index, pages[app2.page].count)
-                pages[app2.page].insert(folderItem, at: insertIndex)
+        if app1.page == app2.page {
+            let indices = [app1Index, app2Index].sorted(by: >)
+            for index in indices {
+                pages[app1.page].remove(at: index)
             }
-        } catch {
-            print("Failed to create folder from \(app1.name) and \(app2.name)")
+            let insertIndex = min(adjustedTargetIndex, pages[app2.page].count)
+            pages[app2.page].insert(folderItem, at: insertIndex)
+        } else {
+            pages[app1.page].remove(at: app1Index)
+            pages[app2.page].remove(at: app2Index)
+            
+            let insertIndex = min(app2Index, pages[app2.page].count)
+            pages[app2.page].insert(folderItem, at: insertIndex)
         }
         self.draggedItem = nil
     }
@@ -141,17 +150,13 @@ struct ItemDropDelegate: DropDelegate {
                   return false
               }) else { return }
         
-        do {
-            var updatedApps = targetFolder.apps
-            updatedApps.append(app)
-            let updatedFolder = Folder(name: targetFolder.name, page: targetFolder.page, apps: updatedApps)
-            let updatedFolderItem = AppGridItem.folder(updatedFolder)
-            
-            pages[app.page].remove(at: appIndex)
-            pages[targetFolder.page][folderIndex] = updatedFolderItem
-        } catch {
-            print("Failed to add app to folder: \(app.name)")
-        }
+        var updatedApps = targetFolder.apps
+        updatedApps.append(app)
+        let updatedFolder = Folder(name: targetFolder.name, page: targetFolder.page, apps: updatedApps)
+        let updatedFolderItem = AppGridItem.folder(updatedFolder)
+        
+        pages[app.page].remove(at: appIndex)
+        pages[targetFolder.page][folderIndex] = updatedFolderItem
         
         self.draggedItem = nil
     }

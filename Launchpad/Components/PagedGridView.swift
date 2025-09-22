@@ -68,8 +68,8 @@ struct PagedGridView: View {
                 }
                 
                 PageIndicatorView(
-                    pageCount: pages.count,
                     currentPage: $currentPage,
+                    pageCount: pages.count,
                     isFolderOpen: isFolderOpen,
                     searchText: searchText
                 )

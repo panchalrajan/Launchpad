@@ -27,25 +27,25 @@ struct FolderIconView: View {
                     }
                     
                     ForEach(folder.previewApps.count..<9, id: \.self) { _ in
-                         RoundedRectangle(cornerRadius: 4)
-                             .fill(Color.clear)
-                             .frame(width: layout.iconSize * 0.2, height: layout.iconSize * 0.2)
-                     }
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.clear)
+                            .frame(width: layout.iconSize * 0.2, height: layout.iconSize * 0.2)
+                    }
                 }
                 .frame(width: layout.iconSize * 0.6, height: layout.iconSize * 0.6)
             }
             .frame(width: layout.iconSize, height: layout.iconSize)
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .shadow(
-                color: colorScheme == .dark 
-                ? Color.black.opacity(0.6) 
+                color: colorScheme == .dark
+                ? Color.black.opacity(0.6)
                 : Color.black.opacity(0.3), 
                 radius: 12, x: 0, y: 6
             )
             .shadow(
-                color: colorScheme == .dark 
-                ? Color.black.opacity(0.3) 
-                : Color.black.opacity(0.1), 
+                color: colorScheme == .dark
+                ? Color.black.opacity(0.3)
+                : Color.black.opacity(0.1),
                 radius: 4, x: 0, y: 2
             )
             

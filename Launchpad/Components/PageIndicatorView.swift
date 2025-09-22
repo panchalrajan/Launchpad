@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct PageIndicatorView: View {
-    let pageCount: Int
     @Binding var currentPage: Int
+    let pageCount: Int
     let isFolderOpen: Bool
     let searchText: String
     @Environment(\.colorScheme) private var colorScheme
@@ -11,7 +11,7 @@ struct PageIndicatorView: View {
         HStack(spacing: 16) {
             ForEach(0..<pageCount, id: \.self) { index in
                 Circle()
-                    .fill(index == currentPage 
+                    .fill(index == currentPage
                           ? (colorScheme == .dark ? Color.white : Color.primary)
                           : (colorScheme == .dark ? Color.gray.opacity(0.4) : Color.gray.opacity(0.6))
                     )

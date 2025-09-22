@@ -8,7 +8,7 @@ struct AppInfo: Identifiable, Equatable {
     let path: String
     var page: Int
     
-    init(name: String, icon: NSImage, path: String, page: Int) {
+    init(name: String, icon: NSImage, path: String, page: Int = 0) {
         self.name = name
         self.icon = icon
         self.path = path

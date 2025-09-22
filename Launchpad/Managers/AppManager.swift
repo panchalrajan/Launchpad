@@ -8,13 +8,13 @@ final class AppManager {
     private let userDefaults = UserDefaults.standard
     private let gridItemsKey = "LaunchpadGridItems"
     
-    func loadGridItems(appsPerPage: Int = 35) -> [[AppGridItem]] {
+    func loadGridItems(appsPerPage: Int) -> [[AppGridItem]] {
         let apps = discoverApps()
-        let gridItems = loadFromUserDefaults(for: apps, appsPerPage: appsPerPage)
-        return groupItemsByPage(gridItems)
+        let gridItems = loadLayoutFromUserDefaults(for: apps)
+        return groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
     }
     
-    func saveGridItems(_ items: [AppGridItem]) {
+    func saveGridItems(items: [AppGridItem]) {
         let itemsData = items.map { item -> [String: Any] in
             switch item {
             case .app(let app):
@@ -69,7 +69,7 @@ final class AppManager {
               let contents = try? FileManager.default.contentsOfDirectory(atPath: directory) else { return [] }
         
         var foundApps: [AppInfo] = []
-        let skipDirectories = [".Trash", "Utilities", ".DS_Store", ".localized"]
+        
         
         for item in contents {
             let fullPath = "\(directory)/\(item)"
@@ -79,29 +79,30 @@ final class AppManager {
                 let appName = getLocalizedAppName(for: URL(fileURLWithPath: fullPath), fallbackName: fallbackName)
                 let icon = NSWorkspace.shared.icon(forFile: fullPath)
                 icon.size = NSSize(width: 64, height: 64)
-                foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath, page: 0))
-            } else if shouldSearchDirectory(item, at: fullPath, skipDirectories: skipDirectories) {
-                foundApps.append(contentsOf: discoverAppsRecursively(
-                    in: fullPath,
-                    maxDepth: maxDepth,
-                    currentDepth: currentDepth + 1
-                ))
+                foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath))
+            } else if shouldSearchDirectory(item: item, at: fullPath) {
+                foundApps.append(contentsOf: discoverAppsRecursively(in: fullPath,maxDepth: maxDepth,currentDepth: currentDepth + 1
+                                                                    ))
             }
         }
         
         return foundApps
     }
     
-    private func shouldSearchDirectory(_ item: String, at path: String, skipDirectories: [String]) -> Bool {
+    private func shouldSearchDirectory(item: String, at path: String) -> Bool {
+        let skipDirectories = [".Trash", ".DS_Store", ".localized"]
         var isDirectory: ObjCBool = false
+        
         return FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) &&
         isDirectory.boolValue &&
         !skipDirectories.contains(item) &&
         !item.hasPrefix(".")
     }
     
-    private func loadFromUserDefaults(for apps: [AppInfo], appsPerPage: Int) -> [AppGridItem] {
-        guard let savedData = userDefaults.array(forKey: gridItemsKey) as? [[String: Any]] else {
+    private func loadLayoutFromUserDefaults(for apps: [AppInfo]) -> [AppGridItem] {
+        let savedData = userDefaults.array(forKey: gridItemsKey) as? [[String: Any]]
+        
+        if(savedData == nil){
             return apps.map { .app($0) }
         }
         
@@ -109,7 +110,7 @@ final class AppManager {
         var gridItems: [AppGridItem] = []
         var usedPaths = Set<String>()
         
-        for itemData in savedData {
+        for itemData in savedData! {
             guard let type = itemData["type"] as? String else { continue }
             
             switch type {
@@ -129,11 +130,11 @@ final class AppManager {
         }
         
         for app in apps where !usedPaths.contains(app.path) {
-            let appWithPage = AppInfo(name: app.name, icon: app.icon, path: app.path, page: 0)
+            let appWithPage = AppInfo(name: app.name, icon: app.icon, path: app.path)
             gridItems.append(.app(appWithPage))
         }
         
-        return redistributeItemsToFitPageLimits(gridItems, appsPerPage: appsPerPage)
+        return gridItems
     }
     
     private func loadAppItem(from itemData: [String: Any], appsByPath: [String: AppInfo]) -> AppGridItem? {
@@ -164,8 +165,8 @@ final class AppManager {
         return .folder(folder)
     }
     
-    private func groupItemsByPage(_ items: [AppGridItem]) -> [[AppGridItem]] {
-        let groupedDict = Dictionary(grouping: items) { $0.page }
+    private func groupItemsByPage(items: [AppGridItem], appsPerPage: Int) -> [[AppGridItem]] {
+        let groupedDict = Dictionary(grouping: redistributeItemsToFitPageLimits(items: items, appsPerPage: appsPerPage)) { $0.page }
         let maxPage = groupedDict.keys.max() ?? 0
         
         var pages: [[AppGridItem]] = []
@@ -179,7 +180,7 @@ final class AppManager {
         return pages.isEmpty ? [[]] : pages
     }
     
-    private func redistributeItemsToFitPageLimits(_ items: [AppGridItem], appsPerPage: Int) -> [AppGridItem] {
+    private func redistributeItemsToFitPageLimits(items: [AppGridItem], appsPerPage: Int) -> [AppGridItem] {
         let groupedByPage = Dictionary(grouping: items) { $0.page }
         var redistributedItems: [AppGridItem] = []
         let sortedPages = groupedByPage.keys.sorted()

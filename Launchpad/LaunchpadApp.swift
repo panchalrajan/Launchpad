@@ -22,9 +22,6 @@ struct LaunchpadApp: App {
                 .onAppear {
                     loadGridItems()
                 }
-                .onChange(of: gridItemPages) { oldPages, newPages in
-                    saveGridItems(from: newPages)
-                }
                 .onChange(of: settingsManager.settings) { oldSettings, newSettings in
                     loadGridItems()
                 }
@@ -53,7 +50,7 @@ struct LaunchpadApp: App {
     }
     
     private func saveGridItems(from pages: [[AppGridItem]]) {
-        appManager.saveGridItems(pages.flatMap { $0 })
+        appManager.saveGridItems(items: pages.flatMap { $0 })
     }
     
     private func clearGridItems() {

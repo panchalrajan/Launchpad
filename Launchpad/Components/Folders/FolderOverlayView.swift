@@ -31,7 +31,7 @@ struct FolderOverlayView: View {
                         columns: columns,
                         dropDelay: dropDelay,
                         onSave: {
-                            appManager.saveGridItems(pages.flatMap { $0 })
+                            appManager.saveGridItems(items: pages.flatMap { $0 })
                         }
                     )
                     .scaleEffect(isFolderOpen ? 1.0 : 0.8)
@@ -61,7 +61,7 @@ struct FolderOverlayView: View {
         selectedFolder = newFolder
         pages[pageIndex][itemIndex] = .folder(newFolder)
         
-        appManager.saveGridItems(pages.flatMap { $0 })
+        appManager.saveGridItems(items: pages.flatMap { $0 })
         
         self.selectedFolder = nil
         isFolderOpen = false

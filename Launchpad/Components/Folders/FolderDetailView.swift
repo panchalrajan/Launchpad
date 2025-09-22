@@ -89,11 +89,11 @@ struct FolderDetailView: View {
         )
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(
-            color: colorScheme == .dark ? .black.opacity(0.5) : .black.opacity(0.2), 
+            color: colorScheme == .dark ? .black.opacity(0.5) : .black.opacity(0.2),
             radius: 30, x: 0, y: 15
         )
         .shadow(
-            color: colorScheme == .dark ? .black.opacity(0.3) : .black.opacity(0.08), 
+            color: colorScheme == .dark ? .black.opacity(0.3) : .black.opacity(0.08),
             radius: 5, x: 0, y: 2
         )
         .scaleEffect(isAnimatingIn ? 1.0 : 0.9)
