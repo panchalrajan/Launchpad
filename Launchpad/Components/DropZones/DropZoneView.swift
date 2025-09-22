@@ -33,7 +33,7 @@ struct DropZoneView: View {
     }
     
     private var padding: EdgeInsets {
-        direction == .left
+        direction == .left 
         ? EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)
         : EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20)
     }
