@@ -6,20 +6,12 @@ struct FolderDetailView: View {
     let iconSize: Double
     let columns: Int
     let dropDelay: Double
-    let onDismiss: () -> Void
+    let onSave: () -> Void
     
     @State private var editingName = false
     @State private var draggedApp: AppInfo?
     @State private var isAnimatingIn = false
     @Environment(\.colorScheme) private var colorScheme
-    
-    init(folder: Binding<Folder>, iconSize: Double, columns: Int, dropDelay: Double, onDismiss: @escaping () -> Void) {
-        self._folder = folder
-        self.iconSize = iconSize
-        self.columns = columns
-        self.dropDelay = dropDelay
-        self.onDismiss = onDismiss
-    }
     
     var body: some View {
         VStack(spacing: 24) {
@@ -33,7 +25,7 @@ struct FolderDetailView: View {
                         .multilineTextAlignment(.center)
                         .onSubmit {
                             editingName = false
-                            saveFolderChanges()
+                            onSave()
                         }
                 } else {
                     Text(folder.name)
@@ -119,12 +111,6 @@ struct FolderDetailView: View {
             page: folder.page,
             apps: folder.apps.filter { $0.id != app.id }
         )
-        saveFolderChanges()
-    }
-    
-    private func saveFolderChanges() {
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: NSNotification.Name("SaveGridItems"), object: nil)
-        }
+        onSave()
     }
 }

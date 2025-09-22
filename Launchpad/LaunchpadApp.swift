@@ -21,7 +21,6 @@ struct LaunchpadApp: App {
                 .ignoresSafeArea()
                 .onAppear {
                     loadGridItems()
-                    setupNotificationObserver()
                 }
                 .onChange(of: gridItemPages) { oldPages, newPages in
                     saveGridItems(from: newPages)
@@ -60,17 +59,5 @@ struct LaunchpadApp: App {
     private func clearGridItems() {
         appManager.clearGridItems()
         NSApp.terminate(nil)
-    }
-    
-    private func setupNotificationObserver() {
-        NotificationCenter.default.addObserver(
-            forName: NSNotification.Name("SaveGridItems"),
-            object: nil,
-            queue: .main
-        ) { _ in
-            Task { @MainActor in
-                saveGridItems(from: gridItemPages)
-            }
-        }
     }
 }

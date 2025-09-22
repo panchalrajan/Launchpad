@@ -110,41 +110,48 @@ struct ItemDropDelegate: DropDelegate {
         let folderItem = AppGridItem.folder(folder)
         let adjustedTargetIndex = app1Index < app2Index ? app2Index - 1 : app2Index
         
-        if app1.page == app2.page {
-            let indices = [app1Index, app2Index].sorted(by: >)
-            for index in indices {
-                pages[app1.page].remove(at: index)
+        do {
+            if app1.page == app2.page {
+                let indices = [app1Index, app2Index].sorted(by: >)
+                for index in indices {
+                    pages[app1.page].remove(at: index)
+                }
+                let insertIndex = min(adjustedTargetIndex, pages[app2.page].count)
+                pages[app2.page].insert(folderItem, at: insertIndex)
+            } else {
+                pages[app1.page].remove(at: app1Index)
+                pages[app2.page].remove(at: app2Index)
+                
+                let insertIndex = min(app2Index, pages[app2.page].count)
+                pages[app2.page].insert(folderItem, at: insertIndex)
             }
-            let insertIndex = min(adjustedTargetIndex, pages[app2.page].count)
-            pages[app2.page].insert(folderItem, at: insertIndex)
-        } else {
-            pages[app1.page].remove(at: app1Index)
-            pages[app2.page].remove(at: app2Index)
-            
-            let insertIndex = min(app2Index, pages[app2.page].count)
-            pages[app2.page].insert(folderItem, at: insertIndex)
+        } catch {
+            print("Failed to create folder from \(app1.name) and \(app2.name)")
         }
-        
         self.draggedItem = nil
     }
     
     private func addAppToFolder(_ app: AppInfo, targetFolder: Folder) {
-        guard let appIndex = pages[app.page].firstIndex(where: { 
+        guard let appIndex = pages[app.page].firstIndex(where: {
             if case .app(let appInfo) = $0 { return appInfo.id == app.id }
             return false
         }),
-        let folderIndex = pages[targetFolder.page].firstIndex(where: { 
-            if case .folder(let folderInfo) = $0 { return folderInfo.id == targetFolder.id }
-            return false
-        }) else { return }
+              let folderIndex = pages[targetFolder.page].firstIndex(where: {
+                  if case .folder(let folderInfo) = $0 { return folderInfo.id == targetFolder.id }
+                  return false
+              }) else { return }
         
-        var updatedApps = targetFolder.apps
-        updatedApps.append(app)
-        let updatedFolder = Folder(name: targetFolder.name, page: targetFolder.page, apps: updatedApps)
-        let updatedFolderItem = AppGridItem.folder(updatedFolder)
-        
-        pages[app.page].remove(at: appIndex)
-        pages[targetFolder.page][folderIndex] = updatedFolderItem
+        do {
+            var updatedApps = targetFolder.apps
+            updatedApps.append(app)
+            let updatedFolder = Folder(name: targetFolder.name, page: targetFolder.page, apps: updatedApps)
+            let updatedFolderItem = AppGridItem.folder(updatedFolder)
+            
+            pages[app.page].remove(at: appIndex)
+            pages[targetFolder.page][folderIndex] = updatedFolderItem
+        } catch {
+            print("Failed to add app to folder: \(app.name)")
+        }
         
         self.draggedItem = nil
     }

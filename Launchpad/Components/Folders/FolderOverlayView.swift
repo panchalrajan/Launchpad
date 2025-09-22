@@ -2,6 +2,7 @@ import SwiftUI
 import Foundation
 
 struct FolderOverlayView: View {
+    var appManager = AppManager.shared
     @Binding var pages: [[AppGridItem]]
     @Binding var selectedFolder: Folder?
     @Binding var isFolderOpen: Bool
@@ -12,41 +13,30 @@ struct FolderOverlayView: View {
     
     var body: some View {
         Group {
-            if isFolderOpen {
+            if selectedFolder != nil {
                 ZStack {
                     Color.clear
                         .ignoresSafeArea(.all)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            if let folder = selectedFolder,
-                               let pageIndex = pages.firstIndex(where: { page in page.contains(where: { $0.id == folder.id }) }),
-                               let itemIndex = pages[pageIndex].firstIndex(where: { $0.id == folder.id }) {
-                                commitChanges(pageIndex: pageIndex, itemIndex: itemIndex)
-                            }
-                            dismissFolder()
+                            commitChanges()
                         }
                     
-                    if let folder = selectedFolder,
-                       let pageIndex = pages.firstIndex(where: { page in page.contains(where: { $0.id == folder.id }) }),
-                       let itemIndex = pages[pageIndex].firstIndex(where: { $0.id == folder.id }) {
-                        FolderDetailView(
-                            folder: Binding(
-                                get: {  selectedFolder! },
-                                set: { selectedFolder = $0 }
-                            ),
-                            iconSize: iconSize,
-                            columns: columns,
-                            dropDelay: dropDelay,
-                            onDismiss: {
-                                commitChanges(pageIndex: pageIndex, itemIndex: itemIndex)
-                                dismissFolder()
-                            }
-                        )
-                        .scaleEffect(isFolderOpen ? 1.0 : 0.8)
-                        .opacity(isFolderOpen ? 1.0 : 0.0)
-                        .animation(.interpolatingSpring(stiffness: 300, damping: 30), value: isFolderOpen)
-                        
-                    }
+                    FolderDetailView(
+                        folder: Binding(
+                            get: {  selectedFolder! },
+                            set: { selectedFolder = $0 }
+                        ),
+                        iconSize: iconSize,
+                        columns: columns,
+                        dropDelay: dropDelay,
+                        onSave: {
+                            appManager.saveGridItems(pages.flatMap { $0 })
+                        }
+                    )
+                    .scaleEffect(isFolderOpen ? 1.0 : 0.8)
+                    .opacity(isFolderOpen ? 1.0 : 0.0)
+                    .animation(.interpolatingSpring(stiffness: 300, damping: 30), value: isFolderOpen)
                 }
                 .onAppear {
                     withAnimation(.easeInOut(duration: 0.4)) {
@@ -57,8 +47,10 @@ struct FolderOverlayView: View {
         }
     }
     
-    private func commitChanges(pageIndex: Int, itemIndex: Int) {
-        guard var selectedFolder = selectedFolder else { return }
+    private func commitChanges() {
+        guard var selectedFolder = selectedFolder,
+              let pageIndex = pages.firstIndex(where: { page in page.contains(where: { $0.id == selectedFolder.id }) }),
+              let itemIndex = pages[pageIndex].firstIndex(where: { $0.id == selectedFolder.id })else { return }
         
         let newFolder = Folder(
             name: selectedFolder.name,
@@ -69,24 +61,9 @@ struct FolderOverlayView: View {
         selectedFolder = newFolder
         pages[pageIndex][itemIndex] = .folder(newFolder)
         
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: NSNotification.Name("SaveGridItems"), object: nil)
-        }
+        appManager.saveGridItems(pages.flatMap { $0 })
         
         self.selectedFolder = nil
-    }
-    
-    private func dismissFolder() {
-        NotificationCenter.default.post(name: NSNotification.Name("SaveGridItems"), object: nil)
-        
-        withAnimation(.easeInOut(duration: 0.3)) {
-            isFolderOpen = false
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            selectedFolder = nil
-            isFolderOpen = false
-            self.selectedFolder = nil
-        }
+        isFolderOpen = false
     }
 }
