@@ -50,7 +50,7 @@ struct LaunchpadApp: App {
   }
 
   private func saveGridItems(from pages: [[AppGridItem]]) {
-    appManager.savePages(pages: pages)
+      appManager.pages = pages
   }
 
   private func clearGridItems() {

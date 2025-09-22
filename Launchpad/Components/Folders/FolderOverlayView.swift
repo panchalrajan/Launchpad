@@ -57,7 +57,7 @@ struct FolderOverlayView: View {
     selectedFolder = newFolder
     pages[pageIndex][itemIndex] = .folder(newFolder)
 
-    appManager.savePages(pages: pages)
+    appManager.pages = pages
 
     self.selectedFolder = nil
     isFolderOpen = false
@@ -74,7 +74,7 @@ struct FolderOverlayView: View {
     pages[pageIndex].append(.app(updatedApp))
 
     handlePageOverflow(targetPageIndex: pageIndex)
-    appManager.savePages(pages: pages)
+      appManager.pages = pages
   }
 
   private func handlePageOverflow(targetPageIndex: Int) {

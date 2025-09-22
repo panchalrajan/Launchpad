@@ -72,7 +72,7 @@ struct ItemDropDelegate: DropDelegate {
     }
 
     self.draggedItem = nil
-    appManager.savePages(pages: pages)
+      appManager.pages = pages
     return true
   }
 

@@ -7,6 +7,7 @@ struct PagedGridView: View {
 
   @Binding var pages: [[AppGridItem]]
   var settings: LaunchpadSettings
+    
   @GestureState private var dragOffset: CGFloat = 0
   @State private var currentPage = 0
   @State private var draggedPage = 0
@@ -32,12 +33,12 @@ struct PagedGridView: View {
             HStack(spacing: 0) {
               ForEach(0..<pages.count, id: \.self) { pageIndex in
                 SinglePageView(
-                  pageItems: pages[pageIndex],
+                    pages: $pages,
+                    draggedItem: $draggedItem,
                   pageIndex: pageIndex,
                   settings: settings,
                   isFolderOpen: isFolderOpen,
-                  pages: $pages,
-                  draggedItem: $draggedItem,
+
                   onItemTap: handleItemTap
                 )
                 .frame(width: geo.size.width, height: geo.size.height)

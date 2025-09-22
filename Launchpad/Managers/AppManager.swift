@@ -7,7 +7,7 @@ final class AppManager : ObservableObject {
     
     @Published var pages: [[AppGridItem]] {
         didSet {
-            savePages(pages: pages)
+            saveGridItems(items: pages.flatMap { $0 })
         }
     }
 
@@ -22,10 +22,6 @@ final class AppManager : ObservableObject {
     let apps = discoverApps()
     let gridItems = loadLayoutFromUserDefaults(for: apps)
     pages = groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
-  }
-
-  func savePages(pages: [[AppGridItem]]) {
-    saveGridItems(items: pages.flatMap { $0 })
   }
 
   private func saveGridItems(items: [AppGridItem]) {
