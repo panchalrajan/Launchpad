@@ -14,7 +14,11 @@ final class AppManager {
         return groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
     }
     
-    func saveGridItems(items: [AppGridItem]) {
+    func savePages(pages: [[AppGridItem]]) {
+        saveGridItems(items: pages.flatMap { $0 })
+    }
+    
+    private func saveGridItems(items: [AppGridItem]) {
         let itemsData = items.map { item -> [String: Any] in
             switch item {
             case .app(let app):

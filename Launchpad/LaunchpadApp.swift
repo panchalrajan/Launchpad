@@ -2,9 +2,9 @@ import SwiftUI
 
 @main
 struct LaunchpadApp: App {
-    private var settingsManager = SettingsManager.shared
-    private var appManager = AppManager.shared
-    private var appLauncher = AppLauncher.shared
+    private let settingsManager = SettingsManager.shared
+    private let appManager = AppManager.shared
+    private let appLauncher = AppLauncher.shared
     @State private var gridItemPages: [[AppGridItem]] = []
     @State private var showSettings = false
     
@@ -55,7 +55,7 @@ struct LaunchpadApp: App {
     }
     
     private func saveGridItems(from pages: [[AppGridItem]]) {
-        appManager.saveGridItems(items: pages.flatMap { $0 })
+        appManager.savePages(pages: pages)
     }
     
     private func clearGridItems() {
@@ -78,3 +78,4 @@ struct LaunchpadApp: App {
         }
     }
 }
+

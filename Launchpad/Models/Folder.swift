@@ -1,12 +1,13 @@
 import SwiftUI
 
 struct Folder: Identifiable, Equatable {
-    let id = UUID()
+    let id: UUID
     var name: String
     var page: Int
     var apps: [AppInfo]
     
-    init(name: String, page: Int, apps: [AppInfo]) {
+    init(id: UUID = UUID(), name: String, page: Int, apps: [AppInfo]) {
+        self.id = id
         self.name = name
         self.apps = apps
         self.page = page
@@ -16,3 +17,4 @@ struct Folder: Identifiable, Equatable {
         Array(apps.prefix(9))
     }
 }
+
