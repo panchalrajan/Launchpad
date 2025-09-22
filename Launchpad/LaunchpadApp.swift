@@ -70,6 +70,7 @@ struct LaunchpadApp: App {
                let activatedApp = info[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication {
                 if activatedApp.bundleIdentifier != Bundle.main.bundleIdentifier {
                     Task { @MainActor in
+                        print("Exiting Launchpad because \(activatedApp.bundleIdentifier ?? "unknown") was activated")
                         appLauncher.exit()
                     }
                 }

@@ -1,6 +1,6 @@
 # 🚀 LaunchPad
 
-A beautiful, modern macOS application launcher with glass morphism design, inspired by macOS Launchpad but with enhanced functionality and customization options. As you might know Apple removed Launchpad in macOS 26, this app offers similar functionality. 
+A beautiful, modern macOS application launcher with glass morphism design, inspired by macOS Launchpad but with enhanced functionality and customization options. As you might know, Apple removed Launchpad in macOS 26. This app offers a true replacement with even more features.
 
 If you like this project, and would like to have additional features, please support me:
 
@@ -24,22 +24,33 @@ If you like this project, and would like to have additional features, please sup
 
 ![Search Functionality](Documentation/Launchpad-2.png)
 
-### 📱 **Drag & Drop**
+
+### **Folder Management & Drag & Drop**
+- **Create Folders** - Drag one app onto another to create a folder
+- **Rename Folders** - Click folder name to edit and persist changes
+- **Add/Remove Apps** - Drag apps into/out of folders, or use context menu to remove
 - **Rearrangeable Icons** - Drag and drop to customize app order
 - **Visual Feedback** - Apps scale and fade during drag operations
-- **Persistent Order** - Your custom arrangement is automatically saved
+- **Persistent Order** - Your custom arrangement and folders are automatically saved
 - **Smart Positioning** - Smooth animations when dropping apps
 
+![Folder](Documentation/Launchpad-4.png)
+
+![Folders](Documentation/Launchpad-5.png)
+
 ### 🎮 **Multiple Navigation Methods**
+
 
 #### ⌨️ **Keyboard Navigation**
 - `←/→` Arrow keys - Navigate between pages
 - `ESC` - Close application
 
+
 #### 🖱️ **Mouse Navigation**
 - **Click Navigation** - Click page dots to jump to any page
 - **Scroll Wheel** - Horizontal scrolling for page navigation
 - **Smart Scrolling** - Vertical scrolling in search mode
+- **Click inside folder detail** - Does not close Launchpad
 
 #### 📱 **Touch & Gestures**
 - **Tap to Launch** - Single tap to open applications
@@ -69,20 +80,28 @@ LaunchPad offers comprehensive customization options to tailor your experience:
 
 ## 🚀 Getting Started
 
+
 ### First Launch
 1. The app will automatically scan `/Applications` and `/System/Applications`
 2. Apps are initially sorted alphabetically
-3. Use drag & drop to customize your layout
-4. Your arrangement is automatically saved
+3. Use drag & drop to customize your layout and create folders
+4. Click folder names to rename and persist changes
+5. Your arrangement and folders are automatically saved
+6. Launchpad will quit if you activate another app from the dock
+
 
 ### Usage
 - **Search**: Type to filter apps instantly
 - **Navigate Pages**: Use arrow keys, click dots, or scroll
 - **Launch Apps**: Click any app icon to open
 - **Rearrange**: Drag apps to new positions
+- **Create Folders**: Drag one app onto another
+- **Rename Folders**: Click folder name
+- **Remove from Folder**: Use context menu or drag out
+- **Quit Launchpad**: Activate another app or press ESC
 
 ## 🙏 Acknowledgments
-- Bsed on LaunchBack project
+- Based on LaunchBack project
 - Inspired by macOS Launchpad
 - Glass morphism design trends
 - SwiftUI community examples

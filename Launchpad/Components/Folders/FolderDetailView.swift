@@ -15,7 +15,7 @@ struct FolderDetailView: View {
     
     var body: some View {
         VStack(spacing: 24) {
-            HStack {
+                        HStack {
                 Spacer()
                 if editingName {
                     TextField("Folder Name", text: $folder.name)
@@ -78,7 +78,6 @@ struct FolderDetailView: View {
             ZStack {
                 VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
                     .cornerRadius(16)
-                
                 RoundedRectangle(cornerRadius: 16)
                     .fill(.ultraThinMaterial)
                     .opacity(colorScheme == .dark ? 0.4 : 0.3)
@@ -99,6 +98,11 @@ struct FolderDetailView: View {
             withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
                 isAnimatingIn = true
             }
+        }
+        // Prevent tap gesture propagation to parent by disabling hit testing on background
+        .contentShape(Rectangle())
+        .onTapGesture {
+            // Do nothing, just consume the tap
         }
     }
     

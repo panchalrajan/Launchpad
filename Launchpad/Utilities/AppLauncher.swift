@@ -10,6 +10,7 @@ final class AppLauncher {
     }
     
     func exit() {
+        print("Exiting Launchpad")
         NSApp.hide(nil)
     }
 }
