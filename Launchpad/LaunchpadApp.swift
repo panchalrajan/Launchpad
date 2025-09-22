@@ -4,6 +4,7 @@ import SwiftUI
 struct LaunchpadApp: App {
     private var settingsManager = SettingsManager.shared
     private var appManager = AppManager.shared
+    private var appLauncher = AppLauncher.shared
     @State private var gridItemPages: [[AppGridItem]] = []
     @State private var showSettings = false
     
@@ -21,6 +22,7 @@ struct LaunchpadApp: App {
                 .ignoresSafeArea()
                 .onAppear {
                     loadGridItems()
+                    subscribeToSystemEvents()
                 }
                 .onChange(of: settingsManager.settings) { oldSettings, newSettings in
                     loadGridItems()
@@ -28,6 +30,9 @@ struct LaunchpadApp: App {
                 .sheet(isPresented: $showSettings) {
                     SettingsView()
                         .interactiveDismissDisabled(false)
+                }
+                .onTapGesture {
+                    AppLauncher.shared.exit()
                 }
             }
         }
@@ -56,5 +61,19 @@ struct LaunchpadApp: App {
     private func clearGridItems() {
         appManager.clearGridItems()
         NSApp.terminate(nil)
+    }
+    
+    private func subscribeToSystemEvents(){
+        // Subscribe to app opened
+        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { notification in
+            if let info = notification.userInfo,
+               let activatedApp = info[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication {
+                if activatedApp.bundleIdentifier != Bundle.main.bundleIdentifier {
+                    Task { @MainActor in
+                        appLauncher.exit()
+                    }
+                }
+            }
+        }
     }
 }

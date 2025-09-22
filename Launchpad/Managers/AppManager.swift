@@ -166,43 +166,38 @@ final class AppManager {
     }
     
     private func groupItemsByPage(items: [AppGridItem], appsPerPage: Int) -> [[AppGridItem]] {
-        let groupedDict = Dictionary(grouping: redistributeItemsToFitPageLimits(items: items, appsPerPage: appsPerPage)) { $0.page }
-        let maxPage = groupedDict.keys.max() ?? 0
+        guard !items.isEmpty else { return [[]] }
+        
+        let groupedByPage = Dictionary(grouping: items) { $0.page }
+        let sortedPages = groupedByPage.keys.sorted()
         
         var pages: [[AppGridItem]] = []
-        for pageIndex in 0...maxPage {
-            let pageItems = groupedDict[pageIndex] ?? []
-            if !pageItems.isEmpty || pageIndex == 0 {
-                pages.append(pageItems)
-            }
-        }
-        
-        return pages.isEmpty ? [[]] : pages
-    }
-    
-    private func redistributeItemsToFitPageLimits(items: [AppGridItem], appsPerPage: Int) -> [AppGridItem] {
-        let groupedByPage = Dictionary(grouping: items) { $0.page }
-        var redistributedItems: [AppGridItem] = []
-        let sortedPages = groupedByPage.keys.sorted()
         var currentPage = 0
         var itemsOnCurrentPage = 0
+        var currentPageItems: [AppGridItem] = []
         
         for pageNum in sortedPages {
             let pageItems = groupedByPage[pageNum] ?? []
             
             for item in pageItems {
                 if itemsOnCurrentPage >= appsPerPage {
+                    pages.append(currentPageItems)
                     currentPage += 1
+                    currentPageItems = []
                     itemsOnCurrentPage = 0
                 }
                 
                 let updatedItem = item.page != currentPage ? updateItemPage(item, to: currentPage) : item
-                redistributedItems.append(updatedItem)
+                currentPageItems.append(updatedItem)
                 itemsOnCurrentPage += 1
             }
         }
         
-        return redistributedItems
+        if !currentPageItems.isEmpty {
+            pages.append(currentPageItems)
+        }
+        
+        return pages.isEmpty ? [[]] : pages
     }
     
     private func updateItemPage(_ item: AppGridItem, to page: Int) -> AppGridItem {

@@ -51,9 +51,6 @@ struct FolderDetailView: View {
                     ) {
                         ForEach(folder.apps) { app in
                             AppIconView(app: app, layout: layout, isDragged: draggedApp?.id == app.id)
-                                .onTapGesture {
-                                    AppLauncher.shared.launch(app.path)
-                                }
                                 .onDrag {
                                     draggedApp = app
                                     return NSItemProvider(object: app.id.uuidString as NSString)

@@ -5,9 +5,8 @@ import AppKit
 final class AppLauncher {
     static let shared = AppLauncher()
     
-    func launch(_ path: String) {
+    func launch(path: String) {
         NSWorkspace.shared.open(URL(fileURLWithPath: path))
-        NSApp.hide(nil)
     }
     
     func exit() {

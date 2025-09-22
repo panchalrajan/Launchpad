@@ -49,9 +49,6 @@ struct PagedGridView: View {
                                 .frame(width: geo.size.width, height: geo.size.height)
                             }
                         }
-                        .onTapGesture {
-                            AppLauncher.shared.exit()
-                        }
                         .offset(x: -CGFloat(currentPage) * geo.size.width)
                         .offset(x: dragOffset)
                         .animation(.interpolatingSpring(stiffness: 300, damping: 100), value: currentPage)
@@ -84,7 +81,6 @@ struct PagedGridView: View {
                         columns: columns,
                         dropDelay: dropDelay
                     )
-                    
                 } else{
                     PageDropZonesView(
                         currentPage: currentPage,

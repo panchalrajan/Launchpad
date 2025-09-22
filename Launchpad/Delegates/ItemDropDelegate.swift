@@ -25,10 +25,6 @@ struct ItemDropDelegate: DropDelegate {
             DropAnimationHelper.performDelayedMove(delay: dropDelay) {
                 if self.draggedItem != nil {
                     pages[draggedItem.page].move(fromOffsets: IndexSet([fromIndex]), toOffset: DropAnimationHelper.calculateMoveOffset(fromIndex: fromIndex, toIndex: toIndex))
-                    
-                    DispatchQueue.main.async {
-                        self.appManager.saveGridItems(items: self.pages.flatMap { $0 })
-                    }
                 }
             }
         } else {
@@ -48,12 +44,34 @@ struct ItemDropDelegate: DropDelegate {
             self.draggedItem = updatedItem
             
             handlePageOverflow(targetPageIndex: targetItem.page)
-            
-            // Save after cross-page move
-            DispatchQueue.main.async {
-                self.appManager.saveGridItems(items: self.pages.flatMap { $0 })
+        }
+    }
+    
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        return DropProposal(operation: .move)
+    }
+    
+    func performDrop(info: DropInfo) -> Bool {
+        
+        guard let draggedItem = draggedItem else {
+            self.draggedItem = nil
+            return true
+        }
+        
+        if draggedItem.id != targetItem.id {
+            switch (draggedItem, targetItem) {
+            case (.app(let draggedApp), .app(let targetApp)):
+                createFolder(with: draggedApp, and: targetApp)
+            case (.app(let draggedApp), .folder(let targetFolder)):
+                addAppToFolder(app: draggedApp, targetFolder: targetFolder)
+            default:
+                break
             }
         }
+        
+        self.draggedItem = nil
+        appManager.saveGridItems(items: pages.flatMap { $0 })
+        return true
     }
     
     private func handlePageOverflow(targetPageIndex: Int) {
@@ -77,35 +95,6 @@ struct ItemDropDelegate: DropDelegate {
                 handlePageOverflow(targetPageIndex: nextPageNumber)
             }
         }
-    }
-    
-    func dropUpdated(info: DropInfo) -> DropProposal? {
-        return DropProposal(operation: .move)
-    }
-    
-    func performDrop(info: DropInfo) -> Bool {
-        
-        guard let draggedItem = draggedItem else {
-            self.draggedItem = nil
-            return true
-        }
-        
-        if draggedItem.id != targetItem.id {
-            switch (draggedItem, targetItem) {
-            case (.app(let draggedApp), .app(let targetApp)):
-                createFolder(with: draggedApp, and: targetApp)
-            case (.app(let draggedApp), .folder(let targetFolder)):
-                addAppToFolder(draggedApp, targetFolder: targetFolder)
-            default:
-                break
-            }
-            
-            // Save after any folder operations
-            appManager.saveGridItems(items: pages.flatMap { $0 })
-        }
-        
-        self.draggedItem = nil
-        return true
     }
     
     private func createFolder(with app1: AppInfo, and app2: AppInfo) {
@@ -137,10 +126,9 @@ struct ItemDropDelegate: DropDelegate {
             let insertIndex = min(app2Index, pages[app2.page].count)
             pages[app2.page].insert(folderItem, at: insertIndex)
         }
-        self.draggedItem = nil
     }
     
-    private func addAppToFolder(_ app: AppInfo, targetFolder: Folder) {
+    private func addAppToFolder(app: AppInfo, targetFolder: Folder) {
         guard let appIndex = pages[app.page].firstIndex(where: {
             if case .app(let appInfo) = $0 { return appInfo.id == app.id }
             return false
@@ -155,9 +143,7 @@ struct ItemDropDelegate: DropDelegate {
         let updatedFolder = Folder(name: targetFolder.name, page: targetFolder.page, apps: updatedApps)
         let updatedFolderItem = AppGridItem.folder(updatedFolder)
         
-        pages[app.page].remove(at: appIndex)
         pages[targetFolder.page][folderIndex] = updatedFolderItem
-        
-        self.draggedItem = nil
+        pages[app.page].remove(at: appIndex)
     }
 }
