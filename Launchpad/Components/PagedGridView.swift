@@ -79,6 +79,7 @@ struct PagedGridView: View {
                         isFolderOpen: $isFolderOpen,
                         iconSize: iconSize,
                         columns: columns,
+                        rows:  rows,
                         dropDelay: dropDelay
                     )
                 } else{

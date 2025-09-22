@@ -9,31 +9,29 @@ struct FolderOverlayView: View {
     
     let iconSize: Double
     let columns: Int
+    let rows: Int
     let dropDelay: Double
     
     var body: some View {
         Group {
             if selectedFolder != nil {
                 ZStack {
-                    Color.clear
-                        .ignoresSafeArea(.all)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            commitChanges()
-                        }
-                    
                     FolderDetailView(
                         folder: Binding(
-                            get: {  selectedFolder! },
+                            get: { selectedFolder! },
                             set: { selectedFolder = $0 }
                         ),
                         iconSize: iconSize,
                         columns: columns,
                         dropDelay: dropDelay,
                         onSave: {
-                            appManager.saveGridItems(items: pages.flatMap { $0 })
+                            saveFolder()
+                        },
+                        onRemoveApp: { app in
+                            addAppToPage(app)
                         }
                     )
+                    
                     .scaleEffect(isFolderOpen ? 1.0 : 0.8)
                     .opacity(isFolderOpen ? 1.0 : 0.0)
                     .animation(.interpolatingSpring(stiffness: 300, damping: 30), value: isFolderOpen)
@@ -47,7 +45,7 @@ struct FolderOverlayView: View {
         }
     }
     
-    private func commitChanges() {
+    private func saveFolder() {
         guard var selectedFolder = selectedFolder,
               let pageIndex = pages.firstIndex(where: { page in page.contains(where: { $0.id == selectedFolder.id }) }),
               let itemIndex = pages[pageIndex].firstIndex(where: { $0.id == selectedFolder.id })else { return }
@@ -65,5 +63,37 @@ struct FolderOverlayView: View {
         
         self.selectedFolder = nil
         isFolderOpen = false
+    }
+    
+    private func addAppToPage(_ app: AppInfo) {
+        guard let selectedFolder = selectedFolder,
+              let pageIndex = pages.firstIndex(where: { page in page.contains(where: { $0.id == selectedFolder.id }) }) else { return }
+        pages[pageIndex].append(.app(app))
+        
+        handlePageOverflow(targetPageIndex: pageIndex)
+        appManager.saveGridItems(items: pages.flatMap { $0 })
+    }
+    
+    private func handlePageOverflow(targetPageIndex: Int) {
+        while pages[targetPageIndex].count > columns * rows {
+            let overflowItem = pages[targetPageIndex].removeLast()
+            
+            let nextPageNumber = targetPageIndex + 1
+            
+            var updatedOverflowItem = overflowItem
+            switch overflowItem {
+            case .app(let app):
+                updatedOverflowItem = .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: nextPageNumber))
+            case .folder(let folder):
+                updatedOverflowItem = .folder(Folder(name: folder.name, page: nextPageNumber, apps: folder.apps))
+            }
+            
+            if nextPageNumber >= pages.count {
+                pages.append([updatedOverflowItem])
+            } else {
+                pages[nextPageNumber].insert(updatedOverflowItem, at: 0)
+                handlePageOverflow(targetPageIndex: nextPageNumber)
+            }
+        }
     }
 }
