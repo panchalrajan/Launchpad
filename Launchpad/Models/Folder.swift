@@ -6,8 +6,8 @@ struct Folder: Identifiable, Equatable {
   var page: Int
   var apps: [AppInfo]
 
-  init(id: UUID = UUID(), name: String, page: Int, apps: [AppInfo]) {
-    self.id = id
+  init(name: String, page: Int, apps: [AppInfo]) {
+    self.id = UUID()
     self.name = name
     self.apps = apps
     self.page = page

@@ -47,12 +47,7 @@ struct FolderOverlayView: View {
       let itemIndex = pages[pageIndex].firstIndex(where: { $0.id == selectedFolder.id })
     else { return }
 
-    let newFolder = Folder(
-      id: selectedFolder.id,
-      name: selectedFolder.name,
-      page: selectedFolder.page,
-      apps: selectedFolder.apps
-    )
+    let newFolder = Folder(name: selectedFolder.name, page: selectedFolder.page, apps: selectedFolder.apps)
 
     selectedFolder = newFolder
     pages[pageIndex][itemIndex] = .folder(newFolder)
@@ -69,8 +64,7 @@ struct FolderOverlayView: View {
         page.contains(where: { $0.id == selectedFolder.id })
       })
     else { return }
-    let updatedApp = AppInfo(
-      id: app.id, name: app.name, icon: app.icon, path: app.path, page: pageIndex)
+    let updatedApp = AppInfo(name: app.name, icon: app.icon, path: app.path, page: pageIndex)
     pages[pageIndex].append(.app(updatedApp))
 
     handlePageOverflow(targetPageIndex: pageIndex)
@@ -87,10 +81,10 @@ struct FolderOverlayView: View {
       switch overflowItem {
       case .app(let app):
         updatedOverflowItem = .app(
-          AppInfo(id: app.id, name: app.name, icon: app.icon, path: app.path, page: nextPageNumber))
+          AppInfo(name: app.name, icon: app.icon, path: app.path, page: nextPageNumber))
       case .folder(let folder):
         updatedOverflowItem = .folder(
-          Folder(id: folder.id, name: folder.name, page: nextPageNumber, apps: folder.apps))
+          Folder(name: folder.name, page: nextPageNumber, apps: folder.apps))
       }
 
       if nextPageNumber >= pages.count {
