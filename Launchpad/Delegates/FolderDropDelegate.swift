@@ -13,20 +13,11 @@ struct FolderDropDelegate: DropDelegate {
       let toIndex = folder.apps.firstIndex(where: { $0.id == targetApp.id })
     else { return }
 
-    DispatchQueue.main.asyncAfter(deadline: .now() + dropDelay) {
+      DropAnimationHelper.performDelayedMove(delay: dropDelay) {
       if self.draggedApp != nil {
-        DropAnimationHelper.performDelayedMove(delay: 0) {
-          var newApps = self.folder.apps
-          newApps.move(
-            fromOffsets: IndexSet([fromIndex]),
-            toOffset: DropAnimationHelper.calculateMoveOffset(
-              fromIndex: fromIndex, toIndex: toIndex))
-
-          let updatedFolder = Folder(name: self.folder.name, page: self.folder.page, apps: newApps)
-          self.folder = updatedFolder
+          folder.apps.move(fromOffsets: IndexSet([fromIndex]), toOffset: DropAnimationHelper.calculateMoveOffset(fromIndex: fromIndex, toIndex: toIndex))
         }
       }
-    }
   }
 
   func dropUpdated(info: DropInfo) -> DropProposal? {

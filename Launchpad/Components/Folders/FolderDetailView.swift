@@ -3,9 +3,7 @@ import SwiftUI
 
 struct FolderDetailView: View {
   @Binding var folder: Folder
-  let iconSize: Double
-  let columns: Int
-  let dropDelay: Double
+  let settings: LaunchpadSettings
   let onSave: () -> Void
   let onRemoveApp: ((AppInfo) -> Void)
 
@@ -56,12 +54,11 @@ struct FolderDetailView: View {
         .padding(.top, 24)
 
         GeometryReader { geo in
-          let layout = LayoutMetrics(size: geo.size, columns: columns, iconSize: iconSize)
+            let layout = LayoutMetrics(size: geo.size, columns: settings.folderColumns, iconSize: settings.iconSize)
 
           ScrollView(.vertical, showsIndicators: false) {
             LazyVGrid(
-              columns: GridLayoutUtility.createGridColumns(
-                count: columns, cellWidth: layout.cellWidth, spacing: layout.spacing),
+              columns: GridLayoutUtility.createGridColumns(count: settings.folderColumns, cellWidth: layout.cellWidth, spacing: layout.spacing),
               spacing: layout.spacing
             ) {
               ForEach(folder.apps) { app in
@@ -75,7 +72,7 @@ struct FolderDetailView: View {
                     delegate: FolderDropDelegate(
                       folder: $folder,
                       draggedApp: $draggedApp,
-                      dropDelay: dropDelay,
+                      dropDelay: settings.dropDelay,
                       targetApp: app
                     ))
               }

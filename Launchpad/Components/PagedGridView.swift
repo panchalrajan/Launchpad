@@ -6,10 +6,7 @@ struct PagedGridView: View {
   let scrollActivationThreshold: CGFloat = 80
 
   @Binding var pages: [[AppGridItem]]
-  var columns: Int
-  var rows: Int
-  var iconSize: Double
-  var dropDelay: Double
+  var settings: LaunchpadSettings
   @GestureState private var dragOffset: CGFloat = 0
   @State private var currentPage = 0
   @State private var draggedPage = 0
@@ -37,10 +34,7 @@ struct PagedGridView: View {
                 SinglePageView(
                   pageItems: pages[pageIndex],
                   pageIndex: pageIndex,
-                  columns: columns,
-                  rows: rows,
-                  iconSize: iconSize,
-                  dropDelay: dropDelay,
+                  settings: settings,
                   isFolderOpen: isFolderOpen,
                   pages: $pages,
                   draggedItem: $draggedItem,
@@ -59,7 +53,7 @@ struct PagedGridView: View {
               cleanupEventMonitoring()
             }
           } else {
-            SearchResultsView(apps: filteredApps(), columns: columns, iconSize: iconSize)
+              SearchResultsView(apps: filteredApps(), settings: settings)
               .frame(width: geo.size.width, height: geo.size.height)
           }
         }
@@ -77,10 +71,7 @@ struct PagedGridView: View {
             pages: $pages,
             selectedFolder: $selectedFolder,
             isFolderOpen: $isFolderOpen,
-            iconSize: iconSize,
-            columns: columns,
-            rows: rows,
-            dropDelay: dropDelay
+            settings: settings
           )
         } else {
           PageDropZonesView(

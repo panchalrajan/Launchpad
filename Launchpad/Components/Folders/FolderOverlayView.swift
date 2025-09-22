@@ -6,11 +6,7 @@ struct FolderOverlayView: View {
   @Binding var pages: [[AppGridItem]]
   @Binding var selectedFolder: Folder?
   @Binding var isFolderOpen: Bool
-
-  let iconSize: Double
-  let columns: Int
-  let rows: Int
-  let dropDelay: Double
+  let settings: LaunchpadSettings
 
   var body: some View {
     Group {
@@ -21,9 +17,7 @@ struct FolderOverlayView: View {
               get: { selectedFolder! },
               set: { selectedFolder = $0 }
             ),
-            iconSize: iconSize,
-            columns: columns,
-            dropDelay: dropDelay,
+            settings: settings,
             onSave: {
               saveFolder()
             },
@@ -84,7 +78,7 @@ struct FolderOverlayView: View {
   }
 
   private func handlePageOverflow(targetPageIndex: Int) {
-    while pages[targetPageIndex].count > columns * rows {
+      while pages[targetPageIndex].count > settings.appsPerPage {
       let overflowItem = pages[targetPageIndex].removeLast()
 
       let nextPageNumber = targetPageIndex + 1

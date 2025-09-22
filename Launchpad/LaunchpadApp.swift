@@ -12,10 +12,7 @@ struct LaunchpadApp: App {
         WindowAccessor()
         PagedGridView(
           pages: $appManager.pages,
-          columns: settingsManager.settings.columns,
-          rows: settingsManager.settings.rows,
-          iconSize: settingsManager.settings.iconSize,
-          dropDelay: settingsManager.settings.dropDelay
+          settings: settingsManager.settings,
         )
         .ignoresSafeArea()
         .onAppear {

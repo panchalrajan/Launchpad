@@ -37,13 +37,20 @@ final class SettingsManager : ObservableObject {
   }
 
   func updateSettings(
-    columns: Int? = nil, rows: Int? = nil, iconSize: Double? = nil, dropDelay: Double? = nil
+    columns: Int? = nil,
+    rows: Int? = nil,
+    iconSize: Double? = nil,
+    dropDelay: Double? = nil,
+    folderColumns: Int? = nil,
+    folderRows: Int? = nil
   ) {
     settings = LaunchpadSettings(
       columns: columns ?? settings.columns,
       rows: rows ?? settings.rows,
       iconSize: iconSize ?? settings.iconSize,
-      dropDelay: dropDelay ?? settings.dropDelay
+      dropDelay: dropDelay ?? settings.dropDelay,
+      folderColumns: folderColumns ?? settings.folderColumns,
+      folderRows: folderRows ?? settings.folderRows
     )
   }
 
