@@ -1,86 +1,29 @@
 import Foundation
 import AppKit
-import SwiftData
 import SQLite3
 
-/// 直接从 macOS 原生 Launchpad 数据库导入布局
-class NativeLaunchpadImporter {
-    private let modelContext: ModelContext
+@MainActor
+final class NativeLaunchpadImporter {
 
-    init(modelContext: ModelContext) {
-        self.modelContext = modelContext
-    }
+    init() {}
 
-    /// 从原生 Launchpad 数据库导入布局
-    func importFromNativeLaunchpad() throws -> ImportResult {
-        let nativeLaunchpadDB = try getNativeLaunchpadDatabasePath()
+    // Public entry point: imports and updates AppManager pages
+     func importFromNativeLaunchpad() throws -> ImportResult {
+        let dbPath = try getNativeLaunchpadDatabasePath()
 
-        // 检查数据库是否存在和可访问
-        guard FileManager.default.fileExists(atPath: nativeLaunchpadDB) else {
-            throw ImportError.databaseNotFound("Native Launchpad database not found")
+        guard FileManager.default.fileExists(atPath: dbPath) else {
+            throw ImportError.databaseNotFound("Native Launchpad database not found at \(dbPath)")
         }
 
-        // 解析数据库
-        let launchpadData = try parseLaunchpadDatabase(at: nativeLaunchpadDB)
+        let data = try parseLaunchpadDatabase(at: dbPath)
 
-        // 转换并保存到 LaunchNext 格式
-        let result = try convertAndSave(launchpadData: launchpadData)
+        let result = try convertToPagesAndApply(launchpadData: data)
 
         return result
     }
 
-    /// 从指定的数据库路径导入（适配旧版 apps/groups/items 架构）
-    func importFromDatabasePath(_ dbPath: String) throws -> ImportResult {
-        guard FileManager.default.fileExists(atPath: dbPath) else {
-            throw ImportError.databaseNotFound("Database not found: \(dbPath)")
-        }
-        let data = try parseLaunchpadDatabase(at: dbPath)
-        return try convertAndSave(launchpadData: data)
-    }
+    // MARK: - Native DB path
 
-    /// 从旧版归档（.lmy/.zip）导入：归档中包含名为 db 的 SQLite 文件
-    func importFromLegacyArchive(at url: URL) throws -> ImportResult {
-        let fm = FileManager.default
-        let ext = url.pathExtension.lowercased()
-
-        // 如果直接给的是 SQLite 文件
-        if ext == "db" {
-            return try importFromDatabasePath(url.path)
-        }
-
-        // 仅支持 .lmy/.zip
-        guard ext == "lmy" || ext == "zip" else {
-            throw ImportError.systemError("Unsupported file type: .\(ext)")
-        }
-
-        let tmpDir = fm.temporaryDirectory.appendingPathComponent("LNImport_\(UUID().uuidString)", isDirectory: true)
-        try fm.createDirectory(at: tmpDir, withIntermediateDirectories: true)
-        defer { try? fm.removeItem(at: tmpDir) }
-
-        // 使用系统 unzip 解压
-        let task = Process()
-        task.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
-        task.arguments = ["-o", url.path, "-d", tmpDir.path]
-        let pipe = Pipe()
-        task.standardOutput = pipe
-        task.standardError = pipe
-        try task.run()
-        task.waitUntilExit()
-        guard task.terminationStatus == 0 else {
-            throw ImportError.systemError("Unzip failed")
-        }
-
-        let dbPath = tmpDir.appendingPathComponent("db").path
-        guard fm.fileExists(atPath: dbPath) else {
-            throw ImportError.databaseNotFound("db file not found in archive")
-        }
-
-        return try importFromDatabasePath(dbPath)
-    }
-
-    // MARK: - 私有方法
-
-    /// 获取原生 Launchpad 数据库路径
     private func getNativeLaunchpadDatabasePath() throws -> String {
         let task = Process()
         task.executableURL = URL(fileURLWithPath: "/usr/bin/getconf")
@@ -101,8 +44,11 @@ class NativeLaunchpadImporter {
         let userDir = String(data: data, encoding: .utf8)?
             .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
 
+        // Native Launchpad DB
         return "/private\(userDir)com.apple.dock.launchpad/db/db"
     }
+
+    // MARK: - Parse Z_* schema
 
     private func parseLaunchpadDatabase(at dbPath: String) throws -> LaunchpadData {
         var db: OpaquePointer?
@@ -111,35 +57,68 @@ class NativeLaunchpadImporter {
         }
         defer { sqlite3_close(db) }
 
-        // 打印数据库里有哪些表，便于兼容不同 macOS 版本
         logAllTables(in: db)
 
-        // 快速自检：检查我们依赖的三张表是否存在
-        let hasLegacySchema =
-            tableExists(in: db, name: "apps") &&
-            tableExists(in: db, name: "groups") &&
-            tableExists(in: db, name: "items")
-        guard hasLegacySchema else {
-            // Currently only legacy schema supported; provide table list to adapt Z*-based schema
-            throw ImportError.databaseError("Non-legacy schema detected. Please provide table list for adaptation.")
+        // We only support modern Z_* schema
+        guard tableExists(in: db, name: "ZAPP"),
+              tableExists(in: db, name: "ZGROUP"),
+              tableExists(in: db, name: "ZITEM")
+        else {
+            throw ImportError.databaseError("Unsupported Launchpad database schema (ZAPP/ZGROUP/ZITEM not found)")
         }
 
-        // 解析应用
-        let apps = try parseApps(from: db)
-        print("📱 Found \(apps.count) apps")
+        // ZAPP
+        var apps: [String: LaunchpadDBApp] = [:]
+        let appQuery = "SELECT Z_PK, ZTITLE, ZBUNDLEID FROM ZAPP"
+        var appStmt: OpaquePointer?
+        guard sqlite3_prepare_v2(db, appQuery, -1, &appStmt, nil) == SQLITE_OK else {
+            throw ImportError.databaseError("Failed to query ZAPP table")
+        }
+        defer { sqlite3_finalize(appStmt) }
+        while sqlite3_step(appStmt) == SQLITE_ROW {
+            let pk = String(sqlite3_column_int(appStmt, 0))
+            let title = sqlite3_column_text(appStmt, 1) != nil ? String(cString: sqlite3_column_text(appStmt, 1)) : "Unknown App"
+            let bundleId = sqlite3_column_text(appStmt, 2) != nil ? String(cString: sqlite3_column_text(appStmt, 2)) : ""
+            apps[pk] = LaunchpadDBApp(itemId: pk, title: title, bundleId: bundleId)
+        }
 
-        // 解析文件夹
-        let groups = try parseGroups(from: db)
-        print("📁 Found \(groups.count) folders")
+        // ZGROUP
+        var groups: [String: LaunchpadGroup] = [:]
+        let groupQuery = "SELECT Z_PK, ZTITLE FROM ZGROUP"
+        var groupStmt: OpaquePointer?
+        guard sqlite3_prepare_v2(db, groupQuery, -1, &groupStmt, nil) == SQLITE_OK else {
+            throw ImportError.databaseError("Failed to query ZGROUP table")
+        }
+        defer { sqlite3_finalize(groupStmt) }
+        while sqlite3_step(groupStmt) == SQLITE_ROW {
+            let pk = String(sqlite3_column_int(groupStmt, 0))
+            let title = sqlite3_column_text(groupStmt, 1) != nil ? String(cString: sqlite3_column_text(groupStmt, 1)).trimmingCharacters(in: .whitespacesAndNewlines) : "Untitled"
+            groups[pk] = LaunchpadGroup(itemId: pk, title: title.isEmpty ? "Untitled" : title)
+        }
 
-        // 解析层级结构
-        let items = try parseItems(from: db)
-        print("🗂 Found \(items.count) layout items")
+        // ZITEM
+        var items: [LaunchpadDBItem] = []
+        let itemQuery = "SELECT Z_PK, ZTYPE, ZPARENT, ZORDER FROM ZITEM ORDER BY ZPARENT, ZORDER"
+        var itemStmt: OpaquePointer?
+        guard sqlite3_prepare_v2(db, itemQuery, -1, &itemStmt, nil) == SQLITE_OK else {
+            throw ImportError.databaseError("Failed to query ZITEM table")
+        }
+        defer { sqlite3_finalize(itemStmt) }
+        while sqlite3_step(itemStmt) == SQLITE_ROW {
+            let pk = String(sqlite3_column_int(itemStmt, 0))
+            let type = sqlite3_column_int(itemStmt, 1)
+            let parent = sqlite3_column_int(itemStmt, 2)
+            let order = sqlite3_column_int(itemStmt, 3)
+            items.append(LaunchpadDBItem(rowId: pk, type: Int(type), parentId: Int(parent), ordering: Int(order)))
+        }
+
+        print("📱 Found \(apps.count) apps (ZAPP)")
+        print("📁 Found \(groups.count) folders (ZGROUP)")
+        print("🗂 Found \(items.count) layout items (ZITEM)")
 
         return LaunchpadData(apps: apps, groups: groups, items: items)
     }
 
-    // MARK: - 数据库结构探测
     private func logAllTables(in db: OpaquePointer?) {
         let query = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
         var stmt: OpaquePointer?
@@ -171,302 +150,179 @@ class NativeLaunchpadImporter {
         return false
     }
 
-    private func parseApps(from db: OpaquePointer?) throws -> [String: LaunchpadDBApp] {
-        var apps: [String: LaunchpadDBApp] = [:]
-        let query = "SELECT item_id, title, bundleid, storeid FROM apps"
-        var stmt: OpaquePointer?
+    // MARK: - Convert to AppGridItem pages
 
-        guard sqlite3_prepare_v2(db, query, -1, &stmt, nil) == SQLITE_OK else {
-            throw ImportError.databaseError("Failed to query apps table")
-        }
-        defer { sqlite3_finalize(stmt) }
-
-        while sqlite3_step(stmt) == SQLITE_ROW {
-            let itemId = String(sqlite3_column_int(stmt, 0))
-
-            // 安全获取字符串，处理 NULL 值
-            let title = sqlite3_column_text(stmt, 1) != nil
-                ? String(cString: sqlite3_column_text(stmt, 1))
-                : "Unknown App"
-
-            let bundleId = sqlite3_column_text(stmt, 2) != nil
-                ? String(cString: sqlite3_column_text(stmt, 2))
-                : ""
-
-            if bundleId == "com.apple.Maps" || bundleId == "com.apple.Music" {
-                print("[Importer][Debug] bundleId=\(bundleId) title=\(title)")
-            }
-
-            apps[itemId] = LaunchpadDBApp(
-                itemId: itemId,
-                title: title,
-                bundleId: bundleId
-            )
-        }
-
-        return apps
-    }
-
-    private func parseGroups(from db: OpaquePointer?) throws -> [String: LaunchpadGroup] {
-        var groups: [String: LaunchpadGroup] = [:]
-        let query = "SELECT item_id, title FROM groups"
-        var stmt: OpaquePointer?
-
-        guard sqlite3_prepare_v2(db, query, -1, &stmt, nil) == SQLITE_OK else {
-            throw ImportError.databaseError("Failed to query groups table")
-        }
-        defer { sqlite3_finalize(stmt) }
-
-        while sqlite3_step(stmt) == SQLITE_ROW {
-            let itemId = String(sqlite3_column_int(stmt, 0))
-            let title = sqlite3_column_text(stmt, 1) != nil
-                ? String(cString: sqlite3_column_text(stmt, 1))
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                : "Untitled"
-
-            groups[itemId] = LaunchpadGroup(
-                itemId: itemId,
-                title: title.isEmpty ? "Untitled" : title
-            )
-        }
-
-        return groups
-    }
-
-    private func parseItems(from db: OpaquePointer?) throws -> [LaunchpadDBItem] {
-        var items: [LaunchpadDBItem] = []
-        let query = """
-            SELECT rowid, uuid, flags, type, parent_id, ordering
-            FROM items
-            ORDER BY parent_id, ordering
-        """
-        var stmt: OpaquePointer?
-
-        guard sqlite3_prepare_v2(db, query, -1, &stmt, nil) == SQLITE_OK else {
-            throw ImportError.databaseError("Failed to query items table")
-        }
-        defer { sqlite3_finalize(stmt) }
-
-        while sqlite3_step(stmt) == SQLITE_ROW {
-            let rowId = String(sqlite3_column_int(stmt, 0))
-            let type = sqlite3_column_int(stmt, 3)
-            let parentId = sqlite3_column_int(stmt, 4)
-            let ordering = sqlite3_column_int(stmt, 5)
-
-            items.append(LaunchpadDBItem(
-                rowId: rowId,
-                type: Int(type),
-                parentId: Int(parentId),
-                ordering: Int(ordering)
-            ))
-        }
-
-        return items
-    }
-
-    private func convertAndSave(launchpadData: LaunchpadData) throws -> ImportResult {
-        print("🔄 Start converting data...")
-
-        // 为便于定位，先构建父子索引
+    @MainActor private func convertToPagesAndApply(launchpadData: LaunchpadData) throws -> ImportResult {
+        // Build parent -> children index
         var childrenByParent: [Int: [LaunchpadDBItem]] = [:]
         for item in launchpadData.items { childrenByParent[item.parentId, default: []].append(item) }
         for key in childrenByParent.keys { childrenByParent[key]?.sort { $0.ordering < $1.ordering } }
 
-        // 1) 顶层容器（即顶层页组）：parent_id = 1, type = 3
+        // Top-level containers: parent_id = 1, type = 3
         let topContainers = launchpadData.items
             .filter { $0.type == 3 && $0.parentId == 1 }
             .sorted { $0.ordering < $1.ordering }
 
         #if DEBUG
-        print("🧭 顶层容器顺序: \(topContainers.map{ $0.rowId }.joined(separator: ", "))")
+        print("🧭 Top containers: \(topContainers.map{ $0.rowId }.joined(separator: ", "))")
         #endif
 
-        // 清空现有数据
-        try clearExistingData()
-        print("🗑 Clearing existing layout data")
-
+        var pages: [[AppGridItem]] = []
         var convertedApps = 0
         var convertedFolders = 0
         var failedApps: [String] = []
 
-        // 2) 逐个顶层容器构建页面
         for (pageIndex, container) in topContainers.enumerated() {
-            let containerId = Int(container.rowId) ?? 0
-            let direct = (childrenByParent[containerId] ?? [])
-            let directApps = direct.filter { $0.type == 4 }
-            let folderPages = direct.filter { $0.type == 2 }
+            var pageItems: [AppGridItem] = []
 
-            // 本页最大位置 = 两类条目的 ordering 最大值
-            let maxPos = max(directApps.map{ $0.ordering }.max() ?? -1,
-                             folderPages.map{ $0.ordering }.max() ?? -1)
+            let containerId = intValue(container.rowId)
+            let directChildren = (childrenByParent[containerId] ?? [])
+            let directApps = directChildren.filter { $0.type == 4 }
+            let folderPages = directChildren.filter { $0.type == 2 }
 
-            print("📄 Page #\(pageIndex + 1): apps=\(directApps.count), folderPages=\(folderPages.count), maxPos=\(maxPos)")
-
-            var occupied = Set<Int>()
-
-            // 2.1) 放置直接应用
+            // Place direct apps based on ordering
             for appItem in directApps {
                 if let app = launchpadData.apps[appItem.rowId],
                    let appInfo = findLocalApp(bundleId: app.bundleId, title: app.title) {
-                    try saveAppToPosition(appInfo: appInfo, pageIndex: pageIndex, position: appItem.ordering)
-                    occupied.insert(appItem.ordering)
+                    let uiApp = AppInfo(name: appInfo.name, icon: appInfo.icon, path: appInfo.path, page: pageIndex)
+                    pageItems.append(.app(uiApp))
                     convertedApps += 1
                 } else {
-                    try saveEmptySlot(pageIndex: pageIndex, position: appItem.ordering)
-                    occupied.insert(appItem.ordering)
                     failedApps.append(launchpadData.apps[appItem.rowId]?.title ?? appItem.rowId)
                 }
             }
 
-            // 2.2) 放置文件夹（由子页 type=2 表示）
+            // Place folders — each folder is represented by one or more ZITEM.type=2 pages under this container
+            // We create one folder per folder-page ordering, aggregating child apps from the folder slot containers (type=3)
             for page in folderPages {
-                let folderNameRaw = (launchpadData.groups[page.rowId]?.title ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-                let pageId = Int(page.rowId) ?? 0
+                let pageId = intValue(page.rowId)
                 let slotContainers = (childrenByParent[pageId] ?? []).filter { $0.type == 3 }
-                var folderAppInfos: [AppInfo] = []
-                for sc in slotContainers {
-                    let scId = Int(sc.rowId) ?? 0
-                    for child in (childrenByParent[scId] ?? []) where child.type == 4 {
+
+                // Collect apps in folder
+                var folderApps: [AppInfo] = []
+                for slot in slotContainers {
+                    let slotId = intValue(slot.rowId)
+                    let appChildren = (childrenByParent[slotId] ?? []).filter { $0.type == 4 }
+                    for child in appChildren {
                         if let app = launchpadData.apps[child.rowId],
                            let info = findLocalApp(bundleId: app.bundleId, title: app.title) {
-                            folderAppInfos.append(info)
+                            let uiApp = AppInfo(name: info.name, icon: info.icon, path: info.path, page: pageIndex)
+                            folderApps.append(uiApp)
+                        } else {
+                            failedApps.append(launchpadData.apps[child.rowId]?.title ?? child.rowId)
                         }
                     }
                 }
 
+                // Folder name: use ZGROUP title if meaningful, else compose from top app names
+                let rawTitle = (launchpadData.groups[page.rowId]?.title ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
                 let finalName: String
-                if isPlaceholderFolderTitle(folderNameRaw) {
-                    // 用 DB 内的应用标题生成
-                    var names: [String] = []
-                    for sc in slotContainers {
-                        let scId = Int(sc.rowId) ?? 0
-                        for child in (childrenByParent[scId] ?? []) where child.type == 4 {
-                            if let app = launchpadData.apps[child.rowId] {
-                                let t = app.title.trimmingCharacters(in: .whitespacesAndNewlines)
-                                if !t.isEmpty { names.append(t) }
-                            }
-                        }
-                    }
-                    let top = Array(names.prefix(3))
-                    if top.isEmpty { finalName = "Untitled" }
-                    else if top.count == 1 { finalName = top[0] }
-                    else if top.count == 2 { finalName = top[0] + " + " + top[1] }
-                    else { finalName = top[0] + " + " + top[1] + " + …" }
+                if isPlaceholderFolderTitle(rawTitle) {
+                    finalName = computeFolderName(from: folderApps)
                 } else {
-                    finalName = folderNameRaw
+                    finalName = rawTitle
                 }
 
-                try saveFolderToPosition(name: finalName, apps: folderAppInfos, pageIndex: pageIndex, position: page.ordering)
-                occupied.insert(page.ordering)
+                let folder = Folder(name: finalName, page: pageIndex, apps: folderApps)
+                pageItems.append(.folder(folder))
                 convertedFolders += 1
             }
 
-            // 2.3) 补齐空位
-            if maxPos >= 0 {
-                for pos in 0...maxPos where !occupied.contains(pos) {
-                    try saveEmptySlot(pageIndex: pageIndex, position: pos)
+            // Sort page items by their original ordering within the container
+            // Combine both directApps and folderPages respecting their 'ordering'
+            let orderingMap: [UUID: Int] = {
+                var map: [UUID: Int] = [:]
+                // direct apps
+                for appItem in directApps {
+                    if let app = launchpadData.apps[appItem.rowId],
+                       let local = findLocalApp(bundleId: app.bundleId, title: app.title) {
+                        // find the matching element we appended
+                        if let idx = pageItems.firstIndex(where: {
+                            if case .app(let a) = $0 { return a.path == local.path }
+                            return false
+                        }) {
+                            map[pageItems[idx].id] = appItem.ordering
+                        }
+                    }
                 }
+                // folders (use folder page ordering)
+                for folderItem in folderPages {
+                    // We appended one folder per folderItem in the same sequence, so locate by name + page
+                    let rawTitle = (launchpadData.groups[folderItem.rowId]?.title ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                    let desiredName = isPlaceholderFolderTitle(rawTitle) ? nil : rawTitle
+                    // find first folder without an assigned ordering yet
+                    if let idx = pageItems.firstIndex(where: {
+                        if case .folder(let f) = $0 {
+                            if let dn = desiredName {
+                                return f.page == pageIndex && f.name == dn && map[$0.id] == nil
+                            } else {
+                                return f.page == pageIndex && map[$0.id] == nil
+                            }
+                        }
+                        return false
+                    }) {
+                        map[pageItems[idx].id] = folderItem.ordering
+                    }
+                }
+                return map
+            }()
+
+            pageItems.sort { (lhs, rhs) -> Bool in
+                let lo = orderingMap[lhs.id] ?? Int.max
+                let ro = orderingMap[rhs.id] ?? Int.max
+                if lo != ro { return lo < ro }
+                return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
             }
+
+            pages.append(pageItems)
         }
 
-        try modelContext.save()
-        print("💾 Save completed")
+        // Apply to app
+        AppManager.shared.pages = pages
 
-        let result = ImportResult(convertedApps: convertedApps, convertedFolders: convertedFolders, failedApps: failedApps)
         print("✅ Import finished: \(convertedApps) apps, \(convertedFolders) folders")
         if !failedApps.isEmpty { print("⚠️ \(failedApps.count) apps not found: \(failedApps.prefix(5).joined(separator: ", "))") }
-        return result
+
+        return ImportResult(convertedApps: convertedApps, convertedFolders: convertedFolders, failedApps: failedApps)
     }
 
-    private func buildHierarchy(from data: LaunchpadData) -> LaunchpadHierarchy {
-        // 说明（旧版 schema 结构）：
-        // 层级关系为 Root(type=1) → TopContainers(type=3) → Pages(type=2) → Slots(type=3) → Apps(type=4)
-        // 页面顺序应当按：TopContainers 的 ordering，再按各 TopContainer 下 Pages 的 ordering 依次展开。
-        // 槽位顺序：按 Page 的直接子项 Slots(type=3) 的 ordering。
+    // MARK: - Helpers
 
-        // 构建 parent -> children 的索引，便于快速查找
-        var childrenByParent: [Int: [LaunchpadDBItem]] = [:]
-        for item in data.items {
-            childrenByParent[item.parentId, default: []].append(item)
-        }
-        for key in childrenByParent.keys {
-            childrenByParent[key]?.sort { $0.ordering < $1.ordering }
-        }
+    private func intValue(_ s: String) -> Int { Int(s) ?? 0 }
 
-        // 寻找 Root 节点（可能存在多个 type=1，仅取作父级的那些）
-        let roots = data.items.filter { $0.type == 1 }
-        let rootIds: [Int]
-        if roots.isEmpty {
-            rootIds = [1] // 兜底：典型旧库中 root 为 1
-        } else {
-            // 按 ordering 排序（若无意义，则自然顺序）
-            rootIds = roots.sorted { $0.ordering < $1.ordering }.map { intValue($0.rowId) }
+    private func computeFolderName(from apps: [AppInfo]) -> String {
+        let names = apps.prefix(3).map { $0.name }
+        switch names.count {
+        case 0: return "Untitled"
+        case 1: return names[0]
+        case 2: return names[0] + " + " + names[1]
+        default: return names[0] + " + " + names[1] + " + …"
         }
-
-        // Top-level 容器（直接隶属于 Root 的 type=3）
-        var topContainers: [(rootIndex: Int, container: LaunchpadDBItem)] = []
-        for (idx, rootId) in rootIds.enumerated() {
-            let containers = (childrenByParent[rootId] ?? []).filter { $0.type == 3 }
-            for c in containers { topContainers.append((rootIndex: idx, container: c)) }
-        }
-        // 仅保留“真正承载页面”的容器（其直接子项包含 type=2）
-        topContainers = topContainers.filter { entry in
-            let pid = intValue(entry.container.rowId)
-            return (childrenByParent[pid] ?? []).contains(where: { $0.type == 2 })
-        }
-        // 以 (rootIndex, container.ordering) 排序，保持各 Root 内部顺序
-        topContainers.sort { lhs, rhs in
-            if lhs.rootIndex == rhs.rootIndex { return lhs.container.ordering < rhs.container.ordering }
-            return lhs.rootIndex < rhs.rootIndex
-        }
-        #if DEBUG
-        let tcIds = topContainers.map { $0.container.rowId }
-        print("🧭 顶层容器顺序: \(tcIds.joined(separator: ", "))")
-        #endif
-
-        // 计算页面顺序：每个 topContainer 下的 pages(type=2) 依次追加
-        var orderedPages: [LaunchpadDBItem] = []
-        for entry in topContainers {
-            let parentId = intValue(entry.container.rowId)
-            let pagesUnder = (childrenByParent[parentId] ?? []).filter { $0.type == 2 }
-            orderedPages.append(contentsOf: pagesUnder)
-        }
-        #if DEBUG
-        let pageIds = orderedPages.map { $0.rowId }
-        print("🧭 页面顺序: \(pageIds.joined(separator: ", "))")
-        #endif
-
-        // 槽位（每页的直接子项 type=3）
-        var pages: [LaunchpadPage] = []
-        for page in orderedPages {
-            let pid = intValue(page.rowId)
-            let slots = (childrenByParent[pid] ?? []).filter { $0.type == 3 }
-            pages.append(LaunchpadPage(items: slots))
-        }
-
-        // 文件夹映射：任意 containerId(type=3) → 其子应用(type=4)
-        var slotIdToApps: [String: [LaunchpadDBItem]] = [:]
-        for item in data.items where item.type == 4 {
-            slotIdToApps[String(item.parentId), default: []].append(item)
-        }
-        for key in slotIdToApps.keys {
-            slotIdToApps[key]?.sort { $0.ordering < $1.ordering }
-        }
-
-        return LaunchpadHierarchy(pages: pages, folderItems: slotIdToApps)
     }
 
-    private func intValue(_ s: String) -> Int {
-        return Int(s) ?? 0
+    private func isPlaceholderFolderTitle(_ s: String) -> Bool {
+        if s.isEmpty { return true }
+        let lower = s.lowercased()
+        let placeholders: Set<String> = [
+            "untitled",
+            "untitled folder",
+            "folder",
+            "new folder",
+            "未命名",
+            "未命名文件夹"
+        ]
+        return placeholders.contains(lower)
     }
 
+    // Resolve an app path from bundle id and title
     private func findLocalApp(bundleId: String, title: String) -> AppInfo? {
-        // 优先使用 NSWorkspace 查找
+        // Try bundle id via NSWorkspace
         if let appPath = NSWorkspace.shared.absolutePathForApplication(withBundleIdentifier: bundleId) {
-            return AppInfo.from(url: URL(fileURLWithPath: appPath), preferredName: title)
+            let url = URL(fileURLWithPath: appPath)
+            return appInfo(from: url, preferredName: title)
         }
 
-        // 备用方案：在常见路径中搜索
+        // Fallback: common directories
         let searchPaths = [
             "/Applications",
             "/System/Applications",
@@ -494,14 +350,12 @@ class NativeLaunchpadImporter {
         for case let url as URL in enumerator {
             if url.pathExtension == "app" {
                 if let bundle = Bundle(url: url) {
-                    // 精确匹配 bundle ID
                     if bundle.bundleIdentifier == bundleId {
-                        return AppInfo.from(url: url, preferredName: title)
+                        return appInfo(from: url, preferredName: title)
                     }
-                    // 备用：名称匹配
                     if let appName = bundle.infoDictionary?["CFBundleName"] as? String,
                        appName == title {
-                        return AppInfo.from(url: url, preferredName: title)
+                        return appInfo(from: url, preferredName: title)
                     }
                 }
             }
@@ -510,120 +364,46 @@ class NativeLaunchpadImporter {
         return nil
     }
 
-    private func findFolderApps(groupId: String, hierarchy: LaunchpadHierarchy, launchpadData: LaunchpadData) -> [AppInfo] {
-        let folderItems = hierarchy.folderItems[groupId] ?? []
-        var apps: [AppInfo] = []
+    // Build AppInfo from URL with localized display name and icon
+    private func appInfo(from url: URL, preferredName: String) -> AppInfo? {
+        let path = url.path
+        let fallbackName = url.deletingPathExtension().lastPathComponent
+        let displayName = localizedAppName(for: url, fallbackName: preferredName.isEmpty ? fallbackName : preferredName)
+        let icon = NSWorkspace.shared.icon(forFile: path)
+        icon.size = NSSize(width: 64, height: 64)
+        return AppInfo(name: displayName, icon: icon, path: path)
+    }
 
-        for item in folderItems {
-            if item.type == 4, // 应用
-               let app = launchpadData.apps[item.rowId],
-               let appInfo = findLocalApp(bundleId: app.bundleId, title: app.title) {
-                apps.append(appInfo)
+    private func localizedAppName(for url: URL, fallbackName: String) -> String {
+        var resolvedName: String?
+
+        func consider(_ rawValue: String?) {
+            guard let rawValue = rawValue else { return }
+            var trimmed = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.lowercased().hasSuffix(".app") {
+                trimmed = String(trimmed.dropLast(4))
+            }
+            guard !trimmed.isEmpty, resolvedName == nil, trimmed != fallbackName else { return }
+            resolvedName = trimmed
+        }
+
+        if let metadataItem = NSMetadataItem(url: url) {
+            consider(metadataItem.value(forAttribute: kMDItemDisplayName as String) as? String)
+
+            if let alternatesValue = metadataItem.value(forAttribute: "kMDItemAlternateNames") {
+                if let names = alternatesValue as? [String] {
+                    names.forEach { consider($0) }
+                } else if let names = alternatesValue as? NSArray {
+                    for case let name as String in names { consider(name) }
+                }
             }
         }
 
-        return apps
-    }
-
-    private func findSingleApp(inContainerId containerId: String, launchpadData: LaunchpadData, hierarchy: LaunchpadHierarchy) -> AppInfo? {
-        // 旧版 schema：单个应用的顶层项通常是一个 type=3 的容器，
-        // 其下挂着一个 type=4 的应用项。这里取第一个 app 子项。
-        if let items = hierarchy.folderItems[containerId] {
-            if let appItem = items.first, let app = launchpadData.apps[appItem.rowId] {
-                return findLocalApp(bundleId: app.bundleId, title: app.title)
-            }
-        }
-        return nil
-    }
-
-    private func computeFolderName(from apps: [AppInfo]) -> String {
-        let names = apps.prefix(3).map { $0.name }
-        switch names.count {
-        case 0: return "Untitled"
-        case 1: return names[0]
-        case 2: return names[0] + " + " + names[1]
-        default: return names[0] + " + " + names[1] + " + …"
-        }
-    }
-
-    private func isPlaceholderFolderTitle(_ s: String) -> Bool {
-        if s.isEmpty { return true }
-        let lower = s.lowercased()
-        let placeholders: Set<String> = [
-            "untitled",
-            "untitled folder",
-            "folder",
-            "new folder",
-            "未命名",
-            "未命名文件夹"
-        ]
-        return placeholders.contains(lower)
-    }
-
-    private func computeFolderNameFromDB(groupId: String, launchpadData: LaunchpadData, hierarchy: LaunchpadHierarchy) -> String {
-        let items = hierarchy.folderItems[groupId] ?? []
-        let titles: [String] = items.compactMap { (child: LaunchpadDBItem) -> String? in
-            guard child.type == 4, let app = launchpadData.apps[child.rowId] else { return nil }
-            let t = app.title.trimmingCharacters(in: .whitespacesAndNewlines)
-            return t.isEmpty ? nil : t
-        }
-        let top = Array(titles.prefix(3))
-        if top.isEmpty { return "" }
-        if top.count == 1 { return top[0] }
-        if top.count == 2 { return top[0] + " + " + top[1] }
-        return top[0] + " + " + top[1] + " + …"
-    }
-
-    private func clearExistingData() throws {
-        let descriptor = FetchDescriptor<PageEntryData>()
-        let existingEntries = try modelContext.fetch(descriptor)
-        for entry in existingEntries {
-            modelContext.delete(entry)
-        }
-    }
-
-    private func saveAppToPosition(appInfo: AppInfo, pageIndex: Int, position: Int) throws {
-        let slotId = "page-\(pageIndex)-pos-\(position)"
-        let entry = PageEntryData(
-            slotId: slotId,
-            pageIndex: pageIndex,
-            position: position,
-            kind: "app",
-            appPath: appInfo.url.path
-        )
-        modelContext.insert(entry)
-    }
-
-    private func saveFolderToPosition(name: String, apps: [AppInfo], pageIndex: Int, position: Int) throws {
-        let slotId = "page-\(pageIndex)-pos-\(position)"
-        let folderId = UUID().uuidString
-        let appPaths = apps.map { $0.url.path }
-
-        let entry = PageEntryData(
-            slotId: slotId,
-            pageIndex: pageIndex,
-            position: position,
-            kind: "folder",
-            folderId: folderId,
-            folderName: name,
-            appPaths: appPaths
-        )
-        modelContext.insert(entry)
-    }
-
-    private func saveEmptySlot(pageIndex: Int, position: Int) throws {
-        let slotId = "page-\(pageIndex)-pos-\(position)"
-        let entry = PageEntryData(
-            slotId: slotId,
-            pageIndex: pageIndex,
-            position: position,
-            kind: "empty"
-        )
-        modelContext.insert(entry)
+        return resolvedName ?? fallbackName
     }
 }
 
-// MARK: - 数据模型 (复用之前的)
+// MARK: - Data models used internally
 
 struct LaunchpadData {
     let apps: [String: LaunchpadDBApp]
@@ -644,18 +424,9 @@ struct LaunchpadGroup {
 
 struct LaunchpadDBItem {
     let rowId: String
-    let type: Int  // 1=root, 2=page, 3=folder, 4=app
+    let type: Int  // 1=root, 2=page, 3=container, 4=app
     let parentId: Int
     let ordering: Int
-}
-
-struct LaunchpadHierarchy {
-    let pages: [LaunchpadPage]
-    let folderItems: [String: [LaunchpadDBItem]]
-}
-
-struct LaunchpadPage {
-    let items: [LaunchpadDBItem]
 }
 
 struct ImportResult {
@@ -673,7 +444,7 @@ struct ImportResult {
         if !failedApps.isEmpty {
             lines.append("⚠️ Not found: \(failedApps.count)")
         }
-        
+
         return lines.joined(separator: "\n")
     }
 }
@@ -694,16 +465,6 @@ enum ImportError: LocalizedError {
             return "System error: \(msg)"
         case .conversionError(let msg):
             return "Conversion error: \(msg)"
-        }
-    }
-}
-
-// MARK: - 扩展
-
-extension Array {
-    func chunked(into size: Int) -> [[Element]] {
-        return stride(from: 0, to: count, by: size).map {
-            Array(self[$0..<Swift.min($0 + size, count)])
         }
     }
 }
