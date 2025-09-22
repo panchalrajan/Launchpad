@@ -1,20 +1,19 @@
 import SwiftUI
 
 struct Folder: Identifiable, Equatable {
-    let id: UUID
-    var name: String
-    var page: Int
-    var apps: [AppInfo]
-    
-    init(id: UUID = UUID(), name: String, page: Int, apps: [AppInfo]) {
-        self.id = id
-        self.name = name
-        self.apps = apps
-        self.page = page
-    }
-    
-    var previewApps: [AppInfo] {
-        Array(apps.prefix(9))
-    }
-}
+  let id: UUID
+  var name: String
+  var page: Int
+  var apps: [AppInfo]
 
+  init(id: UUID = UUID(), name: String, page: Int, apps: [AppInfo]) {
+    self.id = id
+    self.name = name
+    self.apps = apps
+    self.page = page
+  }
+
+  var previewApps: [AppInfo] {
+    Array(apps.prefix(9))
+  }
+}
