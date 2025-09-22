@@ -24,10 +24,7 @@ struct ItemDropDelegate: DropDelegate {
 
       DropAnimationHelper.performDelayedMove(delay: dropDelay) {
         if self.draggedItem != nil {
-          pages[draggedItem.page].move(
-            fromOffsets: IndexSet([fromIndex]),
-            toOffset: DropAnimationHelper.calculateMoveOffset(
-              fromIndex: fromIndex, toIndex: toIndex))
+          pages[draggedItem.page].move( fromOffsets: IndexSet([fromIndex]), toOffset: DropAnimationHelper.calculateMoveOffset(fromIndex: fromIndex, toIndex: toIndex))
         }
       }
     } else {

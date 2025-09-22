@@ -2,16 +2,26 @@ import AppKit
 import Foundation
 
 @MainActor
-final class AppManager {
+final class AppManager : ObservableObject {
   static let shared = AppManager()
+    
+    @Published var pages: [[AppGridItem]] {
+        didSet {
+            savePages(pages: pages)
+        }
+    }
 
   private let userDefaults = UserDefaults.standard
   private let gridItemsKey = "LaunchpadGridItems"
+    
+    private init() {
+      self.pages = [[]]
+    }
 
-  func loadGridItems(appsPerPage: Int) -> [[AppGridItem]] {
+  func loadGridItems(appsPerPage: Int) {
     let apps = discoverApps()
     let gridItems = loadLayoutFromUserDefaults(for: apps)
-    return groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
+    pages = groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
   }
 
   func savePages(pages: [[AppGridItem]]) {
@@ -52,9 +62,10 @@ final class AppManager {
     userDefaults.synchronize()
   }
 
-  func clearGridItems() {
+  func clearGridItems(appsPerPage: Int) {
     userDefaults.removeObject(forKey: gridItemsKey)
     userDefaults.synchronize()
+      loadGridItems(appsPerPage: appsPerPage)
   }
 
   private func discoverApps() -> [AppInfo] {

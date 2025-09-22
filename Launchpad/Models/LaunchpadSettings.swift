@@ -12,7 +12,9 @@ struct LaunchpadSettings: Codable, Equatable {
   static let defaultDropDelay: Double = 0.5
 
   init(
-    columns: Int = defaultColumns, rows: Int = defaultRows, iconSize: Double = defaultIconSize,
+    columns: Int = defaultColumns,
+    rows: Int = defaultRows,
+    iconSize: Double = defaultIconSize,
     dropDelay: Double = defaultDropDelay
   ) {
     self.columns = max(4, min(12, columns))

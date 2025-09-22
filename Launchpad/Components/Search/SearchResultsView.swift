@@ -27,7 +27,7 @@ struct SearchResultsView: View {
           .padding(.vertical, layout.vPadding)
         }
         .onTapGesture {
-          AppLauncher.shared.exit()
+          AppLauncher.exit()
         }
       }
     }

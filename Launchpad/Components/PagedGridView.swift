@@ -194,7 +194,7 @@ struct PagedGridView: View {
 
     switch event.keyCode {
     case 53:  // ESC key
-      AppLauncher.shared.exit()
+      AppLauncher.exit()
       return nil
     case 123:  // Left arrow key
       if currentPage > 0 {

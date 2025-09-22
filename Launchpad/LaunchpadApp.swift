@@ -2,10 +2,8 @@ import SwiftUI
 
 @main
 struct LaunchpadApp: App {
-  private let settingsManager = SettingsManager.shared
-  private let appManager = AppManager.shared
-  private let appLauncher = AppLauncher.shared
-  @State private var gridItemPages: [[AppGridItem]] = []
+  @StateObject private var settingsManager = SettingsManager.shared
+  @StateObject private var appManager = AppManager.shared
   @State private var showSettings = false
 
   var body: some Scene {
@@ -13,7 +11,7 @@ struct LaunchpadApp: App {
       ZStack(alignment: .topTrailing) {
         WindowAccessor()
         PagedGridView(
-          pages: $gridItemPages,
+          pages: $appManager.pages,
           columns: settingsManager.settings.columns,
           rows: settingsManager.settings.rows,
           iconSize: settingsManager.settings.iconSize,
@@ -32,7 +30,7 @@ struct LaunchpadApp: App {
             .interactiveDismissDisabled(false)
         }
         .onTapGesture {
-          AppLauncher.shared.exit()
+          AppLauncher.exit()
         }
       }
     }
@@ -51,7 +49,7 @@ struct LaunchpadApp: App {
   }
 
   private func loadGridItems() {
-    gridItemPages = appManager.loadGridItems(appsPerPage: settingsManager.settings.appsPerPage)
+    appManager.loadGridItems(appsPerPage: settingsManager.settings.appsPerPage)
   }
 
   private func saveGridItems(from pages: [[AppGridItem]]) {
@@ -59,8 +57,7 @@ struct LaunchpadApp: App {
   }
 
   private func clearGridItems() {
-    appManager.clearGridItems()
-    NSApp.terminate(nil)
+    appManager.clearGridItems(appsPerPage: settingsManager.settings.appsPerPage)
   }
 
   private func subscribeToSystemEvents() {
@@ -76,7 +73,7 @@ struct LaunchpadApp: App {
             print(
               "Exiting Launchpad because \(activatedApp.bundleIdentifier ?? "unknown") was activated"
             )
-            appLauncher.exit()
+            AppLauncher.exit()
           }
         }
       }

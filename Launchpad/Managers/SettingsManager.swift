@@ -1,10 +1,14 @@
 import Foundation
 
 @MainActor
-final class SettingsManager {
+final class SettingsManager : ObservableObject {
   static let shared = SettingsManager()
 
-  public var settings: LaunchpadSettings
+    @Published var settings: LaunchpadSettings {
+        didSet {
+            saveSettings()
+        }
+    }
 
   private let userDefaults = UserDefaults.standard
   private let settingsKey = "LaunchpadSettings"

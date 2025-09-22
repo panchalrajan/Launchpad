@@ -23,7 +23,7 @@ struct AppIconView: View {
     .opacity(isDragged ? 0.5 : 1.0)
     .animation(.easeInOut(duration: 0.2), value: isDragged)
     .onTapGesture {
-      AppLauncher.shared.launch(path: app.path)
+      AppLauncher.launch(path: app.path)
     }
   }
 }
