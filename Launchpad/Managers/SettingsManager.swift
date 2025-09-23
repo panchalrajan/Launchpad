@@ -42,7 +42,9 @@ final class SettingsManager : ObservableObject {
     iconSize: Double? = nil,
     dropDelay: Double? = nil,
     folderColumns: Int? = nil,
-    folderRows: Int? = nil
+    folderRows: Int? = nil,
+    scrollDebounceInterval: TimeInterval? = nil,
+    scrollActivationThreshold: CGFloat? = nil
   ) {
     settings = LaunchpadSettings(
       columns: columns ?? settings.columns,
@@ -50,7 +52,9 @@ final class SettingsManager : ObservableObject {
       iconSize: iconSize ?? settings.iconSize,
       dropDelay: dropDelay ?? settings.dropDelay,
       folderColumns: folderColumns ?? settings.folderColumns,
-      folderRows: folderRows ?? settings.folderRows
+      folderRows: folderRows ?? settings.folderRows,
+      scrollDebounceInterval: scrollDebounceInterval ?? settings.scrollDebounceInterval,
+      scrollActivationThreshold: scrollActivationThreshold ?? settings.scrollActivationThreshold
     )
   }
 
