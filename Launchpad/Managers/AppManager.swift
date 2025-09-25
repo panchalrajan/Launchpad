@@ -208,7 +208,7 @@ final class AppManager : ObservableObject {
                     itemsOnCurrentPage = 0
                 }
                 
-                let updatedItem = item.page != currentPage ? updateItemPage(item, to: currentPage) : item
+                let updatedItem = item.page != currentPage ? updateItemPage(item: item, to: currentPage) : item
                 currentPageItems.append(updatedItem)
                 itemsOnCurrentPage += 1
             }
@@ -221,7 +221,7 @@ final class AppManager : ObservableObject {
         return pages.isEmpty ? [[]] : pages
     }
     
-    private func updateItemPage(_ item: AppGridItem, to page: Int) -> AppGridItem {
+    private func updateItemPage(item: AppGridItem, to page: Int) -> AppGridItem {
         switch item {
         case .app(let app):
             return .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: page))
@@ -231,7 +231,7 @@ final class AppManager : ObservableObject {
     }
     
     private func getLocalizedAppName(for url: URL, fallbackName: String) -> String {
-        var resolvedName: String?
+        var resolvedName = fallbackName
         
         if let rawValue = NSMetadataItem(url: url)?.value(forAttribute: kMDItemDisplayName as String) as? String
         {
@@ -242,6 +242,6 @@ final class AppManager : ObservableObject {
             resolvedName = trimmed
         }
         
-        return resolvedName ?? fallbackName
+        return resolvedName
     }
 }
