@@ -33,7 +33,7 @@ final class AppManager : ObservableObject {
                     "id": app.id.uuidString,
                     "name": app.name,
                     "path": app.path,
-                    "page": app.page,
+                    "page": app.page
                 ]
             case .folder(let folder):
                 let appsData = folder.apps.map { app in
@@ -41,7 +41,7 @@ final class AppManager : ObservableObject {
                         "id": app.id.uuidString,
                         "name": app.name,
                         "path": app.path,
-                        "page": app.page,
+                        "page": app.page
                     ]
                 }
                 return [
@@ -49,11 +49,10 @@ final class AppManager : ObservableObject {
                     "id": folder.id.uuidString,
                     "name": folder.name,
                     "page": folder.page,
-                    "apps": appsData,
+                    "apps": appsData
                 ]
             }
         }
-        
         userDefaults.set(itemsData, forKey: gridItemsKey)
         userDefaults.synchronize()
     }
@@ -66,13 +65,7 @@ final class AppManager : ObservableObject {
     
     private func discoverApps() -> [AppInfo] {
         let appPaths = ["/Applications", "/System/Applications"]
-        var foundApps: [AppInfo] = []
-        
-        for basePath in appPaths {
-            foundApps.append(contentsOf: discoverAppsRecursively(in: basePath))
-        }
-        
-        return foundApps.sorted { $0.name.lowercased() < $1.name.lowercased() }
+        return appPaths.flatMap { discoverAppsRecursively(in: $0) }.sorted { $0.name.lowercased() < $1.name.lowercased() }
     }
     
     private func discoverAppsRecursively(
@@ -83,49 +76,36 @@ final class AppManager : ObservableObject {
         else { return [] }
         
         var foundApps: [AppInfo] = []
-        
         for item in contents {
             let fullPath = "\(directory)/\(item)"
-            
             if item.hasSuffix(".app") {
                 let fallbackName = item.replacingOccurrences(of: ".app", with: "")
                 let appName = getLocalizedAppName(for: URL(fileURLWithPath: fullPath), fallbackName: fallbackName)
-                let icon = NSWorkspace.shared.icon(forFile: fullPath)
-                icon.size = NSSize(width: 64, height: 64)
+                let icon = NSWorkspace.shared.icon(forFile: fullPath).flattenedForConsistency(targetPixelSize: 256)
                 foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath))
             } else if shouldSearchDirectory(item: item, at: fullPath) {
-                foundApps.append(
-                    contentsOf: discoverAppsRecursively(
-                        in: fullPath, maxDepth: maxDepth, currentDepth: currentDepth + 1
-                    ))
+                foundApps.append(contentsOf: discoverAppsRecursively(in: fullPath, maxDepth: maxDepth, currentDepth: currentDepth + 1))
             }
         }
-        
         return foundApps
     }
     
     private func shouldSearchDirectory(item: String, at path: String) -> Bool {
         let skipDirectories = [".Trash", ".DS_Store", ".localized"]
         var isDirectory: ObjCBool = false
-        
         return FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)
         && isDirectory.boolValue && !skipDirectories.contains(item) && !item.hasPrefix(".")
     }
     
     private func loadLayoutFromUserDefaults(for apps: [AppInfo]) -> [AppGridItem] {
-        let savedData = userDefaults.array(forKey: gridItemsKey) as? [[String: Any]]
-        
-        if savedData == nil {
+        guard let savedData = userDefaults.array(forKey: gridItemsKey) as? [[String: Any]] else {
             return apps.map { .app($0) }
         }
-        
         let appsByPath = Dictionary(uniqueKeysWithValues: apps.map { ($0.path, $0) })
         var gridItems: [AppGridItem] = []
         var usedPaths = Set<String>()
-        
-        for itemData in savedData! {
+        for itemData in savedData {
             guard let type = itemData["type"] as? String else { continue }
-            
             switch type {
             case "app":
                 if let gridItem = loadAppItem(from: itemData, appsByPath: appsByPath) {
@@ -141,46 +121,30 @@ final class AppManager : ObservableObject {
                 break
             }
         }
-        
         for app in apps where !usedPaths.contains(app.path) {
-            let appWithPage = AppInfo(name: app.name, icon: app.icon, path: app.path)
-            gridItems.append(.app(appWithPage))
+            gridItems.append(.app(app))
         }
-        
         return gridItems
     }
     
-    private func loadAppItem(from itemData: [String: Any], appsByPath: [String: AppInfo])
-    -> AppGridItem?
-    {
+    private func loadAppItem(from itemData: [String: Any], appsByPath: [String: AppInfo]) -> AppGridItem? {
         guard let path = itemData["path"] as? String,
-              let baseApp = appsByPath[path]
-        else { return nil }
-        
+              let baseApp = appsByPath[path] else { return nil }
         let savedPage = itemData["page"] as? Int ?? 0
-        let appWithPage = AppInfo(
-            name: baseApp.name, icon: baseApp.icon, path: baseApp.path, page: savedPage)
+        let appWithPage = AppInfo(name: baseApp.name, icon: baseApp.icon, path: baseApp.path, page: savedPage)
         return .app(appWithPage)
     }
     
-    private func loadFolderItem(from itemData: [String: Any], appsByPath: [String: AppInfo])
-    -> AppGridItem?
-    {
+    private func loadFolderItem(from itemData: [String: Any], appsByPath: [String: AppInfo]) -> AppGridItem? {
         guard let folderName = itemData["name"] as? String,
-              let appsData = itemData["apps"] as? [[String: Any]]
-        else { return nil }
-        
+              let appsData = itemData["apps"] as? [[String: Any]] else { return nil }
         let folderApps = appsData.compactMap { appData -> AppInfo? in
             guard let path = appData["path"] as? String,
-                  let baseApp = appsByPath[path]
-            else { return nil }
-            
+                  let baseApp = appsByPath[path] else { return nil }
             let savedPage = appData["page"] as? Int ?? 0
             return AppInfo(name: baseApp.name, icon: baseApp.icon, path: baseApp.path, page: savedPage)
         }
-        
         guard !folderApps.isEmpty else { return nil }
-        
         let savedPage = itemData["page"] as? Int ?? 0
         let folder = Folder(name: folderName, page: savedPage, apps: folderApps)
         return .folder(folder)
@@ -188,18 +152,14 @@ final class AppManager : ObservableObject {
     
     private func groupItemsByPage(items: [AppGridItem], appsPerPage: Int) -> [[AppGridItem]] {
         guard !items.isEmpty else { return [[]] }
-        
         let groupedByPage = Dictionary(grouping: items) { $0.page }
         let sortedPages = groupedByPage.keys.sorted()
-        
         var pages: [[AppGridItem]] = []
         var currentPage = 0
         var itemsOnCurrentPage = 0
         var currentPageItems: [AppGridItem] = []
-        
         for pageNum in sortedPages {
             let pageItems = groupedByPage[pageNum] ?? []
-            
             for item in pageItems {
                 if itemsOnCurrentPage >= appsPerPage {
                     pages.append(currentPageItems)
@@ -207,17 +167,14 @@ final class AppManager : ObservableObject {
                     currentPageItems = []
                     itemsOnCurrentPage = 0
                 }
-                
                 let updatedItem = item.page != currentPage ? updateItemPage(item: item, to: currentPage) : item
                 currentPageItems.append(updatedItem)
                 itemsOnCurrentPage += 1
             }
         }
-        
         if !currentPageItems.isEmpty {
             pages.append(currentPageItems)
         }
-        
         return pages.isEmpty ? [[]] : pages
     }
     
@@ -231,17 +188,13 @@ final class AppManager : ObservableObject {
     }
     
     private func getLocalizedAppName(for url: URL, fallbackName: String) -> String {
-        var resolvedName = fallbackName
-        
-        if let rawValue = NSMetadataItem(url: url)?.value(forAttribute: kMDItemDisplayName as String) as? String
-        {
+        if let rawValue = NSMetadataItem(url: url)?.value(forAttribute: kMDItemDisplayName as String) as? String {
             var trimmed = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
             if trimmed.lowercased().hasSuffix(".app") {
                 trimmed = String(trimmed.dropLast(4))
             }
-            resolvedName = trimmed
+            return trimmed
         }
-        
-        return resolvedName
+        return fallbackName
     }
 }
