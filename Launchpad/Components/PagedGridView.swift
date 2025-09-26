@@ -62,7 +62,7 @@ struct PagedGridView: View {
          }
          .overlay {
 
-               FolderOverlayView(
+               FolderDetailView(
                   pages: $pages,
                   folder: $selectedFolder,
                   settings: settings,
