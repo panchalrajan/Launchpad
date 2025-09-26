@@ -17,10 +17,6 @@ struct PagedGridView: View {
 
    var body: some View {
       ZStack {
-         Color.clear
-            .background(VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow))
-            .ignoresSafeArea()
-            .contentShape(Rectangle())
          VStack(spacing: 0) {
             SearchBarView(searchText: $searchText)
             GeometryReader { geo in
@@ -60,23 +56,20 @@ struct PagedGridView: View {
                searchText: searchText
             )
          }
-         .overlay {
+      }
+      FolderDetailView(
+         pages: $pages,
+         folder: $selectedFolder,
+         settings: settings,
+      )
 
-               FolderDetailView(
-                  pages: $pages,
-                  folder: $selectedFolder,
-                  settings: settings,
-               )
-
-               PageDropZonesView(
-                  currentPage: currentPage,
-                  totalPages: pages.count,
-                  draggedItem: draggedItem,
-                  onNavigateLeft: navigateToPreviousPage,
-                  onNavigateRight: navigateToNextPage
-               )
-            }
-         }
+      PageDropZonesView(
+         currentPage: currentPage,
+         totalPages: pages.count,
+         draggedItem: draggedItem,
+         onNavigateLeft: navigateToPreviousPage,
+         onNavigateRight: navigateToNextPage
+      )
    }
 
    private func handleItemTap(_ item: AppGridItem) {
@@ -85,9 +78,7 @@ struct PagedGridView: View {
          AppLauncher.launch(path: app.path)
       case .folder(let folder):
          selectedFolder = folder
-         withAnimation(.interpolatingSpring(stiffness: 300, damping: 30)) {
-
-         }
+         withAnimation(.interpolatingSpring(stiffness: 300, damping: 30)) {}
       }
    }
 

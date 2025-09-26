@@ -10,6 +10,7 @@ struct LaunchpadApp: App {
    var body: some Scene {
       WindowGroup {
          ZStack(alignment: .topTrailing) {
+            Color.clear.background(VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow))
             WindowAccessor()
             PagedGridView(
                pages: $appManager.pages,
@@ -37,6 +38,13 @@ struct LaunchpadApp: App {
             Button("Clear Grid Items") {
                clearGridItems()
             }
+            Divider()
+            Button("Export Layout to JSON") {
+               exportLayoutToJSON()
+            }
+            Button("Import Layout from JSON") {
+               importLayoutFromJSON()
+            }
          }
       }
    }
@@ -51,6 +59,14 @@ struct LaunchpadApp: App {
 
    private func clearGridItems() {
       appManager.clearGridItems(appsPerPage: settingsManager.settings.appsPerPage)
+   }
+
+   private func exportLayoutToJSON() {
+      appManager.exportLayout()
+   }
+
+   private func importLayoutFromJSON() {
+      appManager.importLayout(appsPerPage: settingsManager.settings.appsPerPage)
    }
 
    private func subscribeToSystemEvents() {
