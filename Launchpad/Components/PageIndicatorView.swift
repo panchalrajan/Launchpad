@@ -20,10 +20,8 @@ struct PageIndicatorView: View {
           .scaleEffect(index == currentPage ? 1.2 : 1.0)
           .animation(.easeInOut(duration: 0.2), value: currentPage)
           .onTapGesture {
-            if !isFolderOpen {
               withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
                 currentPage = index
-              }
             }
           }
       }

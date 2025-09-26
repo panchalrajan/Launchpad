@@ -64,7 +64,7 @@ struct LaunchpadApp: App {
                //loadGridItems()
             } else {
                print("Exiting Launchpad.")
-               //AppLauncher.exit()
+               AppLauncher.exit()
             }
          }
       }

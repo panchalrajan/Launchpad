@@ -24,9 +24,6 @@ struct SearchResultsView: View {
           .padding(.horizontal, layout.hPadding)
           .padding(.vertical, layout.vPadding)
         }
-        .onTapGesture {
-          AppLauncher.exit()
-        }
       }
     }
     .fadeInScale(isVisible: isVisible)
