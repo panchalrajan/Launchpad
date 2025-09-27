@@ -17,6 +17,7 @@ struct LaunchpadApp: App {
                 )
                 .opacity(showSettings ? 0.3 : 1.0)
                 .animation(.easeInOut(duration: 0.3), value: showSettings)
+                .onTapGesture(perform: AppLauncher.exit)
                 
                 if showSettings {
                     SettingsView(onDismiss: { showSettings = false })
@@ -24,7 +25,6 @@ struct LaunchpadApp: App {
             }
             .background(VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow))
             .onAppear(perform: initialize)
-            .onTapGesture(perform: AppLauncher.exit)
         }
         .windowStyle(.hiddenTitleBar)
     }

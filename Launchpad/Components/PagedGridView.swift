@@ -15,17 +15,19 @@ struct PagedGridView: View {
     @State private var searchText = ""
     @State private var draggedItem: AppGridItem?
     @State private var selectedFolder: Folder?
-
+    
     var body: some View {
         VStack(spacing: 0) {
             SearchBarView(searchText: $searchText)
             GeometryReader { geo in
+                let layout = LayoutMetrics(size: geo.size, columns: settings.columns, rows: settings.rows, iconSize: settings.iconSize)
                 if searchText.isEmpty {
                     HStack(spacing: 0) {
                         ForEach(pages.indices, id: \.self) { pageIndex in
                             SinglePageView(
                                 pages: $pages,
                                 draggedItem: $draggedItem,
+                                layout: layout,
                                 pageIndex: pageIndex,
                                 settings: settings,
                                 isFolderOpen: selectedFolder != nil,
@@ -39,19 +41,21 @@ struct PagedGridView: View {
                     .onAppear(perform: setupEventMonitoring)
                     .onDisappear(perform: cleanupEventMonitoring)
                 } else {
-                    SearchResultsView(apps: filteredApps(), settings: settings, onItemTap: handleItemTap)
-                        .frame(width: geo.size.width, height: geo.size.height)
+                    SearchResultsView(
+                        apps: filteredApps(),
+                        settings: settings,
+                        layout: layout,
+                        onItemTap: handleItemTap
+                    )
+                    .frame(width: geo.size.width, height: geo.size.height)
                 }
             }
-            
-            if searchText.isEmpty {
                 PageIndicatorView(
                     currentPage: $currentPage,
                     pageCount: pages.count,
                     isFolderOpen: selectedFolder != nil,
                     searchText: searchText
                 )
-            }
         }
         
         FolderDetailView(
@@ -68,7 +72,7 @@ struct PagedGridView: View {
             onNavigateRight: navigateToNextPage
         )
     }
-
+    
     private func handleItemTap(_ item: AppGridItem) {
         switch item {
         case .app(let app):
@@ -104,7 +108,7 @@ struct PagedGridView: View {
         
         return matchingApps
     }
-
+    
     private func setupEventMonitoring() {
         eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.scrollWheel, .keyDown]) { event in
             switch event.type {
@@ -124,7 +128,7 @@ struct PagedGridView: View {
             eventMonitor = nil
         }
     }
-
+    
     private func handleScrollEvent(_ event: NSEvent) -> NSEvent? {
         guard searchText.isEmpty && selectedFolder == nil else { return event }
         

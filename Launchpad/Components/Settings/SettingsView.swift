@@ -61,7 +61,6 @@ struct SettingsView: View {
          .overlay(
             RoundedRectangle(cornerRadius: 16).stroke(.white.opacity(0.2), lineWidth: 1)
          )
-         .onTapGesture(perform: {})
       }
    }
 
