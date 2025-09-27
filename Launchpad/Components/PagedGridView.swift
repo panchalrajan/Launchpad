@@ -39,7 +39,7 @@ struct PagedGridView: View {
                     .onAppear(perform: setupEventMonitoring)
                     .onDisappear(perform: cleanupEventMonitoring)
                 } else {
-                    SearchResultsView(apps: filteredApps(), settings: settings)
+                    SearchResultsView(apps: filteredApps(), settings: settings, onItemTap: handleItemTap)
                         .frame(width: geo.size.width, height: geo.size.height)
                 }
             }
