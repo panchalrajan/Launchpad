@@ -27,7 +27,7 @@ struct PageIndicatorView: View {
       }
     }
     .padding(.top, 16)
-    .padding(.bottom, 120)
+    .padding(.bottom, 40)
     .opacity(searchText.isEmpty && !isFolderOpen ? 1 : 0)
   }
 }
