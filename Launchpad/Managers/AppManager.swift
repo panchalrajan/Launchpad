@@ -209,7 +209,6 @@ final class AppManager : ObservableObject {
    }
 
    private func importLayoutFromJSON(filePath: URL, appsPerPage: Int) {
-
       do {
          let jsonData = try Data(contentsOf: filePath)
          guard let itemsArray = try JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]] else {

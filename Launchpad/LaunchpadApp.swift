@@ -6,47 +6,35 @@ struct LaunchpadApp: App {
    @StateObject private var appManager = AppManager.shared
    @State private var showSettings = false
    @State private var importAlertMessage: String?
-
+   
    var body: some Scene {
       WindowGroup {
          ZStack(alignment: .topTrailing) {
-            Color.clear.background(VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow))
             WindowAccessor()
             PagedGridView(
                pages: $appManager.pages,
                settings: settingsManager.settings,
             )
-            .onAppear {
-               loadGridItems()
-               subscribeToSystemEvents()
-            }
-            .sheet(isPresented: $showSettings) {
-               SettingsView()
-            }
-            .onTapGesture {
-               AppLauncher.exit()
-            }
+
+         }
+         .background(VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow))
+         .sheet(isPresented: $showSettings) {
+            SettingsView()
+         }
+         .onAppear {
+            initialize()
+         }
+         .onTapGesture {
+            AppLauncher.exit()
          }
       }
       .windowStyle(.hiddenTitleBar)
-      .commands {
-         CommandGroup(after: .appInfo) {
-            Button("Settings") {
-               showSettings = true
-            }
-            Divider()
-            Button("Clear Grid Items") {
-               clearGridItems()
-            }
-            Divider()
-            Button("Export Layout to JSON") {
-               exportLayoutToJSON()
-            }
-            Button("Import Layout from JSON") {
-               importLayoutFromJSON()
-            }
-         }
-      }
+   }
+
+   private func initialize() {
+      NSMenu.setMenuBarVisible(false)
+      loadGridItems()
+      subscribeToSystemEvents()
    }
 
    private func loadGridItems() {
@@ -71,8 +59,7 @@ struct LaunchpadApp: App {
 
    private func subscribeToSystemEvents() {
       NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { notification in
-         guard let info = notification.userInfo,
-               let activatedApp = info[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else { return }
+         guard let activatedApp = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else { return }
          let isSelf = activatedApp.bundleIdentifier == Bundle.main.bundleIdentifier
          Task { @MainActor in
             if (isSelf) {
