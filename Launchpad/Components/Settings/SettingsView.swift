@@ -28,68 +28,76 @@ struct SettingsView: View {
    }
 
    var body: some View {
-      VStack(spacing: 0) {
-         HStack {
-            Text(L10n.launchpadSettings)
-               .font(.title2)
-               .fontWeight(.semibold)
-            Spacer()
-            Button("✕") {
+      ZStack {
+         // Background overlay
+         Color.black.opacity(0.4)
+            .ignoresSafeArea()
+            .onTapGesture {
                onDismiss()
             }
-            .buttonStyle(.plain)
-            .foregroundColor(.secondary)
-            .font(.title3)
-         }
-         .padding(.bottom, 16)
-
-         TabView(selection: $selectedTab) {
-            layoutTab
-               .tabItem {
-                  Label(L10n.layout, systemImage: "grid")
+         VStack(spacing: 0) {
+            HStack {
+               Text(L10n.launchpadSettings)
+                  .font(.title2)
+                  .fontWeight(.semibold)
+               Spacer()
+               Button("✕") {
+                  onDismiss()
                }
-               .tag(0)
-
-            actionsTab
-               .tabItem {
-                  Label(L10n.actions, systemImage: "bolt")
-               }
-               .tag(1)
-         }
-         .frame(maxHeight: .infinity)
-
-         Spacer()
-
-         HStack(spacing: 16) {
-            Button(L10n.resetToDefaults) {
-               reset()
+               .buttonStyle(.plain)
+               .foregroundColor(.secondary)
+               .font(.title3)
             }
-            .buttonStyle(.bordered)
+            .padding(.bottom, 16)
+
+            TabView(selection: $selectedTab) {
+               layoutTab
+                  .tabItem {
+                     Label(L10n.layout, systemImage: "grid")
+                  }
+                  .tag(0)
+
+               actionsTab
+                  .tabItem {
+                     Label(L10n.actions, systemImage: "bolt")
+                  }
+                  .tag(1)
+            }
+            .frame(maxHeight: .infinity)
 
             Spacer()
 
-            Button(L10n.cancel) {
-               onDismiss()
-            }
-            .buttonStyle(.bordered)
+            HStack(spacing: 16) {
+               Button(L10n.resetToDefaults) {
+                  reset()
+               }
+               .buttonStyle(.bordered)
 
-            Button(L10n.apply) {
-               apply()
+               Spacer()
+
+               Button(L10n.cancel) {
+                  onDismiss()
+               }
+               .buttonStyle(.bordered)
+
+               Button(L10n.apply) {
+                  apply()
+               }
+               .buttonStyle(.borderedProminent)
             }
-            .buttonStyle(.borderedProminent)
          }
+         .padding(24)
+         .frame(width: 480, height: 500)
+         .background(
+            RoundedRectangle(cornerRadius: 16)
+               .fill(.regularMaterial)
+               .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 10)
+         )
+         .overlay(
+            RoundedRectangle(cornerRadius: 16)
+               .stroke(Color.white.opacity(0.2), lineWidth: 1)
+         )
       }
-      .padding(24)
-      .frame(width: 480, height: 500)
-      .background(
-         RoundedRectangle(cornerRadius: 16)
-            .fill(.regularMaterial)
-            .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 10)
-      )
-      .overlay(
-         RoundedRectangle(cornerRadius: 16)
-            .stroke(Color.white.opacity(0.2), lineWidth: 1)
-      )
    }
 
    private var layoutTab: some View {

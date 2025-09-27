@@ -8,45 +8,18 @@ struct LaunchpadApp: App {
 
    var body: some Scene {
       WindowGroup {
-         ZStack {
-            // Main content
-            ZStack(alignment: .topTrailing) {
-               WindowAccessor()
-               PagedGridView(
-                  pages: $appManager.pages,
-                  settings: settingsManager.settings,
-                  showSettings: { 
-                     withAnimation(.easeInOut(duration: 0.3)) {
-                        showSettings = true
-                     }
-                  }
-               )
-            }
+         ZStack() {
+            WindowAccessor()
+            PagedGridView(
+               pages: $appManager.pages,
+               settings: settingsManager.settings,
+               showSettings: { showSettings = true }
+            )
             .opacity(showSettings ? 0.3 : 1.0)
             .animation(.easeInOut(duration: 0.3), value: showSettings)
-            
-            // Settings overlay - centered
+
             if showSettings {
-               ZStack {
-                  // Background overlay
-                  Color.black.opacity(0.4)
-                     .ignoresSafeArea()
-                     .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                           showSettings = false
-                        }
-                     }
-                  
-                  // Centered settings view
-                  SettingsView(onDismiss: { 
-                     withAnimation(.easeInOut(duration: 0.3)) {
-                        showSettings = false
-                     }
-                  })
-                  .transition(.scale(scale: 0.8).combined(with: .opacity))
-               }
-               .zIndex(1)
-               .transition(.opacity)
+               SettingsView(onDismiss: { showSettings = false })
             }
          }
          .background(VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow))
