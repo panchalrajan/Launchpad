@@ -8,12 +8,12 @@
 "settings" = "Beállítások";
 "cancel" = "Mégse";
 "apply" = "Alkalmaz";
-"ok" = "OK";
+"ok" = "Ok";
 "close" = "Bezár";
 
 // MARK: - Settings View
-"launchpad_settings" = "Launchpad Beállítások";
-"reset_to_defaults" = "Alapértelmezett Visszaállítása";
+"launchpad_settings" = "Beállítások";
+"reset_to_defaults" = "Alapértelmezett";
 
 // MARK: - Layout Settings
 "layout" = "Elrendezés";
@@ -22,20 +22,20 @@
 "folder_columns" = "Mappa Oszlopok";
 "folder_rows" = "Mappa Sorok";
 "icon_size" = "Ikon Méret";
-"drop_animation_delay" = "Ejtési Animáció Késleltetés";
-"page_scroll_debounce" = "Oldal Görgetés Késleltetés";
-"page_scroll_threshold" = "Oldal Görgetés Küszöb";
+"drop_animation_delay" = "Animáció Késleltetés";
+"page_scroll_debounce" = "Görgetés Késleltetés";
+"page_scroll_threshold" = "Görgetés Küszöb";
 
 // MARK: - Actions Settings
 "actions" = "Műveletek";
-"layout_management" = "Elrendezés Kezelés";
-"export_layout" = "Elrendezés Exportálása";
-"import_layout" = "Elrendezés Importálása";
-"reset_options" = "Visszaállítási Lehetőségek";
-"clear_all_apps" = "Összes Alkalmazás Törlése";
+"layout_management" = "Elrendezés";
+"export_layout" = "Exportálás";
+"import_layout" = "Importálás";
+"reset_options" = "Visszaállítás";
+"clear_all_apps" = "Törlés";
 
 // MARK: - Alerts and Confirmations
-"clear_all_apps_title" = "Összes Alkalmazás Törlése";
+"clear_all_apps_title" = "Elrendezés Törlése";
 "clear_all_apps_message" = "Ez eltávolítja az összes alkalmazást az egyéni elrendezésből és visszaállítja az alapértelmezett ábécé sorrendet. Ez a művelet nem vonható vissza.";
 "clear" = "Törlés";
 
