@@ -43,6 +43,7 @@ If you like this project, and would like to have additional features, please sup
 
 #### ⌨️ **Keyboard Navigation**
 - `←/→` Arrow keys - Navigate between pages
+- `CMD + ,` - Open settings
 - `ESC` - Close application
 
 

@@ -1,0 +1,65 @@
+/* 
+  Localizable.strings (Hungarian)
+  Launchpad
+*/
+
+// MARK: - General
+"app_name" = "Launchpad";
+"settings" = "Beállítások";
+"cancel" = "Mégse";
+"apply" = "Alkalmaz";
+"ok" = "OK";
+"close" = "Bezár";
+
+// MARK: - Settings View
+"launchpad_settings" = "Launchpad Beállítások";
+"reset_to_defaults" = "Alapértelmezett Visszaállítása";
+
+// MARK: - Layout Settings
+"layout" = "Elrendezés";
+"columns" = "Oszlopok";
+"rows" = "Sorok";
+"folder_columns" = "Mappa Oszlopok";
+"folder_rows" = "Mappa Sorok";
+"icon_size" = "Ikon Méret";
+"drop_animation_delay" = "Ejtési Animáció Késleltetés";
+"page_scroll_debounce" = "Oldal Görgetés Késleltetés";
+"page_scroll_threshold" = "Oldal Görgetés Küszöb";
+
+// MARK: - Actions Settings
+"actions" = "Műveletek";
+"layout_management" = "Elrendezés Kezelés";
+"export_layout" = "Elrendezés Exportálása";
+"import_layout" = "Elrendezés Importálása";
+"reset_options" = "Visszaállítási Lehetőségek";
+"clear_all_apps" = "Összes Alkalmazás Törlése";
+
+// MARK: - Alerts and Confirmations
+"clear_all_apps_title" = "Összes Alkalmazás Törlése";
+"clear_all_apps_message" = "Ez eltávolítja az összes alkalmazást az egyéni elrendezésből és visszaállítja az alapértelmezett ábécé sorrendet. Ez a művelet nem vonható vissza.";
+"clear" = "Törlés";
+
+// MARK: - Search
+"search_placeholder" = "Keresés";
+"search_apps_placeholder" = "Alkalmazások keresése...";
+"no_results_title" = "Nincs Eredmény";
+"no_results_message" = "Nem található alkalmazás a keresésnek megfelelően.";
+"no_apps_found" = "Nem található alkalmazás";
+
+// MARK: - Folder Management
+"folder_name_placeholder" = "Mappa Neve";
+"untitled_folder" = "Névtelen Mappa";
+"new_folder" = "Új Mappa";
+
+// MARK: - Actions Placeholder
+"actions_placeholder" = "A műveletek itt lesznek elérhetők";
+
+// MARK: - Time Units
+"seconds_short" = "mp";
+"milliseconds_short" = "ms";
+
+// MARK: - Numbers
+"number_10" = "10";
+"number_200" = "200";
+"time_0_0s" = "0,0mp";
+"time_3_0s" = "3,0mp";

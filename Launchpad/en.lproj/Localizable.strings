@@ -1,0 +1,65 @@
+/* 
+  Localizable.strings (English)
+  Launchpad
+*/
+
+// MARK: - General
+"app_name" = "Launchpad";
+"settings" = "Settings";
+"cancel" = "Cancel";
+"apply" = "Apply";
+"ok" = "OK";
+"close" = "Close";
+
+// MARK: - Settings View
+"launchpad_settings" = "Launchpad Settings";
+"reset_to_defaults" = "Reset to Defaults";
+
+// MARK: - Layout Settings
+"layout" = "Layout";
+"columns" = "Columns";
+"rows" = "Rows";
+"folder_columns" = "Folder Columns";
+"folder_rows" = "Folder Rows";
+"icon_size" = "Icon Size";
+"drop_animation_delay" = "Drop Animation Delay";
+"page_scroll_debounce" = "Page Scroll Debounce";
+"page_scroll_threshold" = "Page Scroll Threshold";
+
+// MARK: - Actions Settings
+"actions" = "Actions";
+"layout_management" = "Layout Management";
+"export_layout" = "Export Layout";
+"import_layout" = "Import Layout";
+"reset_options" = "Reset Options";
+"clear_all_apps" = "Clear All Apps";
+
+// MARK: - Alerts and Confirmations
+"clear_all_apps_title" = "Clear All Apps";
+"clear_all_apps_message" = "This will remove all apps from your custom layout and reset to the default alphabetical order. This action cannot be undone.";
+"clear" = "Clear";
+
+// MARK: - Search
+"search_placeholder" = "Search";
+"search_apps_placeholder" = "Search apps...";
+"no_results_title" = "No Results";
+"no_results_message" = "No apps found matching your search.";
+"no_apps_found" = "No apps found";
+
+// MARK: - Folder Management
+"folder_name_placeholder" = "Folder Name";
+"untitled_folder" = "Untitled Folder";
+"new_folder" = "New Folder";
+
+// MARK: - Actions Placeholder
+"actions_placeholder" = "Actions will be available here";
+
+// MARK: - Time Units
+"seconds_short" = "s";
+"milliseconds_short" = "ms";
+
+// MARK: - Numbers
+"number_10" = "10";
+"number_200" = "200";
+"time_0_0s" = "0.0s";
+"time_3_0s" = "3.0s";

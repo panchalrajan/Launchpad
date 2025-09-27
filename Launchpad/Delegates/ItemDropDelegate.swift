@@ -112,7 +112,7 @@ struct ItemDropDelegate: DropDelegate {
          })
       else { return }
 
-      let folderName = "New Folder"
+      let folderName = L10n.newFolder
       let folder = Folder(name: folderName, page: app2.page, apps: [app1, app2])
       let folderItem = AppGridItem.folder(folder)
       let adjustedTargetIndex = app1Index < app2Index ? app2Index - 1 : app2Index

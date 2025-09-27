@@ -8,7 +8,7 @@ struct EmptySearchView: View {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 48))
                 .foregroundColor(.gray.opacity(0.8))
-            Text("No apps found")
+            Text(L10n.noAppsFound)
                 .font(.title2)
                 .foregroundColor(.gray.opacity(0.8))
                 .padding(.top, 10)

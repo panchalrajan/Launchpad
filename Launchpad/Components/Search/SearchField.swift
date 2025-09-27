@@ -13,7 +13,7 @@ struct SearchField: NSViewRepresentable {
     searchField.delegate = context.coordinator
     searchField.focusRingType = .none
     searchField.bezelStyle = .roundedBezel
-    searchField.placeholderString = "Search"
+    searchField.placeholderString = L10n.searchPlaceholder
     searchField.font = NSFont.systemFont(ofSize: 16, weight: .regular)
     searchField.alphaValue = 0.7
 

@@ -28,7 +28,7 @@ struct FolderDetailView: View {
                     HStack {
                         Spacer()
                         if editingName {
-                            TextField("Folder Name", text: Binding(get: { folder!.name }, set: { folder!.name = $0 }))
+                            TextField(L10n.folderNamePlaceholder, text: Binding(get: { folder!.name }, set: { folder!.name = $0 }))
                                 .textFieldStyle(.roundedBorder)
                                 .font(.title2)
                                 .fontWeight(.semibold)
