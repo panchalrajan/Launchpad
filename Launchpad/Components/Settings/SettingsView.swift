@@ -2,30 +2,11 @@ import SwiftUI
 
 struct SettingsView: View {
    private let settingsManager = SettingsManager.shared
-   private let onDismiss: () -> Void
+   private let appManager = AppManager.shared
+   let onDismiss: () -> Void
 
-   @State private var tempColumns: Int
-   @State private var tempRows: Int
-   @State private var tempIconSize: Double
-   @State private var tempDropDelay: Double
-   @State private var tempFolderColumns: Int
-   @State private var tempFolderRows: Int
-   @State private var tempScrollDebounceInterval: Double
-   @State private var tempScrollActivationThreshold: Double
    @State private var selectedTab = 0
-
-   init(onDismiss: @escaping () -> Void = {}) {
-      self.onDismiss = onDismiss
-      let settings = SettingsManager.shared.settings
-      _tempColumns = State(initialValue: settings.columns)
-      _tempRows = State(initialValue: settings.rows)
-      _tempIconSize = State(initialValue: settings.iconSize)
-      _tempDropDelay = State(initialValue: settings.dropDelay)
-      _tempFolderColumns = State(initialValue: settings.folderColumns)
-      _tempFolderRows = State(initialValue: settings.folderRows)
-      _tempScrollDebounceInterval = State(initialValue: settings.scrollDebounceInterval)
-      _tempScrollActivationThreshold = State(initialValue: Double(settings.scrollActivationThreshold))
-   }
+   @State private var settings: LaunchpadSettings = SettingsManager.shared.settings
 
    var body: some View {
       ZStack {
@@ -45,28 +26,22 @@ struct SettingsView: View {
             }
             .padding(.bottom, 16)
 
-         Picker("", selection: $selectedTab) {
-            Label(L10n.layout, systemImage: "grid").tag(0)
-            Label(L10n.actions, systemImage: "bolt").tag(1)
-         }
-         .pickerStyle(.segmented)
-         .padding(.bottom, 16)
-
-         Group {
-            if selectedTab == 0 {
-               LayoutSettings(
-                  tempColumns: $tempColumns,
-                  tempRows: $tempRows,
-                  tempIconSize: $tempIconSize,
-                  tempDropDelay: $tempDropDelay,
-                  tempFolderColumns: $tempFolderColumns,
-                  tempFolderRows: $tempFolderRows,
-                  tempScrollDebounceInterval: $tempScrollDebounceInterval,
-                  tempScrollActivationThreshold: $tempScrollActivationThreshold)
-            } else {
-               ActionsSettings()
+            Picker("", selection: $selectedTab) {
+               Label(L10n.layout, systemImage: "grid").tag(0)
+               Label(L10n.actions, systemImage: "bolt").tag(1)
             }
-         }
+            .pickerStyle(.segmented)
+            .padding(.bottom, 16)
+
+            Group {
+               if selectedTab == 0 {
+                  LayoutSettings(settings: $settings)
+               } else {
+                  ActionsSettings()
+               }
+            }
+
+            Spacer()
 
             HStack(spacing: 16) {
                Button(L10n.resetToDefaults, action: reset).buttonStyle(.bordered)
@@ -77,7 +52,7 @@ struct SettingsView: View {
          }
 
          .padding(24)
-         .frame(width: 480, height: 500)
+         .frame(width: 480, height: 520)
          .background(
             RoundedRectangle(cornerRadius: 16)
                .fill(.regularMaterial)
@@ -91,27 +66,33 @@ struct SettingsView: View {
    }
 
    private func apply() {
-      settingsManager.updateSettings(
-         columns: tempColumns,
-         rows: tempRows,
-         iconSize: tempIconSize,
-         dropDelay: tempDropDelay,
-         folderColumns: tempFolderColumns,
-         folderRows: tempFolderRows,
-         scrollDebounceInterval: tempScrollDebounceInterval,
-         scrollActivationThreshold: CGFloat(tempScrollActivationThreshold)
-      )
+      updateSettings()
       onDismiss()
    }
 
    private func reset() {
-      tempColumns = LaunchpadSettings.defaultColumns
-      tempRows = LaunchpadSettings.defaultRows
-      tempIconSize = LaunchpadSettings.defaultIconSize
-      tempDropDelay = LaunchpadSettings.defaultDropDelay
-      tempFolderColumns = LaunchpadSettings.defaultFolderColumns
-      tempFolderRows = LaunchpadSettings.defaultFolderRows
-      tempScrollDebounceInterval = LaunchpadSettings.defaultScrollDebounceInterval
-      tempScrollActivationThreshold = Double(LaunchpadSettings.defaultScrollActivationThreshold)
+      settings = LaunchpadSettings()
+      updateSettings()
+   }
+
+   private func updateSettings() {
+      let oldAppsPerPage = settingsManager.settings.appsPerPage
+      let newAppsPerPage = settings.appsPerPage
+
+      settingsManager.updateSettings(
+         columns: settings.columns,
+         rows: settings.rows,
+         iconSize: settings.iconSize,
+         dropDelay: settings.dropDelay,
+         folderColumns: settings.folderColumns,
+         folderRows: settings.folderRows,
+         scrollDebounceInterval: settings.scrollDebounceInterval,
+         scrollActivationThreshold: CGFloat(settings.scrollActivationThreshold)
+      )
+
+      // Recalculate pages if the number of apps per page changed
+      if oldAppsPerPage != newAppsPerPage {
+         appManager.recalculatePages(appsPerPage: newAppsPerPage)
+      }
    }
 }

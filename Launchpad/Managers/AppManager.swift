@@ -72,6 +72,11 @@ final class AppManager : ObservableObject {
       userDefaults.synchronize()
       loadGridItems(appsPerPage: appsPerPage)
    }
+   
+   func recalculatePages(appsPerPage: Int) {
+      let allItems = pages.flatMap { $0 }
+      pages = groupItemsByPage(items: allItems, appsPerPage: appsPerPage)
+   }
 
    private func discoverApps() -> [AppInfo] {
       let appPaths = ["/Applications", "/System/Applications"]
