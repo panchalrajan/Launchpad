@@ -45,7 +45,15 @@ struct SettingsView: View {
             }
             .padding(.bottom, 16)
 
-            TabView(selection: $selectedTab) {
+         Picker("", selection: $selectedTab) {
+            Label(L10n.layout, systemImage: "grid").tag(0)
+            Label(L10n.actions, systemImage: "bolt").tag(1)
+         }
+         .pickerStyle(.segmented)
+         .padding(.bottom, 16)
+
+         Group {
+            if selectedTab == 0 {
                LayoutSettings(
                   tempColumns: $tempColumns,
                   tempRows: $tempRows,
@@ -55,14 +63,10 @@ struct SettingsView: View {
                   tempFolderRows: $tempFolderRows,
                   tempScrollDebounceInterval: $tempScrollDebounceInterval,
                   tempScrollActivationThreshold: $tempScrollActivationThreshold)
-               .tabItem { Label(L10n.layout, systemImage: "grid")}
-               .tag(1)
-
+            } else {
                ActionsSettings()
-                  .tabItem { Label(L10n.actions, systemImage: "bolt")}
-                  .tag(0)
             }
-
+         }
 
             HStack(spacing: 16) {
                Button(L10n.resetToDefaults, action: reset).buttonStyle(.bordered)
