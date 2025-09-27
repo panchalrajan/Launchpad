@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct SettingsView: View {
-   var settingsManager = SettingsManager.shared
-   var onDismiss: () -> Void
+   private let settingsManager = SettingsManager.shared
+   private let onDismiss: () -> Void
 
    @State private var tempColumns: Int
    @State private var tempRows: Int
@@ -12,109 +12,78 @@ struct SettingsView: View {
    @State private var tempFolderRows: Int
    @State private var tempScrollDebounceInterval: Double
    @State private var tempScrollActivationThreshold: Double
-   @State private var selectedTab: Int = 0
+   @State private var selectedTab = 0
 
    init(onDismiss: @escaping () -> Void = {}) {
       self.onDismiss = onDismiss
-      let currentSettings = SettingsManager.shared.settings
-      _tempColumns = State(initialValue: currentSettings.columns)
-      _tempRows = State(initialValue: currentSettings.rows)
-      _tempIconSize = State(initialValue: currentSettings.iconSize)
-      _tempDropDelay = State(initialValue: currentSettings.dropDelay)
-      _tempFolderColumns = State(initialValue: currentSettings.folderColumns)
-      _tempFolderRows = State(initialValue: currentSettings.folderRows)
-      _tempScrollDebounceInterval = State(initialValue: currentSettings.scrollDebounceInterval)
-      _tempScrollActivationThreshold = State(initialValue: Double(currentSettings.scrollActivationThreshold))
+      let settings = SettingsManager.shared.settings
+      _tempColumns = State(initialValue: settings.columns)
+      _tempRows = State(initialValue: settings.rows)
+      _tempIconSize = State(initialValue: settings.iconSize)
+      _tempDropDelay = State(initialValue: settings.dropDelay)
+      _tempFolderColumns = State(initialValue: settings.folderColumns)
+      _tempFolderRows = State(initialValue: settings.folderRows)
+      _tempScrollDebounceInterval = State(initialValue: settings.scrollDebounceInterval)
+      _tempScrollActivationThreshold = State(initialValue: Double(settings.scrollActivationThreshold))
    }
 
    var body: some View {
       ZStack {
-         // Background overlay
          Color.black.opacity(0.4)
             .ignoresSafeArea()
-            .onTapGesture {
-               onDismiss()
-            }
+            .onTapGesture(perform: onDismiss)
          VStack(spacing: 0) {
             HStack {
                Text(L10n.launchpadSettings)
                   .font(.title2)
                   .fontWeight(.semibold)
                Spacer()
-               Button("✕") {
-                  onDismiss()
-               }
-               .buttonStyle(.plain)
-               .foregroundColor(.secondary)
-               .font(.title3)
+               Button("✕", action: onDismiss)
+                  .buttonStyle(.plain)
+                  .foregroundColor(.secondary)
+                  .font(.title3)
             }
             .padding(.bottom, 16)
 
             TabView(selection: $selectedTab) {
-               layoutTab
-                  .tabItem {
-                     Label(L10n.layout, systemImage: "grid")
-                  }
+               LayoutSettings(
+                  tempColumns: $tempColumns,
+                  tempRows: $tempRows,
+                  tempIconSize: $tempIconSize,
+                  tempDropDelay: $tempDropDelay,
+                  tempFolderColumns: $tempFolderColumns,
+                  tempFolderRows: $tempFolderRows,
+                  tempScrollDebounceInterval: $tempScrollDebounceInterval,
+                  tempScrollActivationThreshold: $tempScrollActivationThreshold)
+               .tabItem { Label(L10n.layout, systemImage: "grid")}
+               .tag(1)
+
+               ActionsSettings()
+                  .tabItem { Label(L10n.actions, systemImage: "bolt")}
                   .tag(0)
-
-               actionsTab
-                  .tabItem {
-                     Label(L10n.actions, systemImage: "bolt")
-                  }
-                  .tag(1)
             }
-            .frame(maxHeight: .infinity)
 
-            Spacer()
 
             HStack(spacing: 16) {
-               Button(L10n.resetToDefaults) {
-                  reset()
-               }
-               .buttonStyle(.bordered)
-
+               Button(L10n.resetToDefaults, action: reset).buttonStyle(.bordered)
                Spacer()
-
-               Button(L10n.cancel) {
-                  onDismiss()
-               }
-               .buttonStyle(.bordered)
-
-               Button(L10n.apply) {
-                  apply()
-               }
-               .buttonStyle(.borderedProminent)
+               Button(L10n.cancel, action: onDismiss).buttonStyle(.bordered)
+               Button(L10n.apply, action: apply).buttonStyle(.borderedProminent)
             }
          }
+
          .padding(24)
          .frame(width: 480, height: 500)
          .background(
             RoundedRectangle(cornerRadius: 16)
                .fill(.regularMaterial)
-               .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 10)
+               .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: 10)
          )
          .overlay(
-            RoundedRectangle(cornerRadius: 16)
-               .stroke(Color.white.opacity(0.2), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 16).stroke(.white.opacity(0.2), lineWidth: 1)
          )
+         .onTapGesture(perform: {})
       }
-   }
-
-   private var layoutTab: some View {
-      LayoutSettings(
-         tempColumns: $tempColumns,
-         tempRows: $tempRows,
-         tempIconSize: $tempIconSize,
-         tempDropDelay: $tempDropDelay,
-         tempFolderColumns: $tempFolderColumns,
-         tempFolderRows: $tempFolderRows,
-         tempScrollDebounceInterval: $tempScrollDebounceInterval,
-         tempScrollActivationThreshold: $tempScrollActivationThreshold
-      )
-   }
-
-   private var actionsTab: some View {
-      ActionsSettings()
    }
 
    private func apply() {

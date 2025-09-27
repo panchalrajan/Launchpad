@@ -1,20 +1,20 @@
 import Foundation
 
 @MainActor
-final class SettingsManager : ObservableObject {
+final class SettingsManager: ObservableObject {
     static let shared = SettingsManager()
-
+    
     @Published var settings: LaunchpadSettings {
         didSet { saveSettings() }
     }
-
+    
     private let userDefaults = UserDefaults.standard
     private let settingsKey = "LaunchpadSettings"
-
+    
     private init() {
         self.settings = Self.loadSettings()
     }
-
+    
     private static func loadSettings() -> LaunchpadSettings {
         guard let data = UserDefaults.standard.data(forKey: "LaunchpadSettings"),
               let settings = try? JSONDecoder().decode(LaunchpadSettings.self, from: data)
@@ -23,7 +23,7 @@ final class SettingsManager : ObservableObject {
         }
         return settings
     }
-
+    
     private func saveSettings() {
         guard let data = try? JSONEncoder().encode(settings) else { return }
         userDefaults.set(data, forKey: settingsKey)
