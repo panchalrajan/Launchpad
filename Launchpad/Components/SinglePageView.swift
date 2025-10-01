@@ -15,15 +15,10 @@ struct SinglePageView: View {
                 columns: GridLayoutUtility.createGridColumns(count: settings.columns, cellWidth: layout.cellWidth, spacing: layout.hSpacing),
                 spacing: layout.vSpacing) {
                     ForEach(pages[pageIndex]) { item in
-                        GridItemView(
-                            item: item,
-                            layout: layout,
-                            isDragged: draggedItem?.id == item.id
+                        GridItemView( item: item, layout: layout, isDragged: draggedItem?.id == item.id
                         )
                         .opacity(isFolderOpen ? 0.2 : 1)
-                        .onTapGesture {
-                            onItemTap(item)
-                        }
+                        .onTapGesture { onItemTap(item)  }
                         .onDrag {
                             draggedItem = item
                             return NSItemProvider(object: item.id.uuidString as NSString)

@@ -88,7 +88,6 @@ struct FolderDetailView: View {
                 .onAppear {
                     withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) { isAnimatingIn = true }
                 }
-                .onTapGesture { }
             }
         }
     }
