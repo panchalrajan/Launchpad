@@ -8,7 +8,6 @@ struct PagedGridView: View {
 
    @GestureState private var dragOffset: CGFloat = 0
    @State private var currentPage = 0
-   @State private var draggedPage = 0
    @State private var lastScrollTime = Date.distantPast
    @State private var accumulatedScrollX: CGFloat = 0
    @State private var eventMonitor: Any?
@@ -20,12 +19,14 @@ struct PagedGridView: View {
       VStack(spacing: 0) {
          SearchBarView(searchText: $searchText)
          GeometryReader { geo in
+            let layout = LayoutMetrics(size: geo.size, columns: settings.columns, rows: settings.rows, iconSize: settings.iconSize)
             if searchText.isEmpty {
                HStack(spacing: 0) {
-                  ForEach(0..<pages.count, id: \.self) { pageIndex in
+                  ForEach(pages.indices, id: \.self) { pageIndex in
                      SinglePageView(
                         pages: $pages,
                         draggedItem: $draggedItem,
+                        //layout: layout,
                         pageIndex: pageIndex,
                         settings: settings,
                         isFolderOpen: selectedFolder != nil,
@@ -34,28 +35,28 @@ struct PagedGridView: View {
                      .frame(width: geo.size.width, height: geo.size.height)
                   }
                }
-               .offset(x: -CGFloat(currentPage) * geo.size.width)
-               .offset(x: dragOffset)
+               .offset(x: -CGFloat(currentPage) * geo.size.width + dragOffset)
                .animation(.interpolatingSpring(stiffness: 300, damping: 100), value: currentPage)
-               .onAppear {
-                  setupEventMonitoring()
-               }
-               .onDisappear {
-                  cleanupEventMonitoring()
-               }
+               .onAppear(perform: setupEventMonitoring)
+               .onDisappear(perform: cleanupEventMonitoring)
                .background(Color(.red))
             } else {
-               SearchResultsView(apps: filteredApps(), settings: settings)
-                  .frame(width: geo.size.width, height: geo.size.height)
+               SearchResultsView(
+                  apps: filteredApps(),
+                  settings: settings,
+                  //layout: layout,
+                  //onItemTap: handleItemTap
+               )
+               .frame(width: geo.size.width, height: geo.size.height)
                   .background(Color(.blue))
             }
          }
-         PageIndicatorView(
-            currentPage: $currentPage,
-            pageCount: pages.count,
-            isFolderOpen: selectedFolder != nil,
-            searchText: searchText
-         )
+            PageIndicatorView(
+               currentPage: $currentPage,
+               pageCount: pages.count,
+               isFolderOpen: selectedFolder != nil,
+               searchText: searchText
+            )
       }            .background(Color(.green))
 
       FolderDetailView(
@@ -79,33 +80,25 @@ struct PagedGridView: View {
          AppLauncher.launch(path: app.path)
       case .folder(let folder):
          selectedFolder = folder
-         withAnimation(.interpolatingSpring(stiffness: 300, damping: 30)) {}
       }
    }
 
-   func filteredApps() -> [AppInfo] {
-      let allItems = pages.flatMap { $0 }
-      var matchingApps: [AppInfo] = []
+   private func filteredApps() -> [AppInfo] {
+      guard !searchText.isEmpty else { return [] }
 
-      for item in allItems {
+      let searchTerm = searchText.lowercased()
+      return pages.flatMap { $0 }.flatMap { item -> [AppInfo] in
          switch item {
          case .app(let app):
-            if app.name.lowercased().contains(searchText.lowercased()) {
-               matchingApps.append(app)
-            }
+            return app.name.lowercased().contains(searchTerm) ? [app] : []
          case .folder(let folder):
-            if folder.name.lowercased().contains(searchText.lowercased()) {
-               matchingApps.append(contentsOf: folder.apps)
+            if folder.name.lowercased().contains(searchTerm) {
+               return folder.apps
             } else {
-               let matchingFolderApps = folder.apps.filter {
-                  $0.name.lowercased().contains(searchText.lowercased())
-               }
-               matchingApps.append(contentsOf: matchingFolderApps)
+               return folder.apps.filter { $0.name.lowercased().contains(searchTerm) }
             }
          }
       }
-
-      return matchingApps
    }
 
    private func setupEventMonitoring() {
@@ -129,16 +122,14 @@ struct PagedGridView: View {
    }
 
    private func handleScrollEvent(_ event: NSEvent) -> NSEvent? {
-      if !searchText.isEmpty || selectedFolder != nil {
-         return event
-      }
+      guard searchText.isEmpty && selectedFolder == nil else { return event }
 
       let absX = abs(event.scrollingDeltaX)
       let absY = abs(event.scrollingDeltaY)
-      guard absX > absY, absX > 0 else { return event }
+      guard absX > absY && absX > 0 else { return event }
 
       let now = Date()
-      if now.timeIntervalSince(lastScrollTime) < settings.scrollDebounceInterval { return event }
+      guard now.timeIntervalSince(lastScrollTime) >= settings.scrollDebounceInterval else { return event }
 
       accumulatedScrollX += event.scrollingDeltaX
 
@@ -177,7 +168,7 @@ struct PagedGridView: View {
       }
       return event
    }
-   
+
    private func navigateToPreviousPage() {
       guard currentPage > 0 else { return }
 
@@ -185,12 +176,21 @@ struct PagedGridView: View {
          currentPage = currentPage - 1
       }
    }
-
+   
    private func navigateToNextPage() {
-      guard currentPage < pages.count - 1 else { return }
+      if currentPage < pages.count - 1 {
+         withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+            currentPage += 1
+         }
+      } else {
+         createNewPage()
+      }
+   }
 
+   private func createNewPage() {
+      pages.append([])
       withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
-         currentPage = currentPage + 1
+         currentPage = pages.count - 1
       }
    }
 }
