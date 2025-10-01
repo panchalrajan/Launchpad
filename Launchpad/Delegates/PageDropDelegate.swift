@@ -41,29 +41,35 @@ struct PageDropDelegate: DropDelegate {
     }
     
     private func moveItemToEndOfPage(draggedItem: AppGridItem) {
-        // Remove item from its current position
-        if let currentPageIndex = pages.firstIndex(where: { page in
-            page.contains(where: { $0.id == draggedItem.id })
-        }),
-        let currentItemIndex = pages[currentPageIndex].firstIndex(where: { $0.id == draggedItem.id }) {
-            pages[currentPageIndex].remove(at: currentItemIndex)
-        }
+        guard let (currentPageIndex, currentItemIndex) = findItemLocation(draggedItem) else { return }
         
-        // Create updated item with new page
-        let updatedItem: AppGridItem
-        switch draggedItem {
-        case .app(let app):
-            updatedItem = .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: targetPage))
-        case .folder(let folder):
-            updatedItem = .folder(Folder(name: folder.name, page: targetPage, apps: folder.apps))
-        }
+        // Remove from current position
+        pages[currentPageIndex].remove(at: currentItemIndex)
         
-        // Add to end of target page
+        // Create updated item and add to target page
+        let updatedItem = updateItemPage(draggedItem, to: targetPage)
         pages[targetPage].append(updatedItem)
         self.draggedItem = updatedItem
         
-        // Handle page overflow
         handlePageOverflow(targetPageIndex: targetPage)
+    }
+    
+    private func findItemLocation(_ item: AppGridItem) -> (pageIndex: Int, itemIndex: Int)? {
+        for (pageIndex, page) in pages.enumerated() {
+            if let itemIndex = page.firstIndex(where: { $0.id == item.id }) {
+                return (pageIndex, itemIndex)
+            }
+        }
+        return nil
+    }
+    
+    private func updateItemPage(_ item: AppGridItem, to page: Int) -> AppGridItem {
+        switch item {
+        case .app(let app):
+            return .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: page))
+        case .folder(let folder):
+            return .folder(Folder(name: folder.name, page: page, apps: folder.apps))
+        }
     }
     
     private func handlePageOverflow(targetPageIndex: Int) {

@@ -84,29 +84,21 @@ struct PagedGridView: View {
     }
     
     private func filteredApps() -> [AppInfo] {
-        let searchTextLowercased = searchText.lowercased()
-        let allItems = pages.flatMap { $0 }
-        var matchingApps: [AppInfo] = []
+        guard !searchText.isEmpty else { return [] }
         
-        for item in allItems {
+        let searchTerm = searchText.lowercased()
+        return pages.flatMap { $0 }.flatMap { item -> [AppInfo] in
             switch item {
             case .app(let app):
-                if app.name.lowercased().contains(searchTextLowercased) {
-                    matchingApps.append(app)
-                }
+                return app.name.lowercased().contains(searchTerm) ? [app] : []
             case .folder(let folder):
-                if folder.name.lowercased().contains(searchTextLowercased) {
-                    matchingApps.append(contentsOf: folder.apps)
+                if folder.name.lowercased().contains(searchTerm) {
+                    return folder.apps
                 } else {
-                    let matchingFolderApps = folder.apps.filter { app in
-                        app.name.lowercased().contains(searchTextLowercased)
-                    }
-                    matchingApps.append(contentsOf: matchingFolderApps)
+                    return folder.apps.filter { $0.name.lowercased().contains(searchTerm) }
                 }
             }
         }
-        
-        return matchingApps
     }
     
     private func setupEventMonitoring() {
