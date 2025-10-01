@@ -6,7 +6,7 @@ struct PageDropZonesView: View {
    let draggedItem: AppGridItem?
    let onNavigateLeft: () -> Void
    let onNavigateRight: () -> Void
-   
+
    var body: some View {
       HStack {
          DropZoneView(
@@ -16,9 +16,9 @@ struct PageDropZonesView: View {
             draggedItem: draggedItem,
             onNavigate: onNavigateLeft
          )
-         
+
          Spacer()
-         
+
          DropZoneView(
             direction: .right,
             currentPage: currentPage,
