@@ -10,12 +10,12 @@ struct SinglePageView: View {
     
     var body: some View {
         GeometryReader { pageGeo in
-            let layout = LayoutMetrics(size: pageGeo.size, columns: settings.columns, iconSize: settings.iconSize)
-            
+           let layout = LayoutMetrics(size: pageGeo.size, columns: settings.columns, rows: settings.rows, iconSize: settings.iconSize)
+
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyVGrid(
-                    columns: GridLayoutUtility.createGridColumns(count: settings.columns, cellWidth: layout.cellWidth, spacing: layout.spacing),
-                    spacing: layout.spacing
+                    columns: GridLayoutUtility.createGridColumns(count: settings.columns, cellWidth: layout.cellWidth, spacing: layout.hSpacing),
+                    spacing: layout.hSpacing
                 ) {
                     ForEach(pages[pageIndex]) { item in
                         GridItemView(

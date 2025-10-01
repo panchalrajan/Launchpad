@@ -47,12 +47,12 @@ struct FolderDetailView: View {
                     .padding(.top, 24)
                     
                     GeometryReader { geo in
-                        let layout = LayoutMetrics(size: geo.size, columns: settings.folderColumns, iconSize: settings.iconSize)
-                        
+                       let layout = LayoutMetrics(size: geo.size, columns: settings.folderColumns, rows: settings.folderRows, iconSize: settings.iconSize)
+
                         ScrollView(.vertical, showsIndicators: false) {
                             LazyVGrid(
-                                columns: GridLayoutUtility.createGridColumns(count: settings.folderColumns, cellWidth: layout.cellWidth, spacing: layout.spacing),
-                                spacing: layout.spacing
+                                columns: GridLayoutUtility.createGridColumns(count: settings.folderColumns, cellWidth: layout.cellWidth, spacing: layout.hSpacing),
+                                spacing: layout.hSpacing
                             ) {
                                 ForEach(folder!.apps) { app in
                                     AppIconView(app: app, layout: layout, isDragged: draggedApp?.id == app.id)

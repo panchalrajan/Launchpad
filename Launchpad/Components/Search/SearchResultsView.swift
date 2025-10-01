@@ -6,15 +6,15 @@ struct SearchResultsView: View {
     
     var body: some View {
         GeometryReader { geo in
-            let layout = LayoutMetrics(size: geo.size, columns: settings.columns, iconSize: settings.iconSize)
-            
+            let layout = LayoutMetrics(size: geo.size, columns: settings.columns, rows: settings.rows, iconSize: settings.iconSize)
+
             if apps.isEmpty {
                 EmptySearchView()
             } else {
                 ScrollView(.vertical, showsIndicators: false) {
                     LazyVGrid(
-                        columns: GridLayoutUtility.createGridColumns(count: settings.columns, cellWidth: layout.cellWidth, spacing: layout.spacing),
-                        spacing: layout.spacing
+                        columns: GridLayoutUtility.createGridColumns(count: settings.columns, cellWidth: layout.cellWidth, spacing: layout.hSpacing),
+                        spacing: layout.hSpacing
                     ) {
                         ForEach(apps) { app in
                             AppIconView(app: app, layout: layout, isDragged: false)
