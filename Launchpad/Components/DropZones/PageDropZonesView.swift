@@ -16,8 +16,10 @@ struct PageDropZonesView: View {
             draggedItem: draggedItem,
             onNavigate: onNavigateLeft
          )
+         .allowsHitTesting(true) // Keep hit testing for left drop zone
 
          Spacer()
+            .allowsHitTesting(false) // Allow drops to pass through to content below
 
          DropZoneView(
             direction: .right,
@@ -26,6 +28,7 @@ struct PageDropZonesView: View {
             draggedItem: draggedItem,
             onNavigate: onNavigateRight
          )
+         .allowsHitTesting(true) // Keep hit testing for right drop zone
       }
    }
 }

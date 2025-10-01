@@ -20,7 +20,7 @@ struct DropZoneView: View {
    private var canNavigate: Bool {
       switch direction {
       case .left: return currentPage > 0
-      case .right: return currentPage < totalPages - 1
+      case .right: return true // Always allow right navigation to create new page
       }
    }
 

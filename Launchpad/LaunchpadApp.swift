@@ -5,7 +5,7 @@ struct LaunchpadApp: App {
    @StateObject private var settingsManager = SettingsManager.shared
    @StateObject private var appManager = AppManager.shared
    @State private var showSettings = false
-
+   
    var body: some Scene {
       WindowGroup {
          ZStack {
@@ -17,8 +17,8 @@ struct LaunchpadApp: App {
             )
             .opacity(showSettings ? 0.3 : 1.0)
             .animation(.easeInOut(duration: 0.3), value: showSettings)
-                .onTapGesture(perform: AppLauncher.exit)
-
+            .onTapGesture(perform: AppLauncher.exit)
+            
             if showSettings {
                SettingsView(onDismiss: { showSettings = false })
             }
@@ -28,7 +28,7 @@ struct LaunchpadApp: App {
       }
       .windowStyle(.hiddenTitleBar)
    }
-
+   
    private func initialize() {
       appManager.loadGridItems(appsPerPage: settingsManager.settings.appsPerPage)
       NSMenu.setMenuBarVisible(false)

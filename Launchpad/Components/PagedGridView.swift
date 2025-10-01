@@ -186,10 +186,20 @@ struct PagedGridView: View {
     }
     
     private func navigateToNextPage() {
-        guard currentPage < pages.count - 1 else { return }
-        
+        if currentPage < pages.count - 1 {
+            withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+                currentPage += 1
+            }
+        } else {
+            // Create new page when at the last page
+            createNewPage()
+        }
+    }
+    
+    private func createNewPage() {
+        pages.append([])
         withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
-            currentPage += 1
+            currentPage = pages.count - 1
         }
     }
 }

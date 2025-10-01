@@ -3,12 +3,12 @@ import SwiftUI
 struct FadeInScaleViewModifier: ViewModifier {
    let isVisible: Bool
    let duration: Double
-   
+
    init(isVisible: Bool, duration: Double = 0.3) {
       self.isVisible = isVisible
       self.duration = duration
    }
-   
+
    func body(content: Content) -> some View {
       content
          .scaleEffect(isVisible ? 1 : 0.85)

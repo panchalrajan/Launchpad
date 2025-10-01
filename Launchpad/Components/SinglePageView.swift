@@ -43,5 +43,11 @@ struct SinglePageView: View {
                 .padding(.horizontal, layout.hPadding)
                 .padding(.vertical, layout.vPadding)
         }
+        .onDrop(of: [.text], delegate: PageDropDelegate(
+            pages: $pages,
+            draggedItem: $draggedItem,
+            targetPage: pageIndex,
+            appsPerPage: settings.appsPerPage
+        ))
     }
 }
