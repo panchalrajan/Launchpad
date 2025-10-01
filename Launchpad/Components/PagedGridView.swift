@@ -37,7 +37,7 @@ struct PagedGridView: View {
                .animation(.interpolatingSpring(stiffness: 300, damping: 100), value: currentPage)
                .onAppear(perform: setupEventMonitoring)
                .onDisappear(perform: cleanupEventMonitoring)
-               .background(Color(.red))
+               //.background(Color(.red))
             } else {
                SearchResultsView(
                   apps: filteredApps(),
@@ -45,7 +45,7 @@ struct PagedGridView: View {
                   onItemTap: handleItemTap
                )
                .frame(width: geo.size.width, height: geo.size.height)
-               .background(Color(.blue))
+               //.background(Color(.blue))
             }
          }
          PageIndicatorView(
@@ -54,7 +54,8 @@ struct PagedGridView: View {
             isFolderOpen: selectedFolder != nil,
             searchText: searchText
          )
-      }            .background(Color(.green))
+      }
+      //.background(Color(.green))
 
       FolderDetailView(
          pages: $pages,
