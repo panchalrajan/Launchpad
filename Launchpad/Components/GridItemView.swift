@@ -6,11 +6,13 @@ struct GridItemView: View {
   let isDragged: Bool
 
   var body: some View {
-    switch item {
-    case .app(let app):
-      AppIconView(app: app, layout: layout, isDragged: isDragged)
-    case .folder(let folder):
-      FolderIconView(folder: folder, layout: layout, isDragged: isDragged)
+    Group {
+      switch item {
+      case .app(let app):
+        AppIconView(app: app, layout: layout, isDragged: isDragged)
+      case .folder(let folder):
+        FolderIconView(folder: folder, layout: layout, isDragged: isDragged)
+      }
     }
   }
 }

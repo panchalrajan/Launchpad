@@ -6,7 +6,7 @@ struct PageDropZonesView: View {
    let draggedItem: AppGridItem?
    let onNavigateLeft: () -> Void
    let onNavigateRight: () -> Void
-   
+
    var body: some View {
       HStack {
          DropZoneView(
@@ -16,9 +16,11 @@ struct PageDropZonesView: View {
             draggedItem: draggedItem,
             onNavigate: onNavigateLeft
          )
-         
+         .allowsHitTesting(true) // Keep hit testing for left drop zone
+
          Spacer()
-         
+            .allowsHitTesting(false) // Allow drops to pass through to content below
+
          DropZoneView(
             direction: .right,
             currentPage: currentPage,
@@ -26,6 +28,7 @@ struct PageDropZonesView: View {
             draggedItem: draggedItem,
             onNavigate: onNavigateRight
          )
+         .allowsHitTesting(true) // Keep hit testing for right drop zone
       }
    }
 }

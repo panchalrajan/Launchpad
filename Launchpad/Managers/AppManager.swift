@@ -2,12 +2,12 @@ import AppKit
 import Foundation
 
 @MainActor
-final class AppManager : ObservableObject {
+final class AppManager: ObservableObject {
    static let shared = AppManager()
 
    @Published var pages: [[AppGridItem]] {
       didSet {
-         saveGridItems(items: pages.flatMap { $0 })
+         Task { await saveGridItems() }
       }
    }
 
@@ -34,43 +34,50 @@ final class AppManager : ObservableObject {
       exportLayoutToJSON(filePath: filePath)
    }
 
-   private func saveGridItems(items: [AppGridItem]) {
-      let itemsData = items.map { item -> [String: Any] in
-         switch item {
-         case .app(let app):
-            return [
-               "type": "app",
-               "id": app.id.uuidString,
-               "name": app.name,
-               "path": app.path,
-               "page": app.page
-            ]
-         case .folder(let folder):
-            let appsData = folder.apps.map { app in
-               [
-                  "id": app.id.uuidString,
-                  "name": app.name,
-                  "path": app.path,
-                  "page": app.page
-               ]
-            }
-            return [
-               "type": "folder",
-               "id": folder.id.uuidString,
-               "name": folder.name,
-               "page": folder.page,
-               "apps": appsData
-            ]
-         }
-      }
+   private func saveGridItems() async {
+      let itemsData = pages.flatMap { $0 }.map(serializeGridItem)
       userDefaults.set(itemsData, forKey: gridItemsKey)
-      userDefaults.synchronize()
+   }
+
+   private func serializeGridItem(_ item: AppGridItem) -> [String: Any] {
+      switch item {
+      case .app(let app):
+         return [
+            "type": "app",
+            "id": app.id.uuidString,
+            "name": app.name,
+            "path": app.path,
+            "page": app.page
+         ]
+      case .folder(let folder):
+         return [
+            "type": "folder",
+            "id": folder.id.uuidString,
+            "name": folder.name,
+            "page": folder.page,
+            "apps": folder.apps.map(serializeAppInfo)
+         ]
+      }
+   }
+
+   private func serializeAppInfo(_ app: AppInfo) -> [String: Any] {
+      [
+         "id": app.id.uuidString,
+         "name": app.name,
+         "path": app.path,
+         "page": app.page
+      ]
    }
 
    func clearGridItems(appsPerPage: Int) {
       userDefaults.removeObject(forKey: gridItemsKey)
       userDefaults.synchronize()
       loadGridItems(appsPerPage: appsPerPage)
+   }
+
+   func recalculatePages(appsPerPage: Int) {
+      let allItems = pages.flatMap { $0 }
+      pages = groupItemsByPage(items: allItems, appsPerPage: appsPerPage)
    }
 
    private func discoverApps() -> [AppInfo] {

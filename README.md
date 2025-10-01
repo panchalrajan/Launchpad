@@ -1,95 +1,94 @@
 # 🚀 LaunchPad
 
-A beautiful, modern macOS application launcher with glass morphism design, inspired by macOS Launchpad but with enhanced functionality and customization options. As you might know, Apple removed Launchpad in macOS 26. This app offers a true replacement with even more features.
+A beautiful, modern macOS application launcher with glass morphism design, inspired by macOS Launchpad but with enhanced functionality and customization options. As you might know, Apple removed Launchpad in macOS 26. This app offers a true replacement with even more features and a fully customizable, persistent grid.
 
-If you like this project, and would like to have additional features, please support me:
+If you like this project and want to support further development, please consider:
 
 <a href="https://www.buymeacoffee.com/Waikiki.com" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 ## ✨ Features
 
-### 🎨 **Beautiful Design**
-- **Glass Morphism UI** - Modern translucent interface with backdrop blur
-- **Smooth Animations** - Fluid transitions and spring animations throughout
-- **Adaptive Layout** - Responsive design that adapts to different screen sizes
-- **Visual Feedback** - Hover states, scaling effects, and interactive elements
+### 🎨 **Modern, Adaptive Design**
+- **Glass Morphism UI** – Translucent, blurred backgrounds for a modern look
+- **Smooth Animations** – Fluid transitions and spring effects throughout
+- **Justified Grid** – Icons and folders are always evenly distributed, filling all available space
+- **Consistent Alignment** – Search results and grid pages always align perfectly
+- **Responsive Layout** – Adapts to any screen size or aspect ratio
 
 ![LaunchPad Main Interface](Documentation/Launchpad-1.png)
 
-### 🔍 **Smart Search**
-- **Real-time Search** - Instant filtering as you type
-- **Fuzzy Matching** - Find apps even with partial names
-- **Vertical Scrolling** - Smooth scrolling through search results
-- **No Results State** - Clean empty state with helpful messaging
+### 🔍 **Powerful Search**
+- **Instant Filtering** – Real-time, fuzzy search as you type
+- **Vertical Scrolling** – Effortless navigation through results
+- **Consistent Alignment** – Search and grid always start at the same position
+- **No Results State** – Clean, helpful empty state
 
 ![Search Functionality](Documentation/Launchpad-2.png)
 
-
-### **Folder Management & Drag & Drop**
-- **Create Folders** - Drag one app onto another to create a folder
-- **Rename Folders** - Click folder name to edit and persist changes
-- **Add/Remove Apps** - Drag apps into/out of folders, or use context menu to remove
-- **Rearrangeable Icons** - Drag and drop to customize app order
-- **Visual Feedback** - Apps scale and fade during drag operations
-- **Persistent Order** - Your custom arrangement and folders are automatically saved
-- **Smart Positioning** - Smooth animations when dropping apps
+### 🗂️ **Folders & Drag & Drop**
+- **Create Folders** – Drag one app onto another to instantly create a folder
+- **Rename Folders** – Click folder name to edit (auto-focus for new folders)
+- **Add/Remove Apps** – Drag apps in/out of folders, or use context menu
+- **Rearrangeable Icons** – Drag and drop to customize app order
+- **Visual Feedback** – Apps scale and fade during drag operations
+- **Persistent Layout** – All changes are saved automatically
+- **Smart Overflow** – Apps overflow to new pages as needed
 
 ![Folder](Documentation/Launchpad-4.png)
-
 ![Folders](Documentation/Launchpad-5.png)
 
 ### 🎮 **Multiple Navigation Methods**
 
-
 #### ⌨️ **Keyboard Navigation**
-- `←/→` Arrow keys - Navigate between pages
-- `CMD + ,` - Open settings
-- `ESC` - Close application
-
+- `←/→` Arrow keys – Navigate between pages
+- `CMD + ,` – Open settings
+- `ESC` – Close application
 
 #### 🖱️ **Mouse Navigation**
-- **Click Navigation** - Click page dots to jump to any page
-- **Scroll Wheel** - Horizontal scrolling for page navigation
-- **Smart Scrolling** - Vertical scrolling in search mode
-- **Click inside folder detail** - Does not close Launchpad
+- **Click Navigation** – Click page dots to jump to any page
+- **Scroll Wheel** – Horizontal scrolling for page navigation
+- **Smart Scrolling** – Vertical scrolling in search mode
+- **Click inside folder detail** – Does not close Launchpad
 
 #### 📱 **Touch & Gestures**
-- **Tap to Launch** - Single tap to open applications
-- **Drag to Rearrange** - Long press and drag to reorder
-- **Swipe Navigation** - Gesture-based page switching
+- **Tap to Launch** – Single tap to open applications
+- **Drag to Rearrange** – Long press and drag to reorder
+- **Swipe Navigation** – Gesture-based page switching
 
-## ⚙️ **Customizable Settings**
+## ⚙️ **Comprehensive Settings**
 
-LaunchPad offers comprehensive customization options to tailor your experience:
+LaunchPad offers deep customization to tailor your experience:
 
 ![Settings](Documentation/Launchpad-3.png)
 
 ### 🔧 **Accessing Settings**
 - **Menu Bar**: `LaunchPad` → `Settings` (⌘,)
 
-### 📐 **Grid Layout Configuration**
-- **Columns**: Adjust from 4 to 12 columns per page
-- **Rows**: Configure from 3 to 10 rows per page  
-- **Apps per Page**: Automatically calculated (columns × rows)
-- **Real-time Preview**: See changes instantly in the grid
+### 📐 **Grid & Layout Configuration**
+- **Columns**: 4–12 per page
+- **Rows**: 3–10 per page
+- **Apps per Page**: Calculated automatically
+- **Justified Grid**: Icons and folders always fill the grid evenly
+- **Real-time Preview**: See changes instantly
 
-### 🎨 **Icon Customization**
-- **Icon Size**: Fine-tune icon size from 30% to 100%
-- **Smooth Scaling**: Precise control with range slider
-- **Visual Feedback**: Real-time percentage display
-- **Optimal Sizing**: Default 60% provides perfect balance
+### 🎨 **Icon & Animation Customization**
+- **Icon Size**: Fine-tune from 20–200 px
+- **Drop Animation Delay**: Adjustable for drag & drop
+- **Visual Feedback**: Real-time display and smooth scaling
+
+### 🧩 **Persistent & Adaptive**
+- **All settings and layout are saved** – Your custom grid and folders are always restored
+- **Consistent alignment** – Search and grid always start at the same position
 
 ## 🚀 Getting Started
 
-
 ### First Launch
-1. The app will automatically scan `/Applications` and `/System/Applications`
-2. Apps are initially sorted alphabetically
+1. The app scans `/Applications` and `/System/Applications`
+2. Apps are sorted alphabetically
 3. Use drag & drop to customize your layout and create folders
-4. Click folder names to rename and persist changes
-5. Your arrangement and folders are automatically saved
-6. Launchpad will quit if you activate another app from the dock
-
+4. Click folder names to rename (auto-focus for new folders)
+5. All changes are saved automatically
+6. Launchpad quits if you activate another app from the dock
 
 ### Usage
 - **Search**: Type to filter apps instantly
@@ -97,7 +96,7 @@ LaunchPad offers comprehensive customization options to tailor your experience:
 - **Launch Apps**: Click any app icon to open
 - **Rearrange**: Drag apps to new positions
 - **Create Folders**: Drag one app onto another
-- **Rename Folders**: Click folder name
+- **Rename Folders**: Click folder name (auto-focus for new folders)
 - **Remove from Folder**: Use context menu or drag out
 - **Quit Launchpad**: Activate another app or press ESC
 
