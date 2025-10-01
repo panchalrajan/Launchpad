@@ -40,6 +40,8 @@ struct SinglePageView: View {
             }
             .padding(.horizontal, layout.hPadding)
             .padding(.vertical, layout.vPadding)
+            .frame(minHeight: pageGeo.size.height - layout.vPadding, alignment: .top)
+            .background(Color(.red))
          }
          .onDrop(of: [.text], delegate: PageDropDelegate(
             pages: $pages,

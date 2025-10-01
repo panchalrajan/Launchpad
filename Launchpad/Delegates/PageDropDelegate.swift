@@ -13,12 +13,9 @@ struct PageDropDelegate: DropDelegate {
          return false
       }
 
-      //if pages[targetPage].isEmpty || draggedItem.page != targetPage {
-         moveItemToEndOfPage(draggedItem: draggedItem)
-      //}
+      moveItemToEndOfPage(draggedItem: draggedItem)
 
       self.draggedItem = nil
-      appManager.pages = pages
       return true
    }
 
@@ -30,7 +27,7 @@ struct PageDropDelegate: DropDelegate {
       guard let (currentPageIndex, currentItemIndex) = findItemLocation(item: draggedItem) else { return }
 
       pages[currentPageIndex].remove(at: currentItemIndex)
-      pages[targetPage].append(updateItemPage(item: draggedItem, to: targetPage))
+      pages[targetPage].append(updateItemPage(item: draggedItem, page: targetPage))
 
       handlePageOverflow(targetPageIndex: targetPage)
    }
@@ -44,7 +41,8 @@ struct PageDropDelegate: DropDelegate {
       return nil
    }
 
-   private func updateItemPage(item: AppGridItem, to page: Int) -> AppGridItem {
+   private func updateItemPage(item: AppGridItem, page: Int) -> AppGridItem {
+      print(page)
       switch item {
       case .app(let app):
          return .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: page))

@@ -35,38 +35,25 @@ final class AppManager: ObservableObject {
    }
 
    private func saveGridItems() async {
-      let itemsData = pages.flatMap { $0 }.map(serializeGridItem)
-      userDefaults.set(itemsData, forKey: gridItemsKey)
-   }
-
-   private func serializeGridItem(_ item: AppGridItem) -> [String: Any] {
-      switch item {
-      case .app(let app):
-         return [
-            "type": "app",
-            "id": app.id.uuidString,
-            "name": app.name,
-            "path": app.path,
-            "page": app.page
-         ]
-      case .folder(let folder):
-         return [
-            "type": "folder",
-            "id": folder.id.uuidString,
-            "name": folder.name,
-            "page": folder.page,
-            "apps": folder.apps.map(serializeAppInfo)
-         ]
+      print("Save grid items.")
+      var itemsWithCorrectPages: [AppGridItem] = []
+      
+      // Assign correct page numbers based on actual page index
+      for (pageIndex, pageItems) in pages.enumerated() {
+         for item in pageItems {
+            let correctedItem: AppGridItem
+            switch item {
+            case .app(let app):
+               correctedItem = .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: pageIndex))
+            case .folder(let folder):
+               correctedItem = .folder(Folder(name: folder.name, page: pageIndex, apps: folder.apps))
+            }
+            itemsWithCorrectPages.append(correctedItem)
+         }
       }
-   }
-
-   private func serializeAppInfo(_ app: AppInfo) -> [String: Any] {
-      [
-         "id": app.id.uuidString,
-         "name": app.name,
-         "path": app.path,
-         "page": app.page
-      ]
+      
+      let itemsData = itemsWithCorrectPages.map { $0.serialize() }
+      userDefaults.set(itemsData, forKey: gridItemsKey)
    }
 
    func clearGridItems(appsPerPage: Int) {
@@ -81,15 +68,13 @@ final class AppManager: ObservableObject {
    }
 
    private func discoverApps() -> [AppInfo] {
+      print("Discover apps.")
       let appPaths = ["/Applications", "/System/Applications"]
-      return appPaths.flatMap { discoverAppsRecursively(in: $0) }.sorted { $0.name.lowercased() < $1.name.lowercased() }
+      return appPaths.flatMap { discoverAppsRecursively(directory: $0) }.sorted { $0.name.lowercased() < $1.name.lowercased() }
    }
 
-   private func discoverAppsRecursively(
-      in directory: String, maxDepth: Int = 3, currentDepth: Int = 0
-   ) -> [AppInfo] {
-      guard currentDepth < maxDepth,
-            let contents = try? FileManager.default.contentsOfDirectory(atPath: directory)
+   private func discoverAppsRecursively(directory: String, maxDepth: Int = 3, currentDepth: Int = 0) -> [AppInfo] {
+      guard currentDepth < maxDepth, let contents = try? FileManager.default.contentsOfDirectory(atPath: directory)
       else { return [] }
 
       var foundApps: [AppInfo] = []
@@ -101,7 +86,7 @@ final class AppManager: ObservableObject {
             let icon = NSWorkspace.shared.icon(forFile: fullPath).flattenedForConsistency(targetPixelSize: 256)
             foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath))
          } else if shouldSearchDirectory(item: item, at: fullPath) {
-            foundApps.append(contentsOf: discoverAppsRecursively(in: fullPath, maxDepth: maxDepth, currentDepth: currentDepth + 1))
+            foundApps.append(contentsOf: discoverAppsRecursively(directory: fullPath, maxDepth: maxDepth, currentDepth: currentDepth + 1))
          }
       }
       return foundApps
@@ -118,9 +103,11 @@ final class AppManager: ObservableObject {
       guard let savedData = userDefaults.array(forKey: gridItemsKey) as? [[String: Any]] else {
          return apps.map { .app($0) }
       }
+
       let appsByPath = Dictionary(uniqueKeysWithValues: apps.map { ($0.path, $0) })
       var gridItems: [AppGridItem] = []
       var usedPaths = Set<String>()
+
       for itemData in savedData {
          guard let type = itemData["type"] as? String else { continue }
          switch type {
@@ -138,9 +125,11 @@ final class AppManager: ObservableObject {
             break
          }
       }
+
       for app in apps where !usedPaths.contains(app.path) {
          gridItems.append(.app(app))
       }
+
       return gridItems
    }
 
@@ -169,14 +158,17 @@ final class AppManager: ObservableObject {
 
    private func groupItemsByPage(items: [AppGridItem], appsPerPage: Int) -> [[AppGridItem]] {
       guard !items.isEmpty else { return [[]] }
+      print("Group items: \(items)")
       let groupedByPage = Dictionary(grouping: items) { $0.page }
       let sortedPages = groupedByPage.keys.sorted()
+      print("Grouped by page: \(sortedPages.count)")
       var pages: [[AppGridItem]] = []
       var currentPage = 0
       var itemsOnCurrentPage = 0
       var currentPageItems: [AppGridItem] = []
       for pageNum in sortedPages {
          let pageItems = groupedByPage[pageNum] ?? []
+         print("Page items: \(pageItems.count)")
          for item in pageItems {
             if itemsOnCurrentPage >= appsPerPage {
                pages.append(currentPageItems)
@@ -196,6 +188,7 @@ final class AppManager: ObservableObject {
    }
 
    private func updateItemPage(item: AppGridItem, to page: Int) -> AppGridItem {
+      print("Update item page. Old page: \(item.page), New page: \(page)")
       switch item {
       case .app(let app):
          return .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: page))
@@ -250,34 +243,7 @@ final class AppManager: ObservableObject {
 
    private func exportLayoutToJSON(filePath: URL,) {
       do {
-         let itemsData = pages.flatMap { $0 }.map { item -> [String: Any] in
-            switch item {
-            case .app(let app):
-               return [
-                  "type": "app",
-                  "id": app.id.uuidString,
-                  "name": app.name,
-                  "path": app.path,
-                  "page": app.page
-               ]
-            case .folder(let folder):
-               let appsData = folder.apps.map { app in
-                  [
-                     "id": app.id.uuidString,
-                     "name": app.name,
-                     "path": app.path,
-                     "page": app.page
-                  ]
-               }
-               return [
-                  "type": "folder",
-                  "id": folder.id.uuidString,
-                  "name": folder.name,
-                  "page": folder.page,
-                  "apps": appsData
-               ]
-            }
-         }
+         let itemsData = pages.flatMap { $0 }.map { $0.serialize() }
          let jsonData = try JSONSerialization.data(withJSONObject: itemsData, options: .prettyPrinted)
          try jsonData.write(to: filePath)
          print("Export finished successfully to \(filePath.path)!")
