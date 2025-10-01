@@ -19,14 +19,12 @@ struct PagedGridView: View {
       VStack(spacing: 0) {
          SearchBarView(searchText: $searchText)
          GeometryReader { geo in
-            let layout = LayoutMetrics(size: geo.size, columns: settings.columns, rows: settings.rows, iconSize: settings.iconSize)
             if searchText.isEmpty {
                HStack(spacing: 0) {
                   ForEach(pages.indices, id: \.self) { pageIndex in
                      SinglePageView(
                         pages: $pages,
                         draggedItem: $draggedItem,
-                        //layout: layout,
                         pageIndex: pageIndex,
                         settings: settings,
                         isFolderOpen: selectedFolder != nil,
@@ -44,19 +42,18 @@ struct PagedGridView: View {
                SearchResultsView(
                   apps: filteredApps(),
                   settings: settings,
-                  //layout: layout,
-                  //onItemTap: handleItemTap
+                  onItemTap: handleItemTap
                )
                .frame(width: geo.size.width, height: geo.size.height)
-                  .background(Color(.blue))
+               .background(Color(.blue))
             }
          }
-            PageIndicatorView(
-               currentPage: $currentPage,
-               pageCount: pages.count,
-               isFolderOpen: selectedFolder != nil,
-               searchText: searchText
-            )
+         PageIndicatorView(
+            currentPage: $currentPage,
+            pageCount: pages.count,
+            isFolderOpen: selectedFolder != nil,
+            searchText: searchText
+         )
       }            .background(Color(.green))
 
       FolderDetailView(
@@ -176,7 +173,7 @@ struct PagedGridView: View {
          currentPage = currentPage - 1
       }
    }
-   
+
    private func navigateToNextPage() {
       if currentPage < pages.count - 1 {
          withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
