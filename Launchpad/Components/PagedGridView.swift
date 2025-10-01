@@ -5,7 +5,7 @@ struct PagedGridView: View {
    @Binding var pages: [[AppGridItem]]
    var settings: LaunchpadSettings
    var showSettings: () -> Void
-   
+
    @GestureState private var dragOffset: CGFloat = 0
    @State private var currentPage = 0
    @State private var draggedPage = 0
@@ -15,7 +15,7 @@ struct PagedGridView: View {
    @State private var searchText = ""
    @State private var draggedItem: AppGridItem?
    @State private var selectedFolder: Folder?
-   
+
    var body: some View {
       VStack(spacing: 0) {
          SearchBarView(searchText: $searchText)
@@ -43,26 +43,27 @@ struct PagedGridView: View {
                .onDisappear {
                   cleanupEventMonitoring()
                }
+               .background(Color(.red))
             } else {
                SearchResultsView(apps: filteredApps(), settings: settings)
                   .frame(width: geo.size.width, height: geo.size.height)
+                  .background(Color(.blue))
             }
          }
-         
          PageIndicatorView(
             currentPage: $currentPage,
             pageCount: pages.count,
             isFolderOpen: selectedFolder != nil,
             searchText: searchText
          )
-      }
-      
+      }            .background(Color(.green))
+
       FolderDetailView(
          pages: $pages,
          folder: $selectedFolder,
          settings: settings,
       )
-      
+
       PageDropZonesView(
          currentPage: currentPage,
          totalPages: pages.count,
@@ -71,7 +72,7 @@ struct PagedGridView: View {
          onNavigateRight: navigateToNextPage
       )
    }
-   
+
    private func handleItemTap(_ item: AppGridItem) {
       switch item {
       case .app(let app):
@@ -81,11 +82,11 @@ struct PagedGridView: View {
          withAnimation(.interpolatingSpring(stiffness: 300, damping: 30)) {}
       }
    }
-   
+
    func filteredApps() -> [AppInfo] {
       let allItems = pages.flatMap { $0 }
       var matchingApps: [AppInfo] = []
-      
+
       for item in allItems {
          switch item {
          case .app(let app):
@@ -103,10 +104,10 @@ struct PagedGridView: View {
             }
          }
       }
-      
+
       return matchingApps
    }
-   
+
    private func setupEventMonitoring() {
       eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.scrollWheel, .keyDown]) { event in
          switch event.type {
@@ -119,28 +120,28 @@ struct PagedGridView: View {
          }
       }
    }
-   
+
    private func cleanupEventMonitoring() {
       if let monitor = eventMonitor {
          NSEvent.removeMonitor(monitor)
          eventMonitor = nil
       }
    }
-   
+
    private func handleScrollEvent(_ event: NSEvent) -> NSEvent? {
       if !searchText.isEmpty || selectedFolder != nil {
          return event
       }
-      
+
       let absX = abs(event.scrollingDeltaX)
       let absY = abs(event.scrollingDeltaY)
       guard absX > absY, absX > 0 else { return event }
-      
+
       let now = Date()
       if now.timeIntervalSince(lastScrollTime) < settings.scrollDebounceInterval { return event }
-      
+
       accumulatedScrollX += event.scrollingDeltaX
-      
+
       if accumulatedScrollX <= -settings.scrollActivationThreshold {
          currentPage = min(currentPage + 1, pages.count - 1)
          resetScrollState(at: now)
@@ -150,15 +151,15 @@ struct PagedGridView: View {
          resetScrollState(at: now)
          return nil
       }
-      
+
       return event
    }
-   
+
    private func resetScrollState(at time: Date) {
       lastScrollTime = time
       accumulatedScrollX = 0
    }
-   
+
    private func handleKeyEvent(_ event: NSEvent) -> NSEvent? {
       switch event.keyCode {
       case 53:  // ESC key
@@ -179,15 +180,15 @@ struct PagedGridView: View {
    
    private func navigateToPreviousPage() {
       guard currentPage > 0 else { return }
-      
+
       withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
          currentPage = currentPage - 1
       }
    }
-   
+
    private func navigateToNextPage() {
       guard currentPage < pages.count - 1 else { return }
-      
+
       withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
          currentPage = currentPage + 1
       }
