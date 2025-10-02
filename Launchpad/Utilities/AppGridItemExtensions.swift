@@ -36,6 +36,7 @@ extension AppGridItem {
 
    func serialize(_ app: AppInfo) -> [String: Any] {
       [
+         "type": "app",
          "id": app.id.uuidString,
          "name": app.name,
          "page": app.page,
