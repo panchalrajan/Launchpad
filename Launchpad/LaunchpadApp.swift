@@ -5,6 +5,7 @@ struct LaunchpadApp: App {
    @StateObject private var settingsManager = SettingsManager.shared
    @StateObject private var appManager = AppManager.shared
    @State private var showSettings = false
+   @State private var isInitialized = false
    
    var body: some Scene {
       WindowGroup {
@@ -30,7 +31,9 @@ struct LaunchpadApp: App {
    }
    
    private func initialize() {
+      guard !isInitialized else { return }
       appManager.loadGridItems(appsPerPage: settingsManager.settings.appsPerPage)
       NSMenu.setMenuBarVisible(false)
+      isInitialized = true
    }
 }

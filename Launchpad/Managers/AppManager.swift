@@ -3,7 +3,14 @@ import Foundation
 
 @MainActor
 final class AppManager: ObservableObject {
+   private let userDefaults = UserDefaults.standard
+   private let gridItemsKey = "LaunchpadGridItems"
+
    static let shared = AppManager()
+
+   private init() {
+      self.pages = [[]]
+   }
 
    @Published var pages: [[AppGridItem]] {
       didSet {
@@ -11,17 +18,17 @@ final class AppManager: ObservableObject {
       }
    }
 
-   private let userDefaults = UserDefaults.standard
-   private let gridItemsKey = "LaunchpadGridItems"
-
-   private init() {
-      self.pages = [[]]
-   }
-
    func loadGridItems(appsPerPage: Int) {
+      print("Load grid items.")
       let apps = discoverApps()
       let gridItems = loadLayoutFromUserDefaults(for: apps)
       pages = groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
+   }
+
+   private func saveGridItems() async {
+      print("Save grid items.")
+      let itemsData = pages.flatMap { $0 }.map { $0.serialize() }
+      userDefaults.set(itemsData, forKey: gridItemsKey)
    }
 
    func importLayout(appsPerPage: Int) {
@@ -34,35 +41,15 @@ final class AppManager: ObservableObject {
       exportLayoutToJSON(filePath: filePath)
    }
 
-   private func saveGridItems() async {
-      print("Save grid items.")
-      var itemsWithCorrectPages: [AppGridItem] = []
-      
-      // Assign correct page numbers based on actual page index
-      for (pageIndex, pageItems) in pages.enumerated() {
-         for item in pageItems {
-            let correctedItem: AppGridItem
-            switch item {
-            case .app(let app):
-               correctedItem = .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: pageIndex))
-            case .folder(let folder):
-               correctedItem = .folder(Folder(name: folder.name, page: pageIndex, apps: folder.apps))
-            }
-            itemsWithCorrectPages.append(correctedItem)
-         }
-      }
-      
-      let itemsData = itemsWithCorrectPages.map { $0.serialize() }
-      userDefaults.set(itemsData, forKey: gridItemsKey)
-   }
-
    func clearGridItems(appsPerPage: Int) {
+      print("Clear grid items.")
       userDefaults.removeObject(forKey: gridItemsKey)
       userDefaults.synchronize()
       loadGridItems(appsPerPage: appsPerPage)
    }
 
    func recalculatePages(appsPerPage: Int) {
+      print("Recalculate pages.")
       let allItems = pages.flatMap { $0 }
       pages = groupItemsByPage(items: allItems, appsPerPage: appsPerPage)
    }
@@ -100,6 +87,7 @@ final class AppManager: ObservableObject {
    }
 
    private func loadLayoutFromUserDefaults(for apps: [AppInfo]) -> [AppGridItem] {
+      print("Load layout.")
       guard let savedData = userDefaults.array(forKey: gridItemsKey) as? [[String: Any]] else {
          return apps.map { .app($0) }
       }
@@ -134,11 +122,12 @@ final class AppManager: ObservableObject {
    }
 
    private func loadAppItem(from itemData: [String: Any], appsByPath: [String: AppInfo]) -> AppGridItem? {
-      guard let path = itemData["path"] as? String,
-            let baseApp = appsByPath[path] else { return nil }
-      let savedPage = itemData["page"] as? Int ?? 0
-      let appWithPage = AppInfo(name: baseApp.name, icon: baseApp.icon, path: baseApp.path, page: savedPage)
-      return .app(appWithPage)
+      let path = itemData["path"] as! String
+      let page = itemData["page"] as! Int
+      let baseApp = appsByPath[path]
+      if baseApp == nil {  return nil  }
+      return .app(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: page))
+
    }
 
    private func loadFolderItem(from itemData: [String: Any], appsByPath: [String: AppInfo]) -> AppGridItem? {
@@ -156,47 +145,6 @@ final class AppManager: ObservableObject {
       return .folder(folder)
    }
 
-   private func groupItemsByPage(items: [AppGridItem], appsPerPage: Int) -> [[AppGridItem]] {
-      guard !items.isEmpty else { return [[]] }
-      print("Group items: \(items)")
-      let groupedByPage = Dictionary(grouping: items) { $0.page }
-      let sortedPages = groupedByPage.keys.sorted()
-      print("Grouped by page: \(sortedPages.count)")
-      var pages: [[AppGridItem]] = []
-      var currentPage = 0
-      var itemsOnCurrentPage = 0
-      var currentPageItems: [AppGridItem] = []
-      for pageNum in sortedPages {
-         let pageItems = groupedByPage[pageNum] ?? []
-         print("Page items: \(pageItems.count)")
-         for item in pageItems {
-            if itemsOnCurrentPage >= appsPerPage {
-               pages.append(currentPageItems)
-               currentPage += 1
-               currentPageItems = []
-               itemsOnCurrentPage = 0
-            }
-            let updatedItem = item.page != currentPage ? updateItemPage(item: item, to: currentPage) : item
-            currentPageItems.append(updatedItem)
-            itemsOnCurrentPage += 1
-         }
-      }
-      if !currentPageItems.isEmpty {
-         pages.append(currentPageItems)
-      }
-      return pages.isEmpty ? [[]] : pages
-   }
-
-   private func updateItemPage(item: AppGridItem, to page: Int) -> AppGridItem {
-      print("Update item page. Old page: \(item.page), New page: \(page)")
-      switch item {
-      case .app(let app):
-         return .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: page))
-      case .folder(let folder):
-         return .folder(Folder(name: folder.name, page: page, apps: folder.apps))
-      }
-   }
-
    private func getLocalizedAppName(for url: URL, fallbackName: String) -> String {
       if let rawValue = NSMetadataItem(url: url)?.value(forAttribute: kMDItemDisplayName as String) as? String {
          var trimmed = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -208,18 +156,53 @@ final class AppManager: ObservableObject {
       return fallbackName
    }
 
+   private func groupItemsByPage(items: [AppGridItem], appsPerPage: Int) -> [[AppGridItem]] {
+      //print("Group items: \(items)")
+      let groupedByPage = Dictionary(grouping: items) { $0.page }
+      let sortedPages = groupedByPage.keys.sorted()
+      var pages: [[AppGridItem]] = []
+      var currentPage = 0
+      var itemsOnCurrentPage = 0
+      var currentPageItems: [AppGridItem] = []
+      for pageNum in sortedPages {
+         let pageItems = groupedByPage[pageNum] ?? []
+         for item in pageItems {
+            if itemsOnCurrentPage >= appsPerPage {
+               pages.append(currentPageItems)
+               currentPage += 1
+               currentPageItems = []
+               itemsOnCurrentPage = 0
+            }
+            let updatedItem = currentPage > item.page ? updateItemPage(item: item, to: currentPage) : item
+            currentPageItems.append(updatedItem)
+            itemsOnCurrentPage += 1
+         }
+      }
+      if !currentPageItems.isEmpty {
+         pages.append(currentPageItems)
+      }
+      return pages.isEmpty ? [[]] : pages
+   }
+
+   private func updateItemPage(item: AppGridItem, to page: Int) -> AppGridItem {
+      //print("Update item page. Old page: \(item.page), New page: \(page)")
+      switch item {
+      case .app(let app):
+         return .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: page))
+      case .folder(let folder):
+         return .folder(Folder(name: folder.name, page: page, apps: folder.apps))
+      }
+   }
+
    private func importLayoutFromJSON(filePath: URL, appsPerPage: Int) {
       do {
          let jsonData = try Data(contentsOf: filePath)
-         guard let itemsArray = try JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]] else {
-            print("Invalid JSON format")
-            return
-         }
+         let itemsArray = try JSONSerialization.jsonObject(with: jsonData) as! [[String: Any]]
          let allApps = discoverApps()
          let appsByPath = Dictionary(uniqueKeysWithValues: allApps.map { ($0.path, $0) })
          var gridItems: [AppGridItem] = []
          for itemData in itemsArray {
-            guard let type = itemData["type"] as? String else { continue }
+            let type = itemData["type"] as! String
             switch type {
             case "app":
                if let gridItem = loadAppItem(from: itemData, appsByPath: appsByPath) {
@@ -235,7 +218,7 @@ final class AppManager: ObservableObject {
          }
          let newPages = groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
          self.pages = newPages
-         print("Imported layout from: \(filePath.path)")
+         print("Import finished successfully from: \(filePath.path)")
       } catch {
          print("Failed to import layout: \(error)")
       }
