@@ -9,7 +9,7 @@ struct FolderDetailView: View {
    @State private var editingName = false
    @State private var draggedApp: AppInfo?
    @State private var isAnimatingIn = false
-   @State private var contentOpacity: Double = 0
+   @State private var opacity: Double = 0
    @State private var headerOffset: CGFloat = -20
    @Environment(\.colorScheme) private var colorScheme
 
@@ -26,56 +26,10 @@ struct FolderDetailView: View {
                   dismissWithAnimation()
                }
 
-            // Main folder container
             VStack(spacing: 10) {
-               // Header Section
-               VStack(spacing: 16) {
-                  // Folder name
-                  HStack {
-                     Spacer()
-                     if editingName {
-                        TextField(L10n.folderNamePlaceholder, text: Binding(get: { folder!.name }, set: { folder!.name = $0 }))
-                           .textFieldStyle(.plain)
-                           .font(.title2.weight(.medium))
-                           .multilineTextAlignment(.center)
-                           .padding(.horizontal, 20)
-                           .padding(.vertical, 8)
-                           .background(
-                              RoundedRectangle(cornerRadius: 8)
-                                 .fill(Color.primary.opacity(0.08))
-                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                       .stroke(Color.primary.opacity(0.2), lineWidth: 1)
-                                 )
-                           )
-                           .onSubmit {
-                              withAnimation(.easeOut(duration: 0.2)) {
-                                 editingName = false
-                              }
-                           }
-                     } else {
-                        Text(folder!.name)
-                           .font(.title2.weight(.medium))
-                           .foregroundStyle(.primary)
-                           .padding(.horizontal, 16)
-                           .padding(.vertical, 8)
-                           .onTapGesture {
-                              withAnimation(.easeOut(duration: 0.2)) {
-                                 editingName = true
-                              }
-                           }
-                     }
-                     Spacer()
-                  }
-                  .padding(.horizontal, 32)
-               }
-               .offset(y: headerOffset)
-               .opacity(contentOpacity)
-               .padding(.vertical, 20)
-
-               // Content Section
+               FolderNameView(folder: $folder, editingName: $editingName, opacity: opacity, offset: headerOffset)
                GeometryReader { geo in
-                  let layout = LayoutMetrics(size: geo.size, columns: settings.folderColumns, rows: settings.folderRows, iconSize: settings.iconSize)
+                  let layout = LayoutMetrics(size: geo.size, columns: settings.folderColumns, rows: settings.folderRows + 1, iconSize: settings.iconSize)
 
                   ScrollView(.vertical, showsIndicators: false) {
                      LazyVGrid(
@@ -103,12 +57,11 @@ struct FolderDetailView: View {
                                  ))
                         }
                      }
-                     .padding(.horizontal, 32)
                      .padding(.vertical, 20)
                   }
                   .scrollBounceBehavior(.basedOnSize)
                }
-               .opacity(contentOpacity)
+               .opacity(opacity)
             }
             .frame(width: LaunchPadConstants.settingsWindowWidth, height: LaunchPadConstants.settingsWindowHeight)
             .background(
@@ -168,7 +121,7 @@ struct FolderDetailView: View {
       }
 
       withAnimation(.easeOut(duration: 0.3)) {
-         contentOpacity = 1.0
+         opacity = 1.0
       }
 
       withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
@@ -178,7 +131,7 @@ struct FolderDetailView: View {
 
    private func dismissWithAnimation() {
       withAnimation(.easeIn(duration: 0.1)) {
-         contentOpacity = 0
+         opacity = 0
          headerOffset = -20
          isAnimatingIn = false
       }
