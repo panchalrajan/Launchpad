@@ -30,15 +30,7 @@ struct ItemDropDelegate: DropDelegate {
       } else {
          let item = pages[draggedItem.page][fromIndex]
 
-         let updatedItem: AppGridItem
-         switch item {
-         case .app(let app):
-            updatedItem = .app(
-               AppInfo(name: app.name, icon: app.icon, path: app.path, page: targetPage))
-         case .folder(let folder):
-            updatedItem = .folder(
-               Folder(name: folder.name, page: targetPage, apps: folder.apps))
-         }
+         let updatedItem = item.withUpdatedPage(targetPage)
 
          pages[targetItem.page].insert(updatedItem, at: toIndex)
          pages[draggedItem.page].remove(at: fromIndex)
@@ -81,15 +73,7 @@ struct ItemDropDelegate: DropDelegate {
 
          let nextPageNumber = targetPageIndex + 1
 
-         let updatedOverflowItem: AppGridItem
-         switch overflowItem {
-         case .app(let app):
-            updatedOverflowItem = .app(
-               AppInfo(name: app.name, icon: app.icon, path: app.path, page: nextPageNumber))
-         case .folder(let folder):
-            updatedOverflowItem = .folder(
-               Folder(name: folder.name, page: nextPageNumber, apps: folder.apps))
-         }
+         let updatedOverflowItem = overflowItem.withUpdatedPage(nextPageNumber)
 
          if nextPageNumber >= pages.count {
             pages.append([updatedOverflowItem])

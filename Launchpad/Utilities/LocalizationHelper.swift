@@ -3,14 +3,7 @@ import Foundation
 extension String {
     /// Returns the localized version of the string
     var localized: String {
-        let localized = NSLocalizedString(self, comment: "")
-        #if DEBUG
-        // Debug: Print localization info
-        let currentLanguage = Locale.current.language.languageCode?.identifier ?? "unknown"
-        let preferredLanguages = Locale.preferredLanguages.first ?? "unknown"
-        print("🌍 Localizing '\(self)' -> '\(localized)' (System: \(currentLanguage), Preferred: \(preferredLanguages))")
-        #endif
-        return localized
+        return NSLocalizedString(self, comment: "")
     }
     
     /// Returns the localized version of the string with arguments

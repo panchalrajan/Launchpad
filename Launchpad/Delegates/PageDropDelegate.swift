@@ -42,13 +42,7 @@ struct PageDropDelegate: DropDelegate {
    }
 
    private func updateItemPage(item: AppGridItem, page: Int) -> AppGridItem {
-      print(page)
-      switch item {
-      case .app(let app):
-         return .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: page))
-      case .folder(let folder):
-         return .folder(Folder(name: folder.name, page: page, apps: folder.apps))
-      }
+      return item.withUpdatedPage(page)
    }
 
    private func handlePageOverflow(targetPageIndex: Int) {
@@ -56,13 +50,7 @@ struct PageDropDelegate: DropDelegate {
          let overflowItem = pages[targetPageIndex].removeLast()
          let nextPageNumber = targetPageIndex + 1
 
-         let updatedOverflowItem: AppGridItem
-         switch overflowItem {
-         case .app(let app):
-            updatedOverflowItem = .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: nextPageNumber))
-         case .folder(let folder):
-            updatedOverflowItem = .folder(Folder(name: folder.name, page: nextPageNumber, apps: folder.apps))
-         }
+         let updatedOverflowItem = overflowItem.withUpdatedPage(nextPageNumber)
 
          if nextPageNumber >= pages.count {
             pages.append([updatedOverflowItem])

@@ -84,8 +84,8 @@ struct FolderDetailView: View {
                      ) {
                         ForEach(folder!.apps) { app in
                            AppIconView(app: app, layout: layout, isDragged: draggedApp?.id == app.id)
-                              .scaleEffect(draggedApp?.id == app.id ? 0.95 : 1.0)
-                              .opacity(draggedApp?.id == app.id ? 0.7 : 1.0)
+                              .scaleEffect(draggedApp?.id == app.id ? LaunchPadConstants.draggedAppScale : 1.0)
+                              .opacity(draggedApp?.id == app.id ? LaunchPadConstants.draggedAppOpacity : 1.0)
                               .animation(.easeOut(duration: 0.15), value: draggedApp?.id == app.id)
                               .onDrag {
                                  withAnimation(.easeOut(duration: 0.15)) {
@@ -110,7 +110,7 @@ struct FolderDetailView: View {
                }
                .opacity(contentOpacity)
             }
-            .frame(width: 1200, height: 800)
+            .frame(width: LaunchPadConstants.settingsWindowWidth, height: LaunchPadConstants.settingsWindowHeight)
             .background(
                RoundedRectangle(cornerRadius: 20)
                   .fill(.regularMaterial)
@@ -210,13 +210,7 @@ struct FolderDetailView: View {
       while pages[pageIndex].count > settings.appsPerPage {
          let overflowItem = pages[pageIndex].removeLast()
          let nextPage = pageIndex + 1
-         let updatedOverflowItem: AppGridItem
-         switch overflowItem {
-         case .app(let app):
-            updatedOverflowItem = .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: nextPage))
-         case .folder(let folder):
-            updatedOverflowItem = .folder(Folder(name: folder.name, page: nextPage, apps: folder.apps))
-         }
+         let updatedOverflowItem = overflowItem.withUpdatedPage(nextPage)
          if nextPage >= pages.count {
             pages.append([updatedOverflowItem])
          } else {

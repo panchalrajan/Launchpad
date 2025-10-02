@@ -43,4 +43,13 @@ extension AppGridItem {
          "path": app.path
       ]
    }
+   
+   func withUpdatedPage(_ newPage: Int) -> AppGridItem {
+      switch self {
+      case .app(let app):
+         return .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: newPage))
+      case .folder(let folder):
+         return .folder(Folder(name: folder.name, page: newPage, apps: folder.apps))
+      }
+   }
 }

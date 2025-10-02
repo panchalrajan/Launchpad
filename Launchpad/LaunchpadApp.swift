@@ -17,7 +17,7 @@ struct LaunchpadApp: App {
                showSettings: { showSettings = true }
             )
             .opacity(showSettings ? 0.3 : 1.0)
-            .animation(.easeInOut(duration: 0.3), value: showSettings)
+            .animation(LaunchPadConstants.fadeAnimation, value: showSettings)
             .onTapGesture(perform: AppLauncher.exit)
             
             if showSettings {

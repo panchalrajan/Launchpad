@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PageIndicatorView: View {
+    
     @Binding var currentPage: Int
     let pageCount: Int
     let isFolderOpen: Bool
@@ -8,7 +9,7 @@ struct PageIndicatorView: View {
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: LaunchPadConstants.pageIndicatorSpacing) {
             ForEach(0..<pageCount, id: \.self) { index in
                 Circle()
                     .fill(
@@ -16,11 +17,11 @@ struct PageIndicatorView: View {
                         ? (colorScheme == .dark ? Color.white : Color.primary)
                         : (colorScheme == .dark ? Color.gray.opacity(0.4) : Color.gray.opacity(0.6))
                     )
-                    .frame(width: 10, height: 10)
-                    .scaleEffect(index == currentPage ? 1.2 : 1.0)
+                    .frame(width: LaunchPadConstants.pageIndicatorSize, height: LaunchPadConstants.pageIndicatorSize)
+                    .scaleEffect(index == currentPage ? LaunchPadConstants.pageIndicatorActiveScale : 1.0)
                     .animation(.easeInOut(duration: 0.2), value: currentPage)
                     .onTapGesture {
-                        withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+                        withAnimation(LaunchPadConstants.springAnimation) {
                             currentPage = index
                         }
                     }

@@ -14,6 +14,6 @@ struct Folder: Identifiable, Equatable {
   }
 
   var previewApps: [AppInfo] {
-    Array(apps.prefix(9))
-  }
+      Array(apps.prefix(LaunchPadConstants.folderPreviewSize))
+   }
 }

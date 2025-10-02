@@ -1,12 +1,10 @@
 import SwiftUI
 
 struct ActionsSettings: View {
-   var settingsManager = SettingsManager.shared
-   var appManager = AppManager.shared
+   private let settingsManager = SettingsManager.shared
+   private let appManager = AppManager.shared
 
    @State private var showingClearConfirmation = false
-   @State private var showingImportAlert = false
-   @State private var importAlertMessage = ""
 
    var body: some View {
       VStack(alignment: .leading, spacing: 24) {

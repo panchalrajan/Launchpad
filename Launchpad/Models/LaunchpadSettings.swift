@@ -8,7 +8,7 @@ struct LaunchpadSettings: Codable, Equatable {
   var folderColumns: Int
   var folderRows: Int
   var scrollDebounceInterval: TimeInterval
-  var scrollActivationThreshold: CGFloat
+  var scrollActivationThreshold: Double
 
   static let defaultColumns = 7
   static let defaultRows = 5

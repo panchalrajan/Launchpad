@@ -12,157 +12,49 @@ struct LayoutSettings: View {
                   .foregroundColor(.primary)
                
                HStack(spacing: 24) {
-                  VStack(alignment: .leading, spacing: 8) {
-                     Text(L10n.columns)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                     
-                     HStack {
-                        TextField(L10n.columns, value: $settings.columns, format: .number)
-                           .textFieldStyle(.roundedBorder)
-                           .frame(width: 60)
-                        
-                        Stepper("", value: $settings.columns, in: 2...20)
-                           .labelsHidden()
-                     }
-                  }
-                  
-                  VStack(alignment: .leading, spacing: 8) {
-                     Text(L10n.rows)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                     
-                     HStack {
-                        TextField(L10n.rows, value: $settings.rows, format: .number)
-                           .textFieldStyle(.roundedBorder)
-                           .frame(width: 60)
-                        
-                        Stepper("", value: $settings.rows, in: 2...15)
-                           .labelsHidden()
-                     }
-                  }
-                  
-                  VStack(alignment: .leading, spacing: 8) {
-                     Text(L10n.folderColumns)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                     
-                     HStack {
-                        TextField(L10n.folderColumns, value: $settings.folderColumns, format: .number)
-                           .textFieldStyle(.roundedBorder)
-                           .frame(width: 60)
-                        
-                        Stepper("", value: $settings.folderColumns, in: 2...8)
-                           .labelsHidden()
-                     }
-                  }
-                  
-                  VStack(alignment: .leading, spacing: 8) {
-                     Text(L10n.folderRows)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                     
-                     HStack {
-                        TextField(L10n.folderRows, value: $settings.folderRows, format: .number)
-                           .textFieldStyle(.roundedBorder)
-                           .frame(width: 60)
-                        
-                        Stepper("", value: $settings.folderRows, in: 1...6)
-                           .labelsHidden()
-                     }
-                  }
+                  SettingsNumberField(title: L10n.columns, value: $settings.columns, range: 2...20)
+                  SettingsNumberField(title: L10n.rows, value: $settings.rows, range: 2...15)
+                  SettingsNumberField(title: L10n.folderColumns, value: $settings.folderColumns, range: 2...8)
+                  SettingsNumberField(title: L10n.folderRows, value: $settings.folderRows, range: 1...6)
                }
             }
             
-            VStack(alignment: .leading, spacing: 12) {
-               Text(L10n.iconSize)
-                  .font(.headline)
-                  .foregroundColor(.primary)
-               
-               Slider(
-                  value: $settings.iconSize,
-                  in: 50...200,
-                  step: 10
-               ) {
-                  
-               } minimumValueLabel: {
-                  Text(L10n.number10)
-                     .font(.caption2)
-                     .foregroundColor(.secondary)
-               } maximumValueLabel: {
-                  Text(L10n.number200)
-                     .font(.caption2)
-                     .foregroundColor(.secondary)
-               }
-               .accentColor(.blue)
-            }
+            SettingsSlider(
+               title: L10n.iconSize,
+               value: $settings.iconSize,
+               range: 50...200,
+               step: 10,
+               minLabel: L10n.number10,
+               maxLabel: L10n.number200
+            )
             
-            VStack(alignment: .leading, spacing: 12) {
-               Text(L10n.dropAnimationDelay)
-                  .font(.headline)
-                  .foregroundColor(.primary)
-               
-               Slider(
-                  value: $settings.dropDelay,
-                  in: 0.0...3.0,
-                  step: 0.1
-               ) {
-               } minimumValueLabel: {
-                  Text(L10n.time00s)
-                     .font(.caption2)
-                     .foregroundColor(.secondary)
-               } maximumValueLabel: {
-                  Text(L10n.time30s)
-                     .font(.caption2)
-                     .foregroundColor(.secondary)
-               }
-               .accentColor(.blue)
-            }
+            SettingsSlider(
+               title: L10n.dropAnimationDelay,
+               value: $settings.dropDelay,
+               range: 0.0...3.0,
+               step: 0.1,
+               minLabel: L10n.time00s,
+               maxLabel: L10n.time30s
+            )
             
             
-            VStack(alignment: .leading, spacing: 12) {
-               Text(L10n.pageScrollDebounce)
-                  .font(.headline)
-                  .foregroundColor(.primary)
-               
-               Slider(
-                  value: $settings.scrollDebounceInterval,
-                  in: 0.0...3.0,
-                  step: 0.1
-               ) {
-               } minimumValueLabel: {
-                  Text(L10n.time00s)
-                     .font(.caption2)
-                     .foregroundColor(.secondary)
-               } maximumValueLabel: {
-                  Text(L10n.time30s)
-                     .font(.caption2)
-                     .foregroundColor(.secondary)
-               }
-               .accentColor(.blue)
-            }
+            SettingsSlider(
+               title: L10n.pageScrollDebounce,
+               value: $settings.scrollDebounceInterval,
+               range: 0.0...3.0,
+               step: 0.1,
+               minLabel: L10n.time00s,
+               maxLabel: L10n.time30s
+            )
             
-            VStack(alignment: .leading, spacing: 12) {
-               Text(L10n.pageScrollThreshold)
-                  .font(.headline)
-                  .foregroundColor(.primary)
-               
-               Slider(
-                  value: $settings.scrollActivationThreshold,
-                  in: 10...200,
-                  step: 10
-               ) {
-               } minimumValueLabel: {
-                  Text(L10n.number10)
-                     .font(.caption2)
-                     .foregroundColor(.secondary)
-               } maximumValueLabel: {
-                  Text(L10n.number200)
-                     .font(.caption2)
-                     .foregroundColor(.secondary)
-               }
-               .accentColor(.blue)
-            }
+            SettingsSlider(
+               title: L10n.pageScrollThreshold,
+               value: $settings.scrollActivationThreshold,
+               range: 10...200,
+               step: 10,
+               minLabel: L10n.number10,
+               maxLabel: L10n.number200
+            )
          }
          .padding(.horizontal, 8)
       }

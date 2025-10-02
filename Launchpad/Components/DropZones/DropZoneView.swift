@@ -15,7 +15,7 @@ struct DropZoneView: View {
    @State private var isHovered = false
    @State private var hoverTimer: Timer?
 
-   private let hoverDelay: TimeInterval = 0.8
+   private let hoverDelay: TimeInterval = LaunchPadConstants.hoverDelay
 
    private var canNavigate: Bool {
       switch direction {
@@ -45,7 +45,7 @@ struct DropZoneView: View {
    var body: some View {
       Rectangle()
          .fill(shouldShowChevron ? Color.accentColor.opacity(0.3) : Color.clear)
-         .frame(width: 60)
+         .frame(width: LaunchPadConstants.dropZoneWidth)
          .overlay(alignment: alignment) {
             if shouldShowChevron {
                VStack {

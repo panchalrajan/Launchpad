@@ -20,7 +20,7 @@ struct SinglePageView: View {
                ForEach(pages[pageIndex]) { item in
                   GridItemView(item: item, layout: layout, isDragged: draggedItem?.id == item.id
                   )
-                  .opacity(isFolderOpen ? 0.2 : 1)
+                  .opacity(isFolderOpen ? LaunchPadConstants.folderOpenOpacity : 1)
                   .onTapGesture { onItemTap(item)  }
                   .onDrag {
                      draggedItem = item

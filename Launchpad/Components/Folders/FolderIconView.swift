@@ -12,10 +12,10 @@ struct FolderIconView: View {
         
         VStack(spacing: 8) {
             ZStack {
-                RoundedRectangle(cornerRadius: layout.iconSize * 0.2)
+                RoundedRectangle(cornerRadius: layout.iconSize * LaunchPadConstants.folderCornerRadiusMultiplier)
                     .fill(colorScheme == .dark ? Color.black.opacity(0.3) : Color.white.opacity(0.3))
                     .background(RoundedRectangle(cornerRadius: layout.iconSize * 0.2).fill(.ultraThinMaterial))
-                    .frame(width: layout.iconSize * 0.82, height: layout.iconSize * 0.82)
+                    .frame(width: layout.iconSize * LaunchPadConstants.folderSizeMultiplier, height: layout.iconSize * LaunchPadConstants.folderSizeMultiplier)
                 
                 LazyVGrid(columns: GridLayoutUtility.createFlexibleGridColumns(count: 3, spacing: gridSpacing),spacing: gridSpacing) {
                     ForEach(folder.previewApps) { app in

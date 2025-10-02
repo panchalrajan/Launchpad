@@ -68,7 +68,7 @@ final class AppManager: ObservableObject {
          if item.hasSuffix(".app") {
             let fallbackName = item.replacingOccurrences(of: ".app", with: "")
             let appName = getLocalizedAppName(for: URL(fileURLWithPath: fullPath), fallbackName: fallbackName)
-            let icon = NSWorkspace.shared.icon(forFile: fullPath).flattenedForConsistency(targetPixelSize: 256)
+            let icon = NSWorkspace.shared.icon(forFile: fullPath).flattenedForConsistency()
             foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath))
          } else if shouldSearchDirectory(item: item, at: fullPath) {
             foundApps.append(contentsOf: discoverAppsRecursively(directory: fullPath, maxDepth: maxDepth, currentDepth: currentDepth + 1))
@@ -154,7 +154,6 @@ final class AppManager: ObservableObject {
 
    private func groupItemsByPage(items: [AppGridItem], appsPerPage: Int) -> [[AppGridItem]] {
       print("App count: \(items.count)")
-      //print("Group items: \(items)")
       let groupedByPage = Dictionary(grouping: items) { $0.page }
       let pageCount = max(groupedByPage.keys.max() ?? 1, 1)
       var pages: [[AppGridItem]] = []
@@ -169,7 +168,6 @@ final class AppManager: ObservableObject {
          print("Current page: \(currentPage), page num: \(pageNum), items: \(pageItems.count)")
          for item in pageItems {
             if currentPageItems.count >= appsPerPage {
-               print("Overflow.")
                pages.append(currentPageItems)
                currentPage += 1
                currentPageItems = []
@@ -183,18 +181,11 @@ final class AppManager: ObservableObject {
             pages.append(currentPageItems)
          }
       }
-      //print("Pages: \(pages)")
       return pages.isEmpty ? [[]] : pages
    }
 
    private func updateItemPage(item: AppGridItem, to page: Int) -> AppGridItem {
-      //print("Update item page. Old page: \(item.page), New page: \(page)")
-      switch item {
-      case .app(let app):
-         return .app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: page))
-      case .folder(let folder):
-         return .folder(Folder(name: folder.name, page: page, apps: folder.apps))
-      }
+      return item.withUpdatedPage(page)
    }
 
    private func importLayoutFromJSON(filePath: URL, appsPerPage: Int) {

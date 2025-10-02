@@ -18,8 +18,8 @@ struct AppIconView: View {
             .multilineTextAlignment(.center)
             .frame(width: layout.cellWidth)
       }
-      .scaleEffect(isDragged ? 0.8 : 1.0)
-      .opacity(isDragged ? 0.5 : 1.0)
-      .animation(.easeInOut(duration: 0.2), value: isDragged)
+      .scaleEffect(isDragged ? LaunchPadConstants.draggedItemScale : 1.0)
+      .opacity(isDragged ? LaunchPadConstants.draggedItemOpacity : 1.0)
+      .animation(LaunchPadConstants.quickFadeAnimation, value: isDragged)
    }
 }

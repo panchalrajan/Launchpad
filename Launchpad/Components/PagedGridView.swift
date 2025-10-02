@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 
 struct PagedGridView: View {
+   
    @Binding var pages: [[AppGridItem]]
    var settings: LaunchpadSettings
    var showSettings: () -> Void
@@ -34,10 +35,9 @@ struct PagedGridView: View {
                   }
                }
                .offset(x: -CGFloat(currentPage) * geo.size.width + dragOffset)
-               .animation(.interpolatingSpring(stiffness: 300, damping: 100), value: currentPage)
+               .animation(LaunchPadConstants.springAnimation, value: currentPage)
                .onAppear(perform: setupEventMonitoring)
                .onDisappear(perform: cleanupEventMonitoring)
-               //.background(Color(.red))
             } else {
                SearchResultsView(
                   apps: filteredApps(),
@@ -45,7 +45,6 @@ struct PagedGridView: View {
                   onItemTap: handleItemTap
                )
                .frame(width: geo.size.width, height: geo.size.height)
-               //.background(Color(.blue))
             }
          }
          PageIndicatorView(
@@ -55,7 +54,6 @@ struct PagedGridView: View {
             searchText: searchText
          )
       }
-      //.background(Color(.green))
 
       FolderDetailView(
          pages: $pages,
@@ -170,14 +168,14 @@ struct PagedGridView: View {
    private func navigateToPreviousPage() {
       guard currentPage > 0 else { return }
 
-      withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+      withAnimation(LaunchPadConstants.springAnimation) {
          currentPage = currentPage - 1
       }
    }
 
    private func navigateToNextPage() {
       if currentPage < pages.count - 1 {
-         withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+         withAnimation(LaunchPadConstants.springAnimation) {
             currentPage += 1
          }
       } else {
@@ -187,7 +185,7 @@ struct PagedGridView: View {
 
    private func createNewPage() {
       pages.append([])
-      withAnimation(.interpolatingSpring(stiffness: 300, damping: 100)) {
+      withAnimation(LaunchPadConstants.springAnimation) {
          currentPage = pages.count - 1
       }
    }
