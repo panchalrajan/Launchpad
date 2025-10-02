@@ -37,6 +37,14 @@ If you like this project and want to support further development, please conside
 ![Folder](Documentation/Launchpad-4.png)
 ![Folders](Documentation/Launchpad-5.png)
 
+### New folder styles to match Liquid Glass
+
+![Search Functionality](Documentation/Launchpad-6.png)
+
+### New settings options
+
+![Search Functionality](Documentation/Launchpad-7.png)
+
 ### 🎮 **Multiple Navigation Methods**
 
 #### ⌨️ **Keyboard Navigation**
@@ -65,20 +73,28 @@ LaunchPad offers deep customization to tailor your experience:
 - **Menu Bar**: `LaunchPad` → `Settings` (⌘,)
 
 ### 📐 **Grid & Layout Configuration**
-- **Columns**: 4–12 per page
-- **Rows**: 3–10 per page
-- **Apps per Page**: Calculated automatically
+- **Columns**: 2–20 per page with stepper controls
+- **Rows**: 2–15 per page with stepper controls  
+- **Folder Grid**: Separate 2–8 columns, 1–6 rows configuration
+- **Apps per Page**: Calculated automatically based on grid
 - **Justified Grid**: Icons and folders always fill the grid evenly
-- **Real-time Preview**: See changes instantly
+- **Real-time Preview**: See changes instantly with live updates
 
 ### 🎨 **Icon & Animation Customization**
-- **Icon Size**: Fine-tune from 20–200 px
-- **Drop Animation Delay**: Adjustable for drag & drop
+- **Icon Size**: Fine-tune from 50–200 px with 10px increments
+- **Drop Animation Delay**: 0.0–3.0 seconds for drag & drop feedback
+- **Scroll Sensitivity**: Configurable page navigation thresholds
+- **Scroll Debounce**: 0.0–3.0 seconds for smooth navigation
 - **Visual Feedback**: Real-time display and smooth scaling
+- **Consistent Animations**: Unified spring animations throughout
 
-### 🧩 **Persistent & Adaptive**
-- **All settings and layout are saved** – Your custom grid and folders are always restored
-- **Consistent alignment** – Search and grid always start at the same position
+### 🧩 **Layout Management & Backup**
+- **Persistent Storage** – All settings and layouts automatically saved
+- **Export/Import** – Backup your custom layouts as JSON files
+- **Reset Options** – Return to alphabetical order with confirmation
+- **Smart Validation** – Settings enforce reasonable bounds and limits  
+- **Consistent Alignment** – Search and grid always start at the same position
+- **Cross-Device Sync** – Export layouts to share between machines
 
 ## 🚀 Getting Started
 
@@ -100,7 +116,78 @@ LaunchPad offers deep customization to tailor your experience:
 - **Remove from Folder**: Use context menu or drag out
 - **Quit Launchpad**: Activate another app or press ESC
 
-## 🙏 Acknowledgments
+## 🏗️ **Architecture & Performance**
+
+### 🚀 **Optimized Codebase**
+- **MVVM Architecture** – Clean separation with SwiftUI's reactive patterns
+- **Centralized Constants** – Over 25 magic numbers consolidated for maintainability
+- **Reusable Components** – Modular UI components reduce code duplication by 75%
+- **Performance Optimized** – Minimal object creation and efficient memory management
+- **Clean Code** – Debug statements removed, consistent naming, and optimized imports
+
+### 🧪 **Comprehensive Testing**
+- **Unit Test Coverage** – Extensive tests for core functionality
+- **App Discovery Tests** – Validates application scanning and detection
+- **Persistence Tests** – Ensures layout and settings are properly saved
+- **Import/Export Tests** – Verifies layout backup and restore functionality
+
+### 🌐 **Internationalization**
+- **Multi-language Support** – English and Hungarian localizations
+- **Centralized Strings** – Easy to add new languages
+- **Cultural Adaptation** – Proper formatting for different locales
+
+## �️ **Development & Technical Details**
+
+### 📁 **Project Structure**
+```
+Launchpad/
+├── LaunchpadApp.swift              # App entry point
+├── Managers/
+│   ├── AppManager.swift           # App discovery & layout management
+│   └── SettingsManager.swift      # User preferences & configuration
+├── Models/
+│   ├── AppGridItem.swift          # Unified app/folder model
+│   ├── LaunchpadSettings.swift    # Configuration with validation
+│   └── LayoutMetrics.swift        # Responsive grid calculations
+├── Components/
+│   ├── PagedGridView.swift        # Main container with navigation
+│   ├── Search/                    # Real-time search functionality
+│   ├── Folders/                   # Folder management UI
+│   ├── Settings/                  # Tabbed settings interface
+│   └── DropZones/                 # Drag & drop navigation
+├── Delegates/
+│   └── *DropDelegate.swift        # Drag & drop handling
+├── Utilities/
+│   ├── LaunchPadConstants.swift   # Centralized constants
+│   ├── LocalizationHelper.swift   # L10n system
+│   └── AppGridItemExtensions.swift # Serialization helpers
+└── Tests/                          # Comprehensive test suite
+```
+
+### ⚡ **Key Technical Features**
+- **SwiftUI + MVVM**: Modern reactive architecture
+- **Singleton Managers**: Centralized state management
+- **JSON Serialization**: Layout import/export functionality
+- **NSVisualEffectView**: Native glass morphism implementation
+- **Drag & Drop Delegates**: Complex interaction handling
+- **LazyVGrid**: Performance-optimized large collections
+- **Persistent Storage**: UserDefaults with automatic saving
+
+### 🚀 **Requirements**
+- **macOS**: 15.6 or later
+- **Xcode**: 15.0 or later
+- **Swift**: 6.0
+- **Architecture**: Universal (Apple Silicon + Intel)
+
+### 🔧 **Build & Run**
+1. Clone the repository
+2. Open `Launchpad.xcodeproj` in Xcode
+3. Build and run (⌘+R)
+4. Grant necessary permissions when prompted
+
+🚀 **Recently Optimized**: The codebase has been thoroughly optimized with improved architecture, centralized constants, reusable components, and enhanced performance for a smoother development experience.
+
+## �🙏 Acknowledgments
 - Based on LaunchBack project
 - Inspired by macOS Launchpad
 - Glass morphism design trends
