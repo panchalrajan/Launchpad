@@ -9,7 +9,7 @@ final class AppLauncher {
     }
     
     static func exit() {
-        print("Exiting Launchpad")
+        print("Exiting Launchpad.")
         NSApp.hide(nil)
     }
 }

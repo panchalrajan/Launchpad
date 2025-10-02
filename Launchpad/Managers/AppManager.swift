@@ -13,9 +13,7 @@ final class AppManager: ObservableObject {
    }
 
    @Published var pages: [[AppGridItem]] {
-      didSet {
-         Task { await saveGridItems() }
-      }
+      didSet { saveGridItems() }
    }
 
    func loadGridItems(appsPerPage: Int) {
@@ -25,7 +23,7 @@ final class AppManager: ObservableObject {
       pages = groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
    }
 
-   private func saveGridItems() async {
+   private func saveGridItems() {
       print("Save grid items.")
       let itemsData = pages.flatMap { $0 }.map { $0.serialize() }
       userDefaults.set(itemsData, forKey: gridItemsKey)
@@ -88,9 +86,7 @@ final class AppManager: ObservableObject {
 
    private func loadLayoutFromUserDefaults(for apps: [AppInfo]) -> [AppGridItem] {
       print("Load layout.")
-      guard let savedData = userDefaults.array(forKey: gridItemsKey) as? [[String: Any]] else {
-         return apps.map { .app($0) }
-      }
+      guard let savedData = userDefaults.array(forKey: gridItemsKey) as? [[String: Any]] else { return apps.map{.app($0)} }
 
       let appsByPath = Dictionary(uniqueKeysWithValues: apps.map { ($0.path, $0) })
       var gridItems: [AppGridItem] = []
@@ -157,30 +153,37 @@ final class AppManager: ObservableObject {
    }
 
    private func groupItemsByPage(items: [AppGridItem], appsPerPage: Int) -> [[AppGridItem]] {
+      print("App count: \(items.count)")
       //print("Group items: \(items)")
       let groupedByPage = Dictionary(grouping: items) { $0.page }
-      let sortedPages = groupedByPage.keys.sorted()
+      let pageCount = max(groupedByPage.keys.max() ?? 1, 1)
       var pages: [[AppGridItem]] = []
       var currentPage = 0
-      var itemsOnCurrentPage = 0
-      var currentPageItems: [AppGridItem] = []
-      for pageNum in sortedPages {
+
+      print("Page count: \(pageCount)")
+
+      for pageNum in currentPage...pageCount {
+         currentPage = pageNum
+         var currentPageItems: [AppGridItem] = []
          let pageItems = groupedByPage[pageNum] ?? []
+         print("Current page: \(currentPage), page num: \(pageNum), items: \(pageItems.count)")
          for item in pageItems {
-            if itemsOnCurrentPage >= appsPerPage {
+            if currentPageItems.count >= appsPerPage {
+               print("Overflow.")
                pages.append(currentPageItems)
                currentPage += 1
                currentPageItems = []
-               itemsOnCurrentPage = 0
             }
+
             let updatedItem = currentPage > item.page ? updateItemPage(item: item, to: currentPage) : item
             currentPageItems.append(updatedItem)
-            itemsOnCurrentPage += 1
+         }
+
+         if !currentPageItems.isEmpty {
+            pages.append(currentPageItems)
          }
       }
-      if !currentPageItems.isEmpty {
-         pages.append(currentPageItems)
-      }
+      //print("Pages: \(pages)")
       return pages.isEmpty ? [[]] : pages
    }
 
