@@ -27,7 +27,7 @@ struct FolderDetailView: View {
                }
 
             VStack(spacing: 10) {
-               FolderNameView(folder: $folder, editingName: $editingName, opacity: opacity, offset: headerOffset)
+               FolderNameView(folder: Binding(get: { folder! }, set: { folder = $0 }), editingName: $editingName, opacity: opacity, offset: headerOffset)
                GeometryReader { geo in
                   let layout = LayoutMetrics(size: geo.size, columns: settings.folderColumns, rows: settings.folderRows + 1, iconSize: settings.iconSize)
 
