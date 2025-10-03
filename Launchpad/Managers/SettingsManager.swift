@@ -39,7 +39,8 @@ final class SettingsManager: ObservableObject {
       folderColumns: Int? = nil,
       folderRows: Int? = nil,
       scrollDebounceInterval: TimeInterval? = nil,
-      scrollActivationThreshold: CGFloat? = nil
+      scrollActivationThreshold: CGFloat? = nil,
+      showDock: Bool? = nil
    ) {
       settings = LaunchpadSettings(
          columns: columns ?? settings.columns,
@@ -49,7 +50,8 @@ final class SettingsManager: ObservableObject {
          folderColumns: folderColumns ?? settings.folderColumns,
          folderRows: folderRows ?? settings.folderRows,
          scrollDebounceInterval: scrollDebounceInterval ?? settings.scrollDebounceInterval,
-         scrollActivationThreshold: scrollActivationThreshold ?? settings.scrollActivationThreshold
+         scrollActivationThreshold: scrollActivationThreshold ?? settings.scrollActivationThreshold,
+         showDock: showDock ?? settings.showDock
       )
    }
 

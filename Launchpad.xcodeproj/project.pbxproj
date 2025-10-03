@@ -17,8 +17,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		622855E62E8EBE74002073FA /* LaunchpadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = LaunchpadTests.xctest; path = /Users/pappkristof/Developer/LaunchPad/build/Debug/Launchpad.app/Contents/PlugIns/LaunchpadTests.xctest; sourceTree = "<absolute>"; };
 		6D43C0B02E7F05EF00259811 /* Launchpad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Launchpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D75B5992E8FE21800828C60 /* LaunchpadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LaunchpadTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -58,6 +58,7 @@
 				84DD945A2E08882300F7E52A /* Launchpad */,
 				6D43C0B02E7F05EF00259811 /* Launchpad.app */,
 				622855E72E8EBE74002073FA /* Tests */,
+				6D75B5992E8FE21800828C60 /* LaunchpadTests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -84,7 +85,7 @@
 			packageProductDependencies = (
 			);
 			productName = LaunchpadTests;
-			productReference = 622855E62E8EBE74002073FA /* LaunchpadTests.xctest */;
+			productReference = 6D75B5992E8FE21800828C60 /* LaunchpadTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		84DD94572E08882300F7E52A /* Launchpad */ = {

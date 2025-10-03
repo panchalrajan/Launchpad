@@ -14,6 +14,7 @@
 // MARK: - Settings View
 "launchpad_settings" = "Beállítások";
 "reset_to_defaults" = "Alapértelmezett";
+"features" = "Funkciók";
 
 // MARK: - Layout Settings
 "layout" = "Elrendezés";
@@ -25,6 +26,7 @@
 "drop_animation_delay" = "Animáció Késleltetés";
 "page_scroll_debounce" = "Görgetés Késleltetés";
 "page_scroll_threshold" = "Görgetés Küszöb";
+"show_dock" = "Dock Megjelenítése";
 
 // MARK: - Actions Settings
 "actions" = "Műveletek";

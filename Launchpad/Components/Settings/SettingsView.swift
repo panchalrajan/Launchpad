@@ -28,7 +28,8 @@ struct SettingsView: View {
 
             Picker("", selection: $selectedTab) {
                Label(L10n.layout, systemImage: "grid").tag(0)
-               Label(L10n.actions, systemImage: "bolt").tag(1)
+               Label(L10n.features, systemImage: "sparkles").tag(1)
+               Label(L10n.actions, systemImage: "bolt").tag(2)
             }
             .pickerStyle(.segmented)
             .padding(.bottom, 16)
@@ -36,6 +37,8 @@ struct SettingsView: View {
             Group {
                if selectedTab == 0 {
                   LayoutSettings(settings: $settings)
+               } else if selectedTab == 1 {
+                  FeaturesSettings(settings: $settings)
                } else {
                   ActionsSettings()
                }
@@ -86,7 +89,8 @@ struct SettingsView: View {
          folderColumns: settings.folderColumns,
          folderRows: settings.folderRows,
          scrollDebounceInterval: settings.scrollDebounceInterval,
-         scrollActivationThreshold: CGFloat(settings.scrollActivationThreshold)
+         scrollActivationThreshold: CGFloat(settings.scrollActivationThreshold),
+         showDock: settings.showDock
       )
 
       // Recalculate pages if the number of apps per page changed

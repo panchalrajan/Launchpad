@@ -9,6 +9,7 @@ struct LaunchpadSettings: Codable, Equatable {
   var folderRows: Int
   var scrollDebounceInterval: TimeInterval
   var scrollActivationThreshold: Double
+  var showDock: Bool
 
   static let defaultColumns = 7
   static let defaultRows = 5
@@ -18,6 +19,7 @@ struct LaunchpadSettings: Codable, Equatable {
   static let defaultFolderRows = 3
   static let defaultScrollDebounceInterval: TimeInterval = 0.8
   static let defaultScrollActivationThreshold: CGFloat = 80
+  static let defaultShowDock = false
 
   init(
     columns: Int = defaultColumns,
@@ -27,7 +29,8 @@ struct LaunchpadSettings: Codable, Equatable {
     folderColumns: Int = defaultFolderColumns,
     folderRows: Int = defaultFolderRows,
     scrollDebounceInterval: TimeInterval = defaultScrollDebounceInterval,
-    scrollActivationThreshold: CGFloat = defaultScrollActivationThreshold
+    scrollActivationThreshold: CGFloat = defaultScrollActivationThreshold,
+    showDock: Bool = defaultShowDock
   ) {
     self.columns = max(4, min(12, columns))
     self.rows = max(3, min(10, rows))
@@ -37,6 +40,7 @@ struct LaunchpadSettings: Codable, Equatable {
     self.folderRows = max(3, min(8, folderRows))
     self.scrollDebounceInterval = scrollDebounceInterval
     self.scrollActivationThreshold = scrollActivationThreshold
+    self.showDock = showDock
   }
 
   var appsPerPage: Int {

@@ -25,6 +25,7 @@ struct L10n {
     // MARK: - Settings View
     static let launchpadSettings = "launchpad_settings".localized
     static let resetToDefaults = "reset_to_defaults".localized
+    static let features = "features".localized
     
     // MARK: - Layout Settings
     static let layout = "layout".localized
@@ -36,6 +37,7 @@ struct L10n {
     static let dropAnimationDelay = "drop_animation_delay".localized
     static let pageScrollDebounce = "page_scroll_debounce".localized
     static let pageScrollThreshold = "page_scroll_threshold".localized
+    static let showDock = "show_dock".localized
     
     // MARK: - Actions Settings
     static let actions = "actions".localized
