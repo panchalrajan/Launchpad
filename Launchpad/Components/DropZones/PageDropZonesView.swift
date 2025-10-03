@@ -6,6 +6,7 @@ struct PageDropZonesView: View {
    let draggedItem: AppGridItem?
    let onNavigateLeft: () -> Void
    let onNavigateRight: () -> Void
+   let transparency: Double
 
    var body: some View {
       HStack {
@@ -14,7 +15,8 @@ struct PageDropZonesView: View {
             currentPage: currentPage,
             totalPages: totalPages,
             draggedItem: draggedItem,
-            onNavigate: onNavigateLeft
+            onNavigate: onNavigateLeft,
+            transparency: transparency
          )
          .allowsHitTesting(true) // Keep hit testing for left drop zone
 
@@ -26,7 +28,8 @@ struct PageDropZonesView: View {
             currentPage: currentPage,
             totalPages: totalPages,
             draggedItem: draggedItem,
-            onNavigate: onNavigateRight
+            onNavigate: onNavigateRight,
+            transparency: transparency
          )
          .allowsHitTesting(true) // Keep hit testing for right drop zone
       }

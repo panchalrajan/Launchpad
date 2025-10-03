@@ -18,7 +18,7 @@ struct SinglePageView: View {
                spacing: layout.hSpacing
             ) {
                ForEach(pages[pageIndex]) { item in
-                  GridItemView(item: item, layout: layout, isDragged: draggedItem?.id == item.id
+                  GridItemView(item: item, layout: layout, isDragged: draggedItem?.id == item.id, transparency: settings.transparency
                   )
                   .opacity(isFolderOpen ? LaunchPadConstants.folderOpenOpacity : 1)
                   .onTapGesture { onItemTap(item)  }

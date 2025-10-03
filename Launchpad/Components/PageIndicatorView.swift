@@ -6,6 +6,7 @@ struct PageIndicatorView: View {
     let pageCount: Int
     let isFolderOpen: Bool
     let searchText: String
+    let transparency: Double
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
@@ -15,7 +16,7 @@ struct PageIndicatorView: View {
                     .fill(
                         index == currentPage
                         ? (colorScheme == .dark ? Color.white : Color.primary)
-                        : (colorScheme == .dark ? Color.gray.opacity(0.4) : Color.gray.opacity(0.6))
+                        : (colorScheme == .dark ? Color.gray.opacity(0.4 * transparency) : Color.gray.opacity(0.6 * transparency))
                     )
                     .frame(width: LaunchPadConstants.pageIndicatorSize, height: LaunchPadConstants.pageIndicatorSize)
                     .scaleEffect(index == currentPage ? LaunchPadConstants.pageIndicatorActiveScale : 1.0)

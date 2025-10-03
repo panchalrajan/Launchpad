@@ -18,7 +18,7 @@ struct PagedGridView: View {
 
    var body: some View {
       VStack(spacing: 0) {
-         SearchBarView(searchText: $searchText)
+         SearchBarView(searchText: $searchText, transparency: settings.transparency)
          GeometryReader { geo in
             if searchText.isEmpty {
                HStack(spacing: 0) {
@@ -51,7 +51,8 @@ struct PagedGridView: View {
             currentPage: $currentPage,
             pageCount: pages.count,
             isFolderOpen: selectedFolder != nil,
-            searchText: searchText
+            searchText: searchText,
+            transparency: settings.transparency
          )
       }
 
@@ -66,7 +67,8 @@ struct PagedGridView: View {
          totalPages: pages.count,
          draggedItem: draggedItem,
          onNavigateLeft: navigateToPreviousPage,
-         onNavigateRight: navigateToNextPage
+         onNavigateRight: navigateToNextPage,
+         transparency: settings.transparency
       )
    }
 

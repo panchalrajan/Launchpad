@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SearchBarView: View {
    @Binding var searchText: String
+   let transparency: Double
 
    var body: some View {
       HStack {
@@ -12,9 +13,9 @@ struct SearchBarView: View {
             .frame(width: LaunchPadConstants.searchBarWidth, height: LaunchPadConstants.searchBarHeight)
             .background(
                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                  .fill(Color(NSColor.windowBackgroundColor).opacity(0.4))
+                  .fill(Color(NSColor.windowBackgroundColor).opacity(0.4 * transparency))
             )
-            .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 3)
+            .shadow(color: Color.black.opacity(0.2 * transparency), radius: 10, x: 0, y: 3)
          Spacer()
       }
       .padding(.top, 40)

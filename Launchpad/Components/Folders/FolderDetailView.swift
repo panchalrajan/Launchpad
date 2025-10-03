@@ -72,8 +72,8 @@ struct FolderDetailView: View {
                         .fill(
                            LinearGradient(
                               colors: [
-                                 Color.white.opacity(colorScheme == .dark ? 0.1 : 0.3),
-                                 Color.white.opacity(0.05)
+                                 Color.white.opacity((colorScheme == .dark ? 0.1 : 0.3) * settings.transparency),
+                                 Color.white.opacity(0.05 * settings.transparency)
                               ],
                               startPoint: .topLeading,
                               endPoint: .bottomTrailing
@@ -85,8 +85,8 @@ struct FolderDetailView: View {
                         .stroke(
                            LinearGradient(
                               colors: [
-                                 Color.white.opacity(colorScheme == .dark ? 0.3 : 0.5),
-                                 Color.white.opacity(0.1)
+                                 Color.white.opacity((colorScheme == .dark ? 0.3 : 0.5) * settings.transparency),
+                                 Color.white.opacity(0.1 * settings.transparency)
                               ],
                               startPoint: .topLeading,
                               endPoint: .bottomTrailing
@@ -95,8 +95,8 @@ struct FolderDetailView: View {
                         )
                   )
             )
-            .shadow(color: .black.opacity(0.15), radius: 40, x: 0, y: 20)
-            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
+            .shadow(color: .black.opacity(0.15 * settings.transparency), radius: 40, x: 0, y: 20)
+            .shadow(color: .black.opacity(0.1 * settings.transparency), radius: 10, x: 0, y: 5)
             .scaleEffect(isAnimatingIn ? 1.0 : 0.85)
             .opacity(isAnimatingIn ? 1.0 : 0.0)
             .onDrop(
