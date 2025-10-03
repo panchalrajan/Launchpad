@@ -20,7 +20,7 @@ struct LaunchpadSettings: Codable, Equatable {
   static let defaultFolderRows = 3
   static let defaultScrollDebounceInterval: TimeInterval = 0.8
   static let defaultScrollActivationThreshold: CGFloat = 80
-  static let defaultShowDock = false
+  static let defaultShowDock = true
   static let defaultTransparency: Double = 1.0
 
   init(
