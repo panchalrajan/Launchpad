@@ -187,6 +187,22 @@ Launchpad/
 
 🚀 **Recently Optimized**: The codebase has been thoroughly optimized with improved architecture, centralized constants, reusable components, and enhanced performance for a smoother development experience.
 
+## 📜 AppleScript to Toggle LaunchPad
+
+Use this AppleScript to create a keyboard shortcut or automation to show/hide LaunchPad:
+
+```applescript
+set appName to "Launchpad"
+
+tell application "System Events"
+	if visible of application process appName is true then
+		set visible of application process appName to false
+	else
+		tell me to tell application appName to activate
+	end if
+end tell
+```
+
 ## �🙏 Acknowledgments
 - Based on LaunchBack project
 - Inspired by macOS Launchpad
