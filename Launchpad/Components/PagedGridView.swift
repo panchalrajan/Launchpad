@@ -52,7 +52,7 @@ struct PagedGridView: View {
             pageCount: pages.count,
             isFolderOpen: selectedFolder != nil,
             searchText: searchText,
-            transparency: settings.transparency
+            settings: settings
          )
       }
 
