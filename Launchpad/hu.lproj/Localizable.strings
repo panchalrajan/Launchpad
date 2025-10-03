@@ -68,3 +68,7 @@
 "number_200" = "200";
 "time_0_0s" = "0,0mp";
 "time_3_0s" = "3,0mp";
+
+// MARK: - Restart Warning
+"restart_required" = "Újraindítás Szükséges";
+"restart_warning_message" = "Néhány beállítás a Launchpad újraindítását igényli a változásokhoz.";

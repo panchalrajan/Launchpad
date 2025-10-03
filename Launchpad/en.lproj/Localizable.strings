@@ -68,3 +68,7 @@
 "number_200" = "200";
 "time_0_0s" = "0.0s";
 "time_3_0s" = "3.0s";
+
+// MARK: - Restart Warning
+"restart_required" = "Restart Required";
+"restart_warning_message" = "Some settings require a force restart of LaunchPad app to take effect.";

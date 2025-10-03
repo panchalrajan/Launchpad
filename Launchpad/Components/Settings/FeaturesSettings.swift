@@ -4,7 +4,7 @@ struct FeaturesSettings: View {
     @Binding var settings: LaunchpadSettings
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .center, spacing: 20) {
             VStack(alignment: .leading, spacing: 12) {
                 
                 SettingsToggle(
@@ -39,6 +39,28 @@ struct FeaturesSettings: View {
                     maxLabel: L10n.number200
                 )
             }
+
+            VStack(alignment: .center) {
+                HStack {
+                    Image(systemName: "info.circle")
+                        .foregroundColor(.orange)
+                    Text(L10n.restartRequired)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.orange)
+                }
+                
+                Text(L10n.restartWarningMessage)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.orange.opacity(0.1))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.orange.opacity(0.3), lineWidth: 1))
+            )
         }
         .padding(.horizontal, 8)
     }

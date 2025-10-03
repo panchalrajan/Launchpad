@@ -4,7 +4,7 @@ struct LayoutSettings: View {
     @Binding var settings: LaunchpadSettings
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .center, spacing: 20) {
             VStack(alignment: .leading, spacing: 12) {
                 Text(L10n.layout)
                     .font(.headline)

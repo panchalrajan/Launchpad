@@ -79,4 +79,8 @@ struct L10n {
     static let number200 = "number_200".localized
     static let time00s = "time_0_0s".localized
     static let time30s = "time_3_0s".localized
+    
+    // MARK: - Restart Warning
+    static let restartRequired = "restart_required".localized
+    static let restartWarningMessage = "restart_warning_message".localized
 }
