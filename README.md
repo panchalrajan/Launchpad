@@ -189,6 +189,9 @@ Launchpad/
 
 ## 📜 AppleScript to Toggle LaunchPad
 
+Configuration for Better touch tool:
+![Search Functionality](Documentation/Launchpad-8.png)
+
 Use this AppleScript to create a keyboard shortcut or automation to show/hide LaunchPad:
 
 ```applescript
