@@ -27,6 +27,7 @@
 "page_scroll_debounce" = "Page Scroll Debounce";
 "page_scroll_threshold" = "Page Scroll Threshold";
 "show_dock" = "Show Dock";
+"transparency" = "Transparency";
 
 // MARK: - Actions Settings
 "actions" = "Actions";
@@ -35,6 +36,8 @@
 "import_layout" = "Import Layout";
 "reset_options" = "Reset Options";
 "clear_all_apps" = "Clear All Apps";
+"application_control" = "Application Control";
+"force_quit" = "Force Quit";
 
 // MARK: - Alerts and Confirmations
 "clear_all_apps_title" = "Clear All Apps";

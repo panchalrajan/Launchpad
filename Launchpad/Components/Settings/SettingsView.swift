@@ -90,7 +90,8 @@ struct SettingsView: View {
          folderRows: settings.folderRows,
          scrollDebounceInterval: settings.scrollDebounceInterval,
          scrollActivationThreshold: CGFloat(settings.scrollActivationThreshold),
-         showDock: settings.showDock
+         showDock: settings.showDock,
+         transparency: settings.transparency
       )
 
       // Recalculate pages if the number of apps per page changed

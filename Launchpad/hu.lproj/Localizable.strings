@@ -17,7 +17,7 @@
 "features" = "Funkciók";
 
 // MARK: - Layout Settings
-"layout" = "Elrendezés";
+"layout" = "Megjelenés";
 "columns" = "Oszlopok";
 "rows" = "Sorok";
 "folder_columns" = "Mappa Oszlopok";
@@ -27,6 +27,7 @@
 "page_scroll_debounce" = "Görgetés Késleltetés";
 "page_scroll_threshold" = "Görgetés Küszöb";
 "show_dock" = "Dock Megjelenítése";
+"transparency" = "Átlátszóság";
 
 // MARK: - Actions Settings
 "actions" = "Műveletek";
@@ -35,6 +36,8 @@
 "import_layout" = "Importálás";
 "reset_options" = "Visszaállítás";
 "clear_all_apps" = "Törlés";
+"application_control" = "Alkalmazás Vezérlés";
+"force_quit" = "Kilépés";
 
 // MARK: - Alerts and Confirmations
 "clear_all_apps_title" = "Elrendezés Törlése";

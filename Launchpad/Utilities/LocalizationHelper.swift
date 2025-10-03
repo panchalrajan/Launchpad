@@ -38,6 +38,7 @@ struct L10n {
     static let pageScrollDebounce = "page_scroll_debounce".localized
     static let pageScrollThreshold = "page_scroll_threshold".localized
     static let showDock = "show_dock".localized
+    static let transparency = "transparency".localized
     
     // MARK: - Actions Settings
     static let actions = "actions".localized
@@ -46,6 +47,8 @@ struct L10n {
     static let importLayout = "import_layout".localized
     static let resetOptions = "reset_options".localized
     static let clearAllApps = "clear_all_apps".localized
+    static let applicationControl = "application_control".localized
+    static let forceQuit = "force_quit".localized
     
     // MARK: - Alerts and Confirmations
     static let clearAllAppsTitle = "clear_all_apps_title".localized

@@ -40,21 +40,41 @@ struct ActionsSettings: View {
                     .cornerRadius(8)
                 }
                 .buttonStyle(.plain)
+                
+                Button(action: { showingClearConfirmation = true }) {
+                    HStack {
+                        Image(systemName: "trash")
+                        Text(L10n.clearAllApps)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Color.red.opacity(0.1))
+                    .foregroundColor(.red)
+                    .cornerRadius(8)
+                }
+                .buttonStyle(.plain)
             }
             
-            Button(action: { showingClearConfirmation = true }) {
-                HStack {
-                    Image(systemName: "trash")
-                    Text(L10n.clearAllApps)
-                    Spacer()
+            VStack(alignment: .leading, spacing: 12) {
+                Text(L10n.applicationControl)
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                
+                Button(action: forceQuitApp) {
+                    HStack {
+                        Image(systemName: "power")
+                        Text(L10n.forceQuit)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Color.orange.opacity(0.1))
+                    .foregroundColor(.orange)
+                    .cornerRadius(8)
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(Color.red.opacity(0.1))
-                .foregroundColor(.red)
-                .cornerRadius(8)
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
             
         }
         .padding(.horizontal, 8)
@@ -78,5 +98,9 @@ struct ActionsSettings: View {
     
     private func clearGridItems() {
         appManager.clearGridItems(appsPerPage: settingsManager.settings.appsPerPage)
+    }
+    
+    private func forceQuitApp() {
+        NSApplication.shared.terminate(nil)
     }
 }
