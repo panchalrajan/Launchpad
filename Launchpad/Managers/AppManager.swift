@@ -218,7 +218,7 @@ final class AppManager: ObservableObject {
       }
    }
 
-   private func exportLayoutToJSON(filePath: URL,) {
+   private func exportLayoutToJSON(filePath: URL) {
       do {
          let itemsData = pages.flatMap { $0 }.map { $0.serialize() }
          let jsonData = try JSONSerialization.data(withJSONObject: itemsData, options: .prettyPrinted)

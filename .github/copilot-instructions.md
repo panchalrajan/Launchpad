@@ -76,6 +76,7 @@ enum AppGridItem: Identifiable, Equatable {
 - **Grid Configuration**: columns, rows, iconSize, dropDelay
 - **Folder Settings**: folderColumns, folderRows
 - **Interaction Settings**: scrollDebounceInterval, scrollActivationThreshold
+- **Feature Flags**: showDock, transparency
 - **Validation**: Enforces min/max bounds for all numeric settings
 
 ### 🎛️ **View Components**
@@ -85,14 +86,23 @@ enum AppGridItem: Identifiable, Equatable {
 - **`SinglePageView`**: Individual page with LazyVGrid layout
 - **`SearchResultsView`**: Vertical scrolling search results
 - **`FolderDetailView`**: Modal folder content editor
-- **`SettingsView`**: Tabbed settings interface (Layout + Actions)
+- **`SettingsView`**: Tabbed settings interface (Layout + Features + Actions)
 
 #### UI Components
 - **`GridItemView`**: Unified renderer for apps and folders
 - **`AppIconView`**: Application icon with name label
 - **`FolderIconView`**: 3x3 grid preview of folder contents
+- **`FolderNameView`**: Editable folder name header in folder detail view
 - **`PageIndicatorView`**: Clickable page dots navigation
 - **`SearchBarView`**: Top search input with glass morphism styling
+
+#### Settings Components
+- **`LayoutSettings`**: Grid dimensions and icon size configuration
+- **`FeaturesSettings`**: Feature flags and interaction settings (dock, transparency, animations)
+- **`ActionsSettings`**: Layout import/export and app management actions
+- **`SettingsSlider`**: Reusable slider control with min/max labels
+- **`SettingsNumberField`**: Numeric input with stepper control
+- **`SettingsToggle`**: Toggle switch for boolean settings
 
 #### Specialized Components
 - **`DropZoneView`**: Left/right page navigation drop targets
@@ -103,9 +113,9 @@ enum AppGridItem: Identifiable, Equatable {
 ### 🎯 **Drag & Drop System**
 
 #### Drop Delegates
-- **`ItemDropDelegate`**: Handles app-to-app and app-to-folder drops
+- **`ItemDropDelegate`**: Handles app-to-app and app-to-folder drops, page overflow management
 - **`FolderDropDelegate`**: Manages app reordering within folders
-- **`FolderRemoveDropDelegate`**: Removes apps from folders
+- **`RemoveDropDelegate`**: Removes apps from folders when dragged outside
 - **`PageDropDelegate`**: Moves items to end of target page
 
 #### Drag & Drop Features
@@ -135,12 +145,18 @@ enum AppGridItem: Identifiable, Equatable {
 #### Layout Settings
 - **Grid Dimensions**: Real-time preview of column/row changes
 - **Icon Sizing**: Slider control with immediate visual feedback
-- **Animation Timing**: Drop delay and scroll sensitivity controls
+- **Transparency**: Adjustable UI transparency from 0% to 200%
 - **Folder Configuration**: Separate settings for folder grid layout
+
+#### Features Settings
+- **Show Dock**: Toggle macOS Dock visibility when Launchpad is active
+- **Animation Timing**: Drop delay and scroll sensitivity controls
+- **Scroll Settings**: Debounce interval and activation threshold for page navigation
 
 #### Actions Settings
 - **Layout Management**: Export/import layout as JSON
 - **Reset Options**: Clear all customizations, return to alphabetical order
+- **Application Control**: Force quit Launchpad application
 - **Confirmation Dialogs**: Destructive actions require user confirmation
 
 ### 🌐 **Localization**
@@ -178,6 +194,7 @@ enum AppGridItem: Identifiable, Equatable {
 - **`DropAnimationHelper`**: Manages delayed animations during drops
 - **`GridLayoutUtility`**: Creates SwiftUI GridItem configurations
 - **`ImageFlatten`**: NSImage extension for consistent icon rendering
+- **`LaunchPadConstants`**: Centralized constants for animations, layout, timing, and UI
 
 #### Layout System
 - **`LayoutMetrics`**: Calculates responsive grid dimensions
@@ -212,24 +229,30 @@ Launchpad/
 │   │   └── EmptySearchView.swift
 │   ├── Folders/
 │   │   ├── FolderDetailView.swift
-│   │   └── FolderIconView.swift
+│   │   ├── FolderIconView.swift
+│   │   └── FolderNameView.swift
 │   ├── Settings/
 │   │   ├── SettingsView.swift
 │   │   ├── LayoutSettings.swift
-│   │   └── ActionsSettings.swift
+│   │   ├── FeaturesSettings.swift
+│   │   ├── ActionsSettings.swift
+│   │   ├── SettingsSlider.swift
+│   │   ├── SettingsNumberField.swift
+│   │   └── SettingsToggle.swift
 │   └── DropZones/
 │       ├── DropZoneView.swift
 │       └── PageDropZonesView.swift
 ├── Delegates/
 │   ├── ItemDropDelegate.swift     # App/folder drop handling
 │   ├── FolderDropDelegate.swift   # Folder reordering
-│   ├── FolderRemoveDropDelegate.swift
+│   ├── RemoveDropDelegate.swift   # Remove from folder
 │   └── PageDropDelegate.swift     # Page-level drops
 ├── Utilities/
 │   ├── AppLauncher.swift          # App launching
 │   ├── DropAnimationHelper.swift  # Animation timing
 │   ├── GridLayoutUtility.swift    # Grid helpers
 │   ├── ImageFlatten.swift         # Icon processing
+│   ├── LaunchPadConstants.swift   # App-wide constants
 │   ├── LocalizationHelper.swift   # L10n system
 │   └── AppGridItemExtensions.swift # Serialization
 └── Localization/
