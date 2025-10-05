@@ -21,7 +21,7 @@ struct FolderDetailView: View {
                     .contentShape(Rectangle())
                     .onDrop(
                         of: [.text],
-                        delegate: FolderRemoveDropDelegate(folder: Binding(get: { folder! }, set: { folder = $0 }), draggedApp: $draggedApp, onRemoveApp: addAppToPage)
+                        delegate: RemoveDropDelegate(pages: $pages, folder: Binding(get: { folder! }, set: { folder = $0 }), draggedApp: $draggedApp, appsPerPage: settings.appsPerPage)
                     )
                     .onTapGesture {
                         dismissWithAnimation()
@@ -101,14 +101,6 @@ struct FolderDetailView: View {
                 .shadow(color: .black.opacity(0.1 * settings.transparency), radius: 10, x: 0, y: 5)
                 .scaleEffect(isAnimatingIn ? 1.0 : 0.85)
                 .opacity(isAnimatingIn ? 1.0 : 0.0)
-                .onDrop(
-                    of: [.text],
-                    delegate: FolderRemoveDropDelegate(
-                        folder: Binding(get: { folder! }, set: { folder = $0 }),
-                        draggedApp: $draggedApp,
-                        onRemoveApp: addAppToPage
-                    )
-                )
                 .onAppear {
                     performEntranceAnimation()
                 }
@@ -151,27 +143,5 @@ struct FolderDetailView: View {
         let newFolder = Folder(name: folder!.name, page: folder!.page, apps: folder!.apps)
         pages[pageIndex][itemIndex] = .folder(newFolder)
         folder = nil
-    }
-    
-    private func addAppToPage(app: AppInfo) {
-        guard let folder = folder,
-              let pageIndex = pages.firstIndex(where: { page in page.contains(where: { $0.id == folder.id }) }) else { return }
-        let updatedApp = AppInfo(name: app.name, icon: app.icon, path: app.path, page: pageIndex)
-        pages[pageIndex].append(.app(updatedApp))
-      handlePageOverflow(pageIndex: pageIndex)
-   }
-
-   private func handlePageOverflow(pageIndex: Int) {
-      while pages[pageIndex].count > settings.appsPerPage {
-         let overflowItem = pages[pageIndex].removeLast()
-         let nextPage = pageIndex + 1
-         let updatedOverflowItem = overflowItem.withUpdatedPage(nextPage)
-         if nextPage >= pages.count {
-            pages.append([updatedOverflowItem])
-         } else {
-            pages[nextPage].insert(updatedOverflowItem, at: 0)
-            handlePageOverflow(pageIndex: nextPage)
-         }
-      }
     }
 }
