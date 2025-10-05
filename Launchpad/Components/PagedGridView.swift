@@ -60,6 +60,7 @@ struct PagedGridView: View {
          pages: $pages,
          folder: $selectedFolder,
          settings: settings,
+         onItemTap: handleItemTap
       )
 
       PageDropZonesView(
