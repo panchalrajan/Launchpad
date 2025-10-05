@@ -7,7 +7,6 @@ struct PagedGridView: View {
    var settings: LaunchpadSettings
    var showSettings: () -> Void
 
-   @GestureState private var dragOffset: CGFloat = 0
    @State private var currentPage = 0
    @State private var lastScrollTime = Date.distantPast
    @State private var accumulatedScrollX: CGFloat = 0
@@ -34,7 +33,7 @@ struct PagedGridView: View {
                      .frame(width: geo.size.width, height: geo.size.height)
                   }
                }
-               .offset(x: -CGFloat(currentPage) * geo.size.width + dragOffset)
+               .offset(x: -CGFloat(currentPage) * geo.size.width)
                .animation(LaunchPadConstants.springAnimation, value: currentPage)
                .onAppear(perform: setupEventMonitoring)
                .onDisappear(perform: cleanupEventMonitoring)
