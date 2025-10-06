@@ -185,7 +185,7 @@ Launchpad/
 3. Build and run (⌘+R)
 4. Grant necessary permissions when prompted
 
-🚀 **Recently Optimized**: The codebase has been thoroughly optimized with improved architecture, centralized constants, reusable components, and enhanced performance for a smoother development experience.
+**Optimized**: The codebase has been thoroughly optimized with improved architecture, centralized constants, reusable components, and enhanced performance for a smoother development experience.
 
 ## 📜 AppleScript to Toggle LaunchPad
 
@@ -206,7 +206,7 @@ tell application "System Events"
 end tell
 ```
 
-## �🙏 Acknowledgments
+## 🙏 Acknowledgments
 - Based on LaunchBack project
 - Inspired by macOS Launchpad
 - Glass morphism design trends
