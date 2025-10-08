@@ -1,214 +1,148 @@
 # 🚀 LaunchPad
 
-A beautiful, modern macOS application launcher with glass morphism design, inspired by macOS Launchpad but with enhanced functionality and customization options. As you might know, Apple removed Launchpad in macOS 26. This app offers a true replacement with even more features and a fully customizable, persistent grid.
+A beautiful, modern macOS application launcher with glass morphism design, inspired by macOS Launchpad but with enhanced functionality and customization. As you might know, Apple removed Launchpad in macOS 26. This app offers a complete replacement with more features and a fully customizable, persistent grid.
 
-If you like this project and want to support further development, please consider:
+If you like this project and want to support further development:
 
 <a href="https://www.buymeacoffee.com/Waikiki.com" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
+**[📥 Download Launchpad v1.5](https://github.com/kristof12345/Launchpad/releases/download/v1.5/Launchpad.app.zip)**
+
 ## ✨ Features
 
-### 🎨 **Modern, Adaptive Design**
-- **Glass Morphism UI** – Translucent, blurred backgrounds for a modern look
-- **Smooth Animations** – Fluid transitions and spring effects throughout
-- **Justified Grid** – Icons and folders are always evenly distributed, filling all available space
-- **Consistent Alignment** – Search results and grid pages always align perfectly
-- **Responsive Layout** – Adapts to any screen size or aspect ratio
+### 🎨 **Modern Design**
+- Glass morphism UI with translucent, blurred backgrounds
+- Smooth animations and fluid transitions throughout
+- Justified grid layout – icons evenly distributed
+- Responsive layout adapts to any screen size
+- Consistent alignment across all views
 
 ![LaunchPad Main Interface](Documentation/Launchpad-1.png)
 
-### 🔍 **Powerful Search**
-- **Instant Filtering** – Real-time, fuzzy search as you type
-- **Vertical Scrolling** – Effortless navigation through results
-- **Consistent Alignment** – Search and grid always start at the same position
-- **No Results State** – Clean, helpful empty state
+### 🔍 **Smart Search**
+- Real-time fuzzy search as you type
+- Vertical scrolling through results
+- Search within folders automatically
+- Clean empty state for no results
 
 ![Search Functionality](Documentation/Launchpad-2.png)
 
-### 🗂️ **Folders & Drag & Drop**
-- **Create Folders** – Drag one app onto another to instantly create a folder
-- **Rename Folders** – Click folder name to edit (auto-focus for new folders)
-- **Add/Remove Apps** – Drag apps in/out of folders, or use context menu
-- **Rearrangeable Icons** – Drag and drop to customize app order
-- **Visual Feedback** – Apps scale and fade during drag operations
-- **Persistent Layout** – All changes are saved automatically
-- **Smart Overflow** – Apps overflow to new pages as needed
+### 🗂️ **Folders & Organization**
+- Drag one app onto another to create folders
+- Click folder names to rename instantly
+- Drag apps in/out of folders seamlessly
+- Rearrange icons with drag & drop
+- Visual feedback during interactions
+- Auto-save all layout changes
+- Smart overflow to new pages
 
 ![Folder](Documentation/Launchpad-4.png)
 ![Folders](Documentation/Launchpad-5.png)
 
-### New folder styles to match Liquid Glass
+### 🎨 **Modern Folder Styles**
 
-![Search Functionality](Documentation/Launchpad-6.png)
+![New Folder Styles](Documentation/Launchpad-6.png)
 
-### New settings options
+### ⚙️ **Customizable Settings**
 
-![Search Functionality](Documentation/Launchpad-7.png)
+![Settings Panel](Documentation/Launchpad-7.png)
 
-### 🎮 **Multiple Navigation Methods**
+### 🎮 **Navigation Methods**
 
-#### ⌨️ **Keyboard Navigation**
-- `←/→` Arrow keys – Navigate between pages
+#### ⌨️ **Keyboard**
+- `←/→` – Navigate pages
 - `CMD + ,` – Open settings
-- `ESC` – Close application
+- `ESC` – Close app
 
-#### 🖱️ **Mouse Navigation**
-- **Click Navigation** – Click page dots to jump to any page
-- **Scroll Wheel** – Horizontal scrolling for page navigation
-- **Smart Scrolling** – Vertical scrolling in search mode
-- **Click inside folder detail** – Does not close Launchpad
+#### 🖱️ **Mouse & Trackpad**
+- Click page dots for direct navigation
+- Scroll horizontally to change pages
+- Vertical scrolling in search mode
+- Click inside folders without closing app
 
-#### 📱 **Touch & Gestures**
-- **Tap to Launch** – Single tap to open applications
-- **Drag to Rearrange** – Long press and drag to reorder
-- **Swipe Navigation** – Gesture-based page switching
+#### 📱 **Touch Support**
+- Tap to launch applications
+- Long press and drag to reorder
+- Swipe for page navigation
 
-## ⚙️ **Comprehensive Settings**
 
-LaunchPad offers deep customization to tailor your experience:
+## ⚙️ **Settings & Customization**
 
 ![Settings](Documentation/Launchpad-3.png)
 
-### 🔧 **Accessing Settings**
-- **Menu Bar**: `LaunchPad` → `Settings` (⌘,)
+### 🎛️ **Grid Layout**
+- **Columns**: 2–20 per page
+- **Rows**: 2–15 per page  
+- **Folder Grid**: Separate 2–8 columns, 1–6 rows
+- **Icon Size**: 50–200 px with fine control
+- **Real-time Preview**: Changes apply instantly
 
-### 📐 **Grid & Layout Configuration**
-- **Columns**: 2–20 per page with stepper controls
-- **Rows**: 2–15 per page with stepper controls  
-- **Folder Grid**: Separate 2–8 columns, 1–6 rows configuration
-- **Apps per Page**: Calculated automatically based on grid
-- **Justified Grid**: Icons and folders always fill the grid evenly
-- **Real-time Preview**: See changes instantly with live updates
+### 🎨 **Animations & Behavior**
+- **Drop Delay**: 0.0–3.0s for drag feedback
+- **Scroll Sensitivity**: Configurable thresholds
+- **Scroll Debounce**: 0.0–3.0s for smooth navigation
+- **Start at Login**: Auto-launch on system startup
+- **Show Dock**: Toggle dock visibility
 
-### 🎨 **Icon & Animation Customization**
-- **Icon Size**: Fine-tune from 50–200 px with 10px increments
-- **Drop Animation Delay**: 0.0–3.0 seconds for drag & drop feedback
-- **Scroll Sensitivity**: Configurable page navigation thresholds
-- **Scroll Debounce**: 0.0–3.0 seconds for smooth navigation
-- **Visual Feedback**: Real-time display and smooth scaling
-- **Consistent Animations**: Unified spring animations throughout
+### 💾 **Layout Management**
+- **Auto-save**: All changes saved automatically
+- **Export/Import**: Backup layouts as JSON
+- **Reset Options**: Return to defaults
+- **Cross-Device**: Share layouts between machines
 
-### 🧩 **Layout Management & Backup**
-- **Persistent Storage** – All settings and layouts automatically saved
-- **Export/Import** – Backup your custom layouts as JSON files
-- **Reset Options** – Return to alphabetical order with confirmation
-- **Smart Validation** – Settings enforce reasonable bounds and limits  
-- **Consistent Alignment** – Search and grid always start at the same position
-- **Cross-Device Sync** – Export layouts to share between machines
+## 🚀 Quick Start
 
-## 🚀 Getting Started
+### 📥 **First Launch**
+1. App scans `/Applications` and `/System/Applications`
+2. Apps sorted alphabetically by default
+3. Drag & drop to customize layout
+4. Create folders by dragging apps together
+5. All changes auto-saved
 
-### First Launch
-1. The app scans `/Applications` and `/System/Applications`
-2. Apps are sorted alphabetically
-3. Use drag & drop to customize your layout and create folders
-4. Click folder names to rename (auto-focus for new folders)
-5. All changes are saved automatically
-6. Launchpad quits if you activate another app from the dock
+### 💡 **Daily Usage**
+- **Search**: Type to filter instantly
+- **Navigate**: Arrow keys, dots, or scroll
+- **Launch**: Click any app icon
+- **Organize**: Drag to rearrange or create folders
+- **Rename**: Click folder names
+- **Exit**: Press ESC or activate another app
 
-### Usage
-- **Search**: Type to filter apps instantly
-- **Navigate Pages**: Use arrow keys, click dots, or scroll
-- **Launch Apps**: Click any app icon to open
-- **Rearrange**: Drag apps to new positions
-- **Create Folders**: Drag one app onto another
-- **Rename Folders**: Click folder name (auto-focus for new folders)
-- **Remove from Folder**: Use context menu or drag out
-- **Quit Launchpad**: Activate another app or press ESC
+## 🏗️ **Technical Overview**
 
-## 🏗️ **Architecture & Performance**
+### 🌍 **Localization**
+- English and Hungarian translations
+- Easy to add new languages
+- Centralized string management
 
-### 🚀 **Optimized Codebase**
-- **MVVM Architecture** – Clean separation with SwiftUI's reactive patterns
-- **Centralized Constants** – Over 25 magic numbers consolidated for maintainability
-- **Reusable Components** – Modular UI components reduce code duplication by 75%
-- **Performance Optimized** – Minimal object creation and efficient memory management
-- **Clean Code** – Debug statements removed, consistent naming, and optimized imports
+### 📦 **Requirements**
+- macOS 15.6 or later
+- Swift 6.0
+- Universal binary (Apple Silicon + Intel)
 
-### 🧪 **Comprehensive Testing**
-- **Unit Test Coverage** – Extensive tests for core functionality
-- **App Discovery Tests** – Validates application scanning and detection
-- **Persistence Tests** – Ensures layout and settings are properly saved
-- **Import/Export Tests** – Verifies layout backup and restore functionality
+## 🎹 AppleScript Integration
 
-### 🌐 **Internationalization**
-- **Multi-language Support** – English and Hungarian localizations
-- **Centralized Strings** – Easy to add new languages
-- **Cultural Adaptation** – Proper formatting for different locales
+Create a keyboard shortcut using BetterTouchTool or similar:
 
-## �️ **Development & Technical Details**
-
-### 📁 **Project Structure**
-```
-Launchpad/
-├── LaunchpadApp.swift              # App entry point
-├── Managers/
-│   ├── AppManager.swift           # App discovery & layout management
-│   └── SettingsManager.swift      # User preferences & configuration
-├── Models/
-│   ├── AppGridItem.swift          # Unified app/folder model
-│   ├── LaunchpadSettings.swift    # Configuration with validation
-│   └── LayoutMetrics.swift        # Responsive grid calculations
-├── Components/
-│   ├── PagedGridView.swift        # Main container with navigation
-│   ├── Search/                    # Real-time search functionality
-│   ├── Folders/                   # Folder management UI
-│   ├── Settings/                  # Tabbed settings interface
-│   └── DropZones/                 # Drag & drop navigation
-├── Delegates/
-│   └── *DropDelegate.swift        # Drag & drop handling
-├── Utilities/
-│   ├── LaunchPadConstants.swift   # Centralized constants
-│   ├── LocalizationHelper.swift   # L10n system
-│   └── AppGridItemExtensions.swift # Serialization helpers
-└── Tests/                          # Comprehensive test suite
-```
-
-### ⚡ **Key Technical Features**
-- **SwiftUI + MVVM**: Modern reactive architecture
-- **Singleton Managers**: Centralized state management
-- **JSON Serialization**: Layout import/export functionality
-- **NSVisualEffectView**: Native glass morphism implementation
-- **Drag & Drop Delegates**: Complex interaction handling
-- **LazyVGrid**: Performance-optimized large collections
-- **Persistent Storage**: UserDefaults with automatic saving
-
-### 🚀 **Requirements**
-- **macOS**: 15.6 or later
-- **Xcode**: 15.0 or later
-- **Swift**: 6.0
-- **Architecture**: Universal (Apple Silicon + Intel)
-
-### 🔧 **Build & Run**
-1. Clone the repository
-2. Open `Launchpad.xcodeproj` in Xcode
-3. Build and run (⌘+R)
-4. Grant necessary permissions when prompted
-
-🚀 **Recently Optimized**: The codebase has been thoroughly optimized with improved architecture, centralized constants, reusable components, and enhanced performance for a smoother development experience.
-
-## 📜 AppleScript to Toggle LaunchPad
-
-Configuration for Better touch tool:
-![Search Functionality](Documentation/Launchpad-8.png)
-
-Use this AppleScript to create a keyboard shortcut or automation to show/hide LaunchPad:
+![BetterTouchTool Config](Documentation/Launchpad-8.png)
 
 ```applescript
 set appName to "Launchpad"
 
 tell application "System Events"
-	if visible of application process appName is true then
-		set visible of application process appName to false
+	if name of processes contains appName then
+		if visible of application process appName is true then
+			set visible of application process appName to false
+		else
+			tell me to tell application appName to activate
+		end if
 	else
 		tell me to tell application appName to activate
+		set visible of application process appName to true
 	end if
 end tell
 ```
 
-## �🙏 Acknowledgments
-- Based on LaunchBack project
+## 🙏 Credits
 - Inspired by macOS Launchpad
-- Glass morphism design trends
-- SwiftUI community examples
-- macOS design guidelines
+- Built with SwiftUI and modern macOS APIs
+- Based on LaunchBack project
