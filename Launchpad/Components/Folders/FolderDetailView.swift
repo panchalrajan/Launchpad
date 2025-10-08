@@ -67,7 +67,7 @@ struct FolderDetailView: View {
             .frame(width: LaunchPadConstants.settingsWindowWidth, height: LaunchPadConstants.settingsWindowHeight)
             .background(
                RoundedRectangle(cornerRadius: 20)
-                  .fill(.regularMaterial)
+                  .fill(.regularMaterial.opacity(0.75))
                   .overlay(
                      RoundedRectangle(cornerRadius: 20)
                         .fill(
