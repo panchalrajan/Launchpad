@@ -61,14 +61,13 @@ final class AppManager: ObservableObject {
    private func discoverAppsRecursively(directory: String, maxDepth: Int = 3, currentDepth: Int = 0) -> [AppInfo] {
       guard currentDepth < maxDepth, let contents = try? FileManager.default.contentsOfDirectory(atPath: directory)
       else { return [] }
-
       var foundApps: [AppInfo] = []
       for item in contents {
          let fullPath = "\(directory)/\(item)"
          if item.hasSuffix(".app") {
             let fallbackName = item.replacingOccurrences(of: ".app", with: "")
             let appName = getLocalizedAppName(for: URL(fileURLWithPath: fullPath), fallbackName: fallbackName)
-            let icon = NSWorkspace.shared.icon(forFile: fullPath).flattenedForConsistency()
+            let icon = IconCache.shared.icon(forPath: fullPath)
             foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath))
          } else if shouldSearchDirectory(item: item, at: fullPath) {
             foundApps.append(contentsOf: discoverAppsRecursively(directory: fullPath, maxDepth: maxDepth, currentDepth: currentDepth + 1))

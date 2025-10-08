@@ -10,7 +10,7 @@ enum LaunchPadConstants {
     
     // MARK: - Layout Constants
     static let folderPreviewSize = 9 // Maximum apps shown in folder preview (3x3 grid)
-    static let iconFlattenSize: CGFloat = 256
+    static let iconDisplaySize: CGFloat = 256
     static let folderCornerRadiusMultiplier: CGFloat = 0.2
     static let folderSizeMultiplier: CGFloat = 0.82
     

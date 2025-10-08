@@ -21,7 +21,9 @@ struct FolderIconView: View {
                     ForEach(folder.previewApps) { app in
                         Image(nsImage: app.icon)
                             .interpolation(.high)
+                            .antialiased(true)
                             .resizable()
+                            .aspectRatio(contentMode: .fit)
                             .frame(width: layout.iconSize * 0.2, height: layout.iconSize * 0.2)
                     }
                     
