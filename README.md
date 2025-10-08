@@ -129,10 +129,15 @@ Create a keyboard shortcut using BetterTouchTool or similar:
 set appName to "Launchpad"
 
 tell application "System Events"
-	if visible of application process appName is true then
-		set visible of application process appName to false
+	if name of processes contains appName then
+		if visible of application process appName is true then
+			set visible of application process appName to false
+		else
+			tell me to tell application appName to activate
+		end if
 	else
 		tell me to tell application appName to activate
+		set visible of application process appName to true
 	end if
 end tell
 ```
