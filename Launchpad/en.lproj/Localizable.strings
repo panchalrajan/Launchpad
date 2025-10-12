@@ -35,6 +35,7 @@
 "layout_management" = "Layout Management";
 "export_layout" = "Export Layout";
 "import_layout" = "Import Layout";
+"import_from_old_launchpad" = "Import from Old Launchpad";
 "reset_options" = "Reset Options";
 "clear_all_apps" = "Clear All Apps";
 "application_control" = "Application Control";
@@ -44,6 +45,10 @@
 "clear_all_apps_title" = "Clear All Apps";
 "clear_all_apps_message" = "This will remove all apps from your custom layout and reset to the default alphabetical order. This action cannot be undone.";
 "clear" = "Clear";
+"import_success" = "Import Successful";
+"import_success_message" = "Successfully imported layout from old macOS Launchpad.";
+"import_failed" = "Import Failed";
+"import_failed_message" = "Could not find or read the old Launchpad database. Make sure you have used the old Launchpad before.";
 
 // MARK: - Search
 "search_placeholder" = "Search";

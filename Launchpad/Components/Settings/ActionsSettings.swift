@@ -5,6 +5,9 @@ struct ActionsSettings: View {
     private let appManager = AppManager.shared
     
     @State private var showingClearConfirmation = false
+    @State private var showingImportAlert = false
+    @State private var importAlertTitle = ""
+    @State private var importAlertMessage = ""
     
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
@@ -37,6 +40,20 @@ struct ActionsSettings: View {
                     .padding(.vertical, 10)
                     .background(Color.green.opacity(0.1))
                     .foregroundColor(.green)
+                    .cornerRadius(8)
+                }
+                .buttonStyle(.plain)
+                
+                Button(action: importFromOldLaunchpad) {
+                    HStack {
+                        Image(systemName: "arrow.down.doc")
+                        Text(L10n.importFromOldLaunchpad)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Color.purple.opacity(0.1))
+                    .foregroundColor(.purple)
                     .cornerRadius(8)
                 }
                 .buttonStyle(.plain)
@@ -86,6 +103,11 @@ struct ActionsSettings: View {
         } message: {
             Text(L10n.clearAllAppsMessage)
         }
+        .alert(importAlertTitle, isPresented: $showingImportAlert) {
+            Button(L10n.ok, role: .cancel) { }
+        } message: {
+            Text(importAlertMessage)
+        }
     }
     
     private func exportLayout() {
@@ -94,6 +116,18 @@ struct ActionsSettings: View {
     
     private func importLayout() {
         appManager.importLayout(appsPerPage: settingsManager.settings.appsPerPage)
+    }
+    
+    private func importFromOldLaunchpad() {
+        let success = appManager.importFromOldLaunchpad(appsPerPage: settingsManager.settings.appsPerPage)
+        if success {
+            importAlertTitle = L10n.importSuccess
+            importAlertMessage = L10n.importSuccessMessage
+        } else {
+            importAlertTitle = L10n.importFailed
+            importAlertMessage = L10n.importFailedMessage
+        }
+        showingImportAlert = true
     }
     
     private func clearGridItems() {

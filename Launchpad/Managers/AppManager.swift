@@ -44,6 +44,100 @@ final class AppManager: ObservableObject {
       loadGridItems(appsPerPage: appsPerPage)
    }
 
+   func importFromOldLaunchpad(appsPerPage: Int) -> Bool {
+      print("Import from old Launchpad database.")
+      
+      // Check if old Launchpad database exists
+      guard LaunchpadDatabaseReader.oldLaunchpadDatabaseExists() else {
+         print("Old Launchpad database not found")
+         return false
+      }
+      
+      // Read app layout from old database
+      guard let oldLayout = LaunchpadDatabaseReader.readOldLaunchpadLayout() else {
+         print("Failed to read old Launchpad layout")
+         return false
+      }
+      
+      // Read folders from old database
+      let oldFolders = LaunchpadDatabaseReader.readOldLaunchpadFolders() ?? []
+      
+      // Discover current apps
+      let currentApps = discoverApps()
+      let appsByPath = Dictionary(uniqueKeysWithValues: currentApps.map { ($0.path, $0) })
+      
+      // Create a mapping of app paths to their page and position
+      var layoutMap: [String: (page: Int, position: Int)] = [:]
+      for item in oldLayout {
+         layoutMap[item.path] = (page: item.page, position: item.position)
+      }
+      
+      // Create a mapping of folder app paths to folder info
+      var folderMap: [String: (name: String, page: Int)] = [:]
+      for folder in oldFolders {
+         for appPath in folder.appPaths {
+            folderMap[appPath] = (name: folder.name, page: folder.page)
+         }
+      }
+      
+      // Build grid items respecting old layout
+      var gridItems: [AppGridItem] = []
+      var usedPaths = Set<String>()
+      
+      // First, process folders
+      var foldersDict: [String: (page: Int, apps: [AppInfo])] = [:]
+      for folder in oldFolders {
+         var folderApps: [AppInfo] = []
+         for appPath in folder.appPaths {
+            if let app = appsByPath[appPath] {
+               folderApps.append(AppInfo(name: app.name, icon: app.icon, path: app.path, page: 0))
+               usedPaths.insert(appPath)
+            }
+         }
+         if !folderApps.isEmpty {
+            foldersDict[folder.name] = (page: folder.page, apps: folderApps)
+         }
+      }
+      
+      // Convert folders to grid items
+      for (folderName, folderData) in foldersDict {
+         let folder = Folder(name: folderName, page: folderData.page, apps: folderData.apps)
+         gridItems.append(.folder(folder))
+      }
+      
+      // Then, process individual apps with their positions
+      let sortedLayout = oldLayout.sorted { first, second in
+         if first.page != second.page {
+            return first.page < second.page
+         }
+         return first.position < second.position
+      }
+      
+      for layoutItem in sortedLayout {
+         // Skip if app is in a folder or already used
+         if usedPaths.contains(layoutItem.path) {
+            continue
+         }
+         
+         if let app = appsByPath[layoutItem.path] {
+            let appWithPage = AppInfo(name: app.name, icon: app.icon, path: app.path, page: layoutItem.page)
+            gridItems.append(.app(appWithPage))
+            usedPaths.insert(layoutItem.path)
+         }
+      }
+      
+      // Add any remaining apps not in the old layout
+      for app in currentApps where !usedPaths.contains(app.path) {
+         gridItems.append(.app(app))
+      }
+      
+      // Group items by page and update
+      pages = groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
+      
+      print("Successfully imported layout from old Launchpad")
+      return true
+   }
+
    func recalculatePages(appsPerPage: Int) {
       print("Recalculate pages.")
       let allItems = pages.flatMap { $0 }
