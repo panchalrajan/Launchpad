@@ -12,9 +12,7 @@ final class AppManager: ObservableObject {
       self.pages = [[]]
    }
 
-   @Published var pages: [[AppGridItem]] {
-      didSet { saveGridItems() }
-   }
+   var pages: [[AppGridItem]]
 
    func loadGridItems(appsPerPage: Int) {
       print("Load grid items.")
@@ -23,7 +21,7 @@ final class AppManager: ObservableObject {
       pages = groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
    }
 
-   private func saveGridItems() {
+   func saveGridItems() {
       print("Save grid items.")
       let itemsData = pages.flatMap { $0 }.map { $0.serialize() }
       userDefaults.set(itemsData, forKey: gridItemsKey)
