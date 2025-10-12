@@ -89,4 +89,15 @@ struct L10n {
     // MARK: - Restart Warning
     static let restartRequired = "restart_required".localized
     static let restartWarningMessage = "restart_warning_message".localized
+    
+    // MARK: - Activation Settings
+    static let activation = "activation".localized
+    static let productKey = "product_key".localized
+    static let enterProductKey = "enter_product_key".localized
+    static let activate = "activate".localized
+    static let activationStatus = "activation_status".localized
+    static let activated = "activated".localized
+    static let notActivated = "not_activated".localized
+    static let invalidProductKey = "invalid_product_key".localized
+    static let activationSuccessful = "activation_successful".localized
 }

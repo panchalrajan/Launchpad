@@ -78,3 +78,14 @@
 // MARK: - Restart Warning
 "restart_required" = "Újraindítás Szükséges";
 "restart_warning_message" = "Néhány beállítás a Launchpad újraindítását igényli a változásokhoz.";
+
+// MARK: - Activation Settings
+"activation" = "Aktiválás";
+"product_key" = "Termékkulcs";
+"enter_product_key" = "Termékkulcs Megadása";
+"activate" = "Aktiválás";
+"activation_status" = "Aktiválási Állapot";
+"activated" = "Aktiválva";
+"not_activated" = "Nincs Aktiválva";
+"invalid_product_key" = "Érvénytelen Termékkulcs";
+"activation_successful" = "Sikeres Aktiválás";

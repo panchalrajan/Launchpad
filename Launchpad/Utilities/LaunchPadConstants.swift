@@ -35,4 +35,7 @@ enum LaunchPadConstants {
     static let folderOpenOpacity: Double = 0.2
     static let draggedAppScale: CGFloat = 0.95
     static let draggedAppOpacity: Double = 0.7
+    
+    // MARK: - Activation Constants
+    static let productKey = "LAUNCHPAD-2025-ACTIVATED"
 }

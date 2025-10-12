@@ -78,3 +78,14 @@
 // MARK: - Restart Warning
 "restart_required" = "Restart Required";
 "restart_warning_message" = "Some settings require a force restart of LaunchPad app to take effect.";
+
+// MARK: - Activation Settings
+"activation" = "Activation";
+"product_key" = "Product Key";
+"enter_product_key" = "Enter Product Key";
+"activate" = "Activate";
+"activation_status" = "Activation Status";
+"activated" = "Activated";
+"not_activated" = "Not Activated";
+"invalid_product_key" = "Invalid Product Key";
+"activation_successful" = "Activation Successful";
