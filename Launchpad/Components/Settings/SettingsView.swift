@@ -30,6 +30,7 @@ struct SettingsView: View {
                Label(L10n.layout, systemImage: "grid").tag(0)
                Label(L10n.features, systemImage: "sparkles").tag(1)
                Label(L10n.actions, systemImage: "bolt").tag(2)
+               Label(L10n.activation, systemImage: "key.fill").tag(3)
             }
             .pickerStyle(.segmented)
             .padding(.bottom, 16)
@@ -39,8 +40,10 @@ struct SettingsView: View {
                   LayoutSettings(settings: $settings)
                } else if selectedTab == 1 {
                   FeaturesSettings(settings: $settings)
-               } else {
+               } else if selectedTab == 2 {
                   ActionsSettings()
+               } else {
+                  ActivationSettings(settings: $settings)
                }
             }
             
@@ -93,6 +96,7 @@ struct SettingsView: View {
          showDock: settings.showDock,
          transparency: settings.transparency,
          startAtLogin: settings.startAtLogin,
+         productKey: settings.productKey
       )
       
       // Recalculate pages if the number of apps per page changed

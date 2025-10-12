@@ -12,6 +12,7 @@ struct LaunchpadSettings: Codable, Equatable {
    var showDock: Bool
    var transparency: Double
    var startAtLogin: Bool
+   var productKey: String
    
    static let defaultColumns = 7
    static let defaultRows = 5
@@ -24,6 +25,7 @@ struct LaunchpadSettings: Codable, Equatable {
    static let defaultShowDock = true
    static let defaultTransparency: Double = 1.0
    static let defaultStartAtLogin = false
+   static let defaultProductKey = ""
    
    init(
       columns: Int = defaultColumns,
@@ -36,7 +38,8 @@ struct LaunchpadSettings: Codable, Equatable {
       scrollActivationThreshold: CGFloat = defaultScrollActivationThreshold,
       showDock: Bool = defaultShowDock,
       transparency: Double = defaultTransparency,
-      startAtLogin: Bool = defaultStartAtLogin
+      startAtLogin: Bool = defaultStartAtLogin,
+      productKey: String = defaultProductKey
    ) {
       self.columns = max(4, min(12, columns))
       self.rows = max(3, min(10, rows))
@@ -49,9 +52,14 @@ struct LaunchpadSettings: Codable, Equatable {
       self.showDock = showDock
       self.transparency = max(0.0, min(2.0, transparency))
       self.startAtLogin = startAtLogin
+      self.productKey = productKey
    }
    
    var appsPerPage: Int {
       return columns * rows
+   }
+   
+   var isActivated: Bool {
+      return productKey == LaunchPadConstants.productKey
    }
 }
