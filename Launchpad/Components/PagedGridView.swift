@@ -161,6 +161,8 @@ struct PagedGridView: View {
          if event.modifierFlags.contains(.command) {
             showSettings()
          }
+      case 36:  // Return/Enter key
+         launchFirstSearchResult()
       default:
          break
       }
@@ -190,5 +192,14 @@ struct PagedGridView: View {
       withAnimation(LaunchPadConstants.springAnimation) {
          currentPage = pages.count - 1
       }
+   }
+   
+   private func launchFirstSearchResult() {
+      guard !searchText.isEmpty else { return }
+      
+      let apps = filteredApps()
+      guard let firstApp = apps.first else { return }
+      
+      handleItemTap(.app(firstApp))
    }
 }
