@@ -11,6 +11,67 @@ struct ActivationSettings: View {
    var body: some View {
       VStack(alignment: .center, spacing: 20) {
          VStack(alignment: .leading, spacing: 12) {
+            Text(L10n.productKey)
+               .font(.headline)
+               .foregroundColor(.primary)
+
+            TextField(L10n.enterProductKey, text: $enteredProductKey)
+               .textFieldStyle(.roundedBorder)
+               .font(.system(.body, design: .monospaced))
+               .onChange(of: enteredProductKey) { _, _ in
+                  showValidationMessage = false
+               }
+
+            Button(action: validateAndActivate) {
+               HStack {
+                  Image(systemName: "key.fill")
+                  Text(L10n.activate)
+                  Spacer()
+               }
+               .padding(.horizontal, 16)
+               .padding(.vertical, 10)
+               .background(Color.blue.opacity(0.1))
+               .foregroundColor(.blue)
+               .cornerRadius(8)
+            }
+            .buttonStyle(.plain)
+
+            if showValidationMessage {
+               HStack {
+                  Image(systemName: isValid ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                     .foregroundColor(isValid ? .green : .red)
+                  Text(validationMessage)
+                     .font(.subheadline)
+                     .foregroundColor(isValid ? .green : .red)
+                  Spacer()
+               }
+               .padding(.horizontal, 16)
+               .padding(.vertical, 10)
+               .background((isValid ? Color.green : Color.red).opacity(0.1))
+               .background(isValid ? Color.green : Color.red)
+            }
+
+            Text(L10n.purchasePrompt)
+               .font(.subheadline)
+               .foregroundColor(.secondary)
+               .multilineTextAlignment(.center)
+
+            Button(action: openPurchaseLink) {
+               HStack {
+                  Image(systemName: "cart.fill")
+                  Text(L10n.purchaseLicense)
+                  Spacer()
+               }
+               .padding(.horizontal, 16)
+               .padding(.vertical, 10)
+               .background(Color.green.opacity(0.1))
+               .foregroundColor(.green)
+               .cornerRadius(8)
+            }
+            .buttonStyle(.plain)
+         }
+
+         VStack(alignment: .center) {
             HStack {
                Image(systemName: settings.isActivated ? "checkmark.circle.fill" : "xmark.circle.fill")
                   .foregroundColor(settings.isActivated ? .green : .orange)
@@ -32,84 +93,8 @@ struct ActivationSettings: View {
                   )
             )
          }
-
-         if !settings.isActivated {
-            VStack(alignment: .center, spacing: 8) {
-               Text(L10n.purchasePrompt)
-                  .font(.subheadline)
-                  .foregroundColor(.secondary)
-                  .multilineTextAlignment(.center)
-
-               Button(action: openPurchaseLink) {
-                  HStack {
-                     Image(systemName: "cart.fill")
-                     Text(L10n.purchaseLicense)
-                  }
-                  .padding(.horizontal, 20)
-                  .padding(.vertical, 10)
-                  .background(Color.green.opacity(0.1))
-                  .foregroundColor(.green)
-                  .cornerRadius(8)
-               }
-               .buttonStyle(.plain)
-            }
-            .padding(.vertical, 8)
-
-            Divider()
-               .padding(.vertical, 8)
-
-            VStack(alignment: .leading, spacing: 12) {
-               Text(L10n.productKey)
-                  .font(.headline)
-                  .foregroundColor(.primary)
-
-               TextField(L10n.enterProductKey, text: $enteredProductKey)
-                  .textFieldStyle(.roundedBorder)
-                  .font(.system(.body, design: .monospaced))
-                  .onChange(of: enteredProductKey) { _, _ in
-                     showValidationMessage = false
-                  }
-
-               Button(action: validateAndActivate) {
-                  HStack {
-                     Image(systemName: "key.fill")
-                     Text(L10n.activate)
-                     Spacer()
-                  }
-                  .padding(.horizontal, 16)
-                  .padding(.vertical, 10)
-                  .background(Color.blue.opacity(0.1))
-                  .foregroundColor(.blue)
-                  .cornerRadius(8)
-               }
-               .buttonStyle(.plain)
-
-               if showValidationMessage {
-                  HStack {
-                     Image(systemName: isValid ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
-                        .foregroundColor(isValid ? .green : .red)
-                     Text(validationMessage)
-                        .font(.subheadline)
-                        .foregroundColor(isValid ? .green : .red)
-                  }
-                  .padding(.horizontal, 12)
-                  .padding(.vertical, 8)
-                  .background(
-                     RoundedRectangle(cornerRadius: 8)
-                        .fill((isValid ? Color.green : Color.red).opacity(0.1))
-                        .overlay(
-                           RoundedRectangle(cornerRadius: 8)
-                              .stroke((isValid ? Color.green : Color.red).opacity(0.3), lineWidth: 1)
-                        )
-                  )
-               }
-            }
-         }
       }
       .padding(.horizontal, 8)
-      .onAppear {
-         enteredProductKey = settings.productKey
-      }
    }
 
    private func validateAndActivate() {
@@ -128,6 +113,7 @@ struct ActivationSettings: View {
    }
 
    private func openPurchaseLink() {
-      NSWorkspace.shared.open(URL(string: "https://buymeacoffee.com/waikiki.com/"));
+      NSWorkspace.shared.open(URL(string: "https://buymeacoffee.com/waikiki.com/")!);
+      AppLauncher.exit();
    }
 }
