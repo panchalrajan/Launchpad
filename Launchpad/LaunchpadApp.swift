@@ -22,7 +22,7 @@ struct LaunchpadApp: App {
                 .onTapGesture(perform: AppLauncher.exit)
                 
                 if showSettings {
-                    SettingsView(onDismiss: { showSettings = false })
+                    SettingsView(onDismiss: { showSettings = false }, initialTab: settingsManager.settings.isActivated ? 1 : 3)
                 }
             }
             .background(VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow))
@@ -35,6 +35,12 @@ struct LaunchpadApp: App {
         guard !isInitialized else { return }
         appManager.loadGridItems(appsPerPage: settingsManager.settings.appsPerPage)
         isInitialized = true
+        
+        // Check if app is activated, if not, show settings with activation tab
+        if !settingsManager.settings.isActivated {
+            showSettings = true
+        }
+        
         if(settingsManager.settings.showDock) {
             subscribeToSystemEvents()
             NSMenu.setMenuBarVisible(true)

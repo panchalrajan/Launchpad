@@ -89,3 +89,5 @@
 "not_activated" = "Not Activated";
 "invalid_product_key" = "Invalid Product Key";
 "activation_successful" = "Activation Successful";
+"purchase_prompt" = "Don't have a license yet? Purchase one to unlock all features.";
+"purchase_license" = "Purchase License";

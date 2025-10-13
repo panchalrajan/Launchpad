@@ -89,3 +89,5 @@
 "not_activated" = "Nincs Aktiválva";
 "invalid_product_key" = "Érvénytelen Termékkulcs";
 "activation_successful" = "Sikeres Aktiválás";
+"purchase_prompt" = "Még nincs licenced? Vásárolj egyet az összes funkció feloldásához.";
+"purchase_license" = "Licenc Vásárlása";

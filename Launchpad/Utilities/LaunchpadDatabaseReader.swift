@@ -105,7 +105,7 @@ final class LaunchpadDatabaseReader {
                 
                 // Get parent_id to track pages
                 let parentId = sqlite3_column_int64(statement, 2)
-                let ordering = Int(sqlite3_column_int64(statement, 3))
+                //let ordering = Int(sqlite3_column_int64(statement, 3))
                 
                 // Track page changes based on parent_id changes
                 if lastParentId != -1 && lastParentId != parentId {

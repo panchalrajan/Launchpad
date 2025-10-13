@@ -100,4 +100,6 @@ struct L10n {
     static let notActivated = "not_activated".localized
     static let invalidProductKey = "invalid_product_key".localized
     static let activationSuccessful = "activation_successful".localized
+    static let purchasePrompt = "purchase_prompt".localized
+    static let purchaseLicense = "purchase_license".localized
 }
