@@ -21,6 +21,7 @@ If you like this project and want to support further development:
 
 ### 🔍 **Smart Search**
 - Real-time fuzzy search as you type
+- Press Enter to launch the first result
 - Vertical scrolling through results
 - Search within folders automatically
 - Clean empty state for no results
@@ -51,6 +52,7 @@ If you like this project and want to support further development:
 
 #### ⌨️ **Keyboard**
 - `←/→` – Navigate pages
+- `ENTER` – Launch first search result
 - `CMD + ,` – Open settings
 - `ESC` – Close app
 
@@ -101,7 +103,7 @@ If you like this project and want to support further development:
 5. All changes auto-saved
 
 ### 💡 **Daily Usage**
-- **Search**: Type to filter instantly
+- **Search**: Type to filter instantly, press Enter to launch first result
 - **Navigate**: Arrow keys, dots, or scroll
 - **Launch**: Click any app icon
 - **Organize**: Drag to rearrange or create folders
