@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import Combine
 
 struct PagedGridView: View {
    
@@ -53,6 +54,9 @@ struct PagedGridView: View {
             searchText: searchText,
             settings: settings
          )
+      }
+      .onReceive(NotificationCenter.default.publisher(for: NSWorkspace.didActivateApplicationNotification)) { notification in
+         handleAppActivation(notification)
       }
 
       FolderDetailView(
@@ -193,6 +197,7 @@ struct PagedGridView: View {
          currentPage = pages.count - 1
       }
    }
+
    
    private func launchFirstSearchResult() {
       guard !searchText.isEmpty else { return }
@@ -201,5 +206,15 @@ struct PagedGridView: View {
       guard let firstApp = apps.first else { return }
       
       handleItemTap(.app(firstApp))
+   }
+  
+   private func handleAppActivation(_ notification: Notification) {
+      guard let activatedApp = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else { return }
+      
+      let isSelf = activatedApp.bundleIdentifier == Bundle.main.bundleIdentifier
+      if isSelf {
+         // Clear search text when Launchpad becomes active
+         searchText = ""
+      }
    }
 }
