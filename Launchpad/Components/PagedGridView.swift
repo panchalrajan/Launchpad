@@ -165,6 +165,8 @@ struct PagedGridView: View {
          if event.modifierFlags.contains(.command) {
             showSettings()
          }
+      case 36:  // Return/Enter key
+         launchFirstSearchResult()
       default:
          break
       }
@@ -196,6 +198,16 @@ struct PagedGridView: View {
       }
    }
 
+   
+   private func launchFirstSearchResult() {
+      guard !searchText.isEmpty else { return }
+      
+      let apps = filteredApps()
+      guard let firstApp = apps.first else { return }
+      
+      handleItemTap(.app(firstApp))
+   }
+  
    private func handleAppActivation(_ notification: Notification) {
       guard let activatedApp = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else { return }
       
