@@ -3,6 +3,7 @@ import SwiftUI
 
 struct SearchField: NSViewRepresentable {
   @Binding var text: String
+  var onEnterPressed: (() -> Void)
 
   func makeCoordinator() -> Coordinator {
     Coordinator(self)
@@ -49,6 +50,15 @@ extension SearchField {
     func controlTextDidChange(_ obj: Notification) {
       guard let field = obj.object as? NSSearchField else { return }
       parent.text = field.stringValue
+    }
+    
+    func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+      // Launch first search result on Enter key press
+      if commandSelector == #selector(NSResponder.insertNewline(_:)) {
+        parent.onEnterPressed()
+        return true
+      }
+      return false
     }
   }
 }

@@ -3,7 +3,7 @@ import SwiftUI
 import Combine
 
 struct PagedGridView: View {
-   
+
    @Binding var pages: [[AppGridItem]]
    var settings: LaunchpadSettings
    var showSettings: () -> Void
@@ -18,7 +18,11 @@ struct PagedGridView: View {
 
    var body: some View {
       VStack(spacing: 0) {
-         SearchBarView(searchText: $searchText, transparency: settings.transparency)
+         SearchBarView(
+            searchText: $searchText,
+            transparency: settings.transparency,
+            onEnterPressed: launchFirstSearchResult
+         )
          GeometryReader { geo in
             if searchText.isEmpty {
                HStack(spacing: 0) {
@@ -114,6 +118,12 @@ struct PagedGridView: View {
             return event
          }
       }
+
+      NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { notification in
+         Task { @MainActor in
+            searchText = "";
+         }
+      }
    }
 
    private func cleanupEventMonitoring() {
@@ -154,6 +164,7 @@ struct PagedGridView: View {
    }
 
    private func handleKeyEvent(_ event: NSEvent) -> NSEvent? {
+      print(event.keyCode)
       switch event.keyCode {
       case 53:  // ESC key
          AppLauncher.exit()
@@ -165,8 +176,6 @@ struct PagedGridView: View {
          if event.modifierFlags.contains(.command) {
             showSettings()
          }
-      case 36:  // Return/Enter key
-         launchFirstSearchResult()
       default:
          break
       }
@@ -198,23 +207,15 @@ struct PagedGridView: View {
       }
    }
 
-   
    private func launchFirstSearchResult() {
       guard !searchText.isEmpty else { return }
-      
-      let apps = filteredApps()
-      guard let firstApp = apps.first else { return }
-      
-      handleItemTap(.app(firstApp))
+      guard let firstApp = filteredApps().first else { return }
+
+      AppLauncher.launch(path: firstApp.path)
    }
-  
+
    private func handleAppActivation(_ notification: Notification) {
-      guard let activatedApp = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else { return }
-      
-      let isSelf = activatedApp.bundleIdentifier == Bundle.main.bundleIdentifier
-      if isSelf {
-         // Clear search text when Launchpad becomes active
-         searchText = ""
-      }
+      currentPage = 0;
+      searchText = ""
    }
 }

@@ -3,11 +3,12 @@ import SwiftUI
 struct SearchBarView: View {
    @Binding var searchText: String
    let transparency: Double
+   var onEnterPressed: (() -> Void)
 
    var body: some View {
       HStack {
          Spacer()
-         SearchField(text: $searchText)
+         SearchField(text: $searchText, onEnterPressed: onEnterPressed)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .frame(width: LaunchPadConstants.searchBarWidth, height: LaunchPadConstants.searchBarHeight)
