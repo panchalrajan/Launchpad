@@ -105,7 +105,7 @@ If you like this project and want to support further development:
 - **Launch**: Click any app icon
 - **Organize**: Drag to rearrange or create folders
 - **Rename**: Click folder names
-- **Exit**: Press ESC or activate another app
+- **Exit**: Press ESC, activate another app, or click the Launchpad dock icon when already open
 
 ## 🏗️ **Technical Overview**
 
