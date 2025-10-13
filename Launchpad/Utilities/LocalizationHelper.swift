@@ -46,6 +46,7 @@ struct L10n {
     static let layoutManagement = "layout_management".localized
     static let exportLayout = "export_layout".localized
     static let importLayout = "import_layout".localized
+    static let importFromOldLaunchpad = "import_from_old_launchpad".localized
     static let resetOptions = "reset_options".localized
     static let clearAllApps = "clear_all_apps".localized
     static let applicationControl = "application_control".localized
@@ -55,6 +56,10 @@ struct L10n {
     static let clearAllAppsTitle = "clear_all_apps_title".localized
     static let clearAllAppsMessage = "clear_all_apps_message".localized
     static let clear = "clear".localized
+    static let importSuccess = "import_success".localized
+    static let importSuccessMessage = "import_success_message".localized
+    static let importFailed = "import_failed".localized
+    static let importFailedMessage = "import_failed_message".localized
     
     // MARK: - Search
     static let searchPlaceholder = "search_placeholder".localized
