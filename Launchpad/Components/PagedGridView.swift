@@ -3,7 +3,6 @@ import SwiftUI
 import Combine
 
 struct PagedGridView: View {
-
    @Binding var pages: [[AppGridItem]]
    var settings: LaunchpadSettings
    var showSettings: () -> Void
@@ -20,7 +19,7 @@ struct PagedGridView: View {
    var body: some View {
       VStack(spacing: 0) {
          SearchBarView(
-            searchText: $searchText,
+            searchText: searchText,
             transparency: settings.transparency,
             onEnterPressed: launchFirstSearchResult
          )
@@ -41,8 +40,6 @@ struct PagedGridView: View {
                }
                .offset(x: -CGFloat(currentPage) * geo.size.width)
                .animation(LaunchPadConstants.springAnimation, value: currentPage)
-               .onAppear(perform: setupEventMonitoring)
-               .onDisappear(perform: cleanupEventMonitoring)
             } else {
                SearchResultsView(
                   apps: filteredApps(),
@@ -60,6 +57,8 @@ struct PagedGridView: View {
             settings: settings
          )
       }
+      .onAppear(perform: setupEventMonitoring)
+      .onDisappear(perform: cleanupEventMonitoring)
 
       FolderDetailView(
          pages: $pages,
@@ -179,6 +178,15 @@ struct PagedGridView: View {
 
    private func handleKeyEvent(event: NSEvent) -> NSEvent? {
       print(event.keyCode)
+      // Handle regular character input
+      if let characters = event.characters, !characters.isEmpty {
+         let char = characters.first!
+         if char.isLetter || char.isNumber || char.isWhitespace || char.isPunctuation || char.isSymbol {
+            searchText += characters
+            return event
+         }
+      }
+
       switch event.keyCode {
       case 53:  // ESC key
          AppLauncher.exit()
@@ -189,6 +197,10 @@ struct PagedGridView: View {
       case 43:  // Comma key
          if event.modifierFlags.contains(.command) {
             showSettings()
+         }
+      case 51:  // Backspace key
+         if !searchText.isEmpty {
+            searchText = String(searchText.dropLast())
          }
       default:
          break

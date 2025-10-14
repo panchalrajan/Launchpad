@@ -27,7 +27,6 @@ struct LaunchpadApp: App {
          .background(VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow))
          .onAppear(perform: initialize)
       }
-      .windowStyle(.hiddenTitleBar)
    }
 
    private func initialize() {
