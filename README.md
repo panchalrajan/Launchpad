@@ -17,7 +17,7 @@ If you like this project and want to support further development:
 - Responsive layout adapts to any screen size
 - Consistent alignment across all views
 
-![LaunchPad Main Interface](Documentation/Launchpad-1.png)
+![LaunchPad Main Interface](docs/images/Launchpad-1.png)
 
 ### 🔍 **Smart Search**
 - Real-time fuzzy search as you type
@@ -26,7 +26,7 @@ If you like this project and want to support further development:
 - Search within folders automatically
 - Clean empty state for no results
 
-![Search Functionality](Documentation/Launchpad-2.png)
+![Search Functionality](docs/images/Launchpad-2.png)
 
 ### 🗂️ **Folders & Organization**
 - Drag one app onto another to create folders
@@ -37,16 +37,16 @@ If you like this project and want to support further development:
 - Auto-save all layout changes
 - Smart overflow to new pages
 
-![Folder](Documentation/Launchpad-4.png)
-![Folders](Documentation/Launchpad-5.png)
+![Folder](docs/images/Launchpad-4.png)
+![Folders](docs/images/Launchpad-5.png)
 
 ### 🎨 **Modern Folder Styles**
 
-![New Folder Styles](Documentation/Launchpad-6.png)
+![New Folder Styles](docs/images/Launchpad-6.png)
 
 ### ⚙️ **Customizable Settings**
 
-![Settings Panel](Documentation/Launchpad-7.png)
+![Settings Panel](docs/images/Launchpad-7.png)
 
 ### 🎮 **Navigation Methods**
 
@@ -70,7 +70,7 @@ If you like this project and want to support further development:
 
 ## ⚙️ **Settings & Customization**
 
-![Settings](Documentation/Launchpad-3.png)
+![Settings](docs/images/Launchpad-3.png)
 
 ### 🎛️ **Grid Layout**
 - **Columns**: 2–20 per page
@@ -143,7 +143,7 @@ If you've used the native macOS Launchpad before and have customized your app la
 
 Create a keyboard shortcut using BetterTouchTool or similar:
 
-![BetterTouchTool Config](Documentation/Launchpad-8.png)
+![BetterTouchTool Config](docs/images/Launchpad-8.png)
 
 ```applescript
 set appName to "Launchpad"
