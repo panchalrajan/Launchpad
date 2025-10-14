@@ -13,8 +13,8 @@ struct LaunchpadApp: App {
             WindowAccessor()
             PagedGridView(
                pages: $appManager.pages,
-               settings: settingsManager.settings,
-               showSettings: { showSettings = true }
+               showSettings: $showSettings,
+               settings: settingsManager.settings
             )
             .opacity(showSettings ? 0.3 : 1.0)
             .animation(LaunchPadConstants.fadeAnimation, value: showSettings)
@@ -38,10 +38,6 @@ struct LaunchpadApp: App {
          NSMenu.setMenuBarVisible(true)
       } else {
          NSMenu.setMenuBarVisible(false)
-      }
-
-      if !settingsManager.settings.isActivated {
-         showSettings = true
       }
    }
 }

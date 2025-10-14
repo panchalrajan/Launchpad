@@ -3,8 +3,8 @@ import SwiftUI
 
 struct PagedGridView: View {
    @Binding var pages: [[AppGridItem]]
+   @Binding var showSettings: Bool
    var settings: LaunchpadSettings
-   var showSettings: () -> Void
 
    @State private var currentPage = 0
    @State private var lastScrollTime = Date.distantPast
@@ -181,7 +181,7 @@ struct PagedGridView: View {
          navigateToNextPage()
          return event
       case 43:  // CMD + Comma
-         showSettings()
+         showSettings = true
          return event
       case 51:  // Backspace
          searchText = String(searchText.dropLast())
@@ -248,6 +248,10 @@ struct PagedGridView: View {
       if settings.resetOnRelaunch {
          currentPage = 0
          searchText = ""
+      }
+
+      if !settings.isActivated {
+         showSettings = true;
       }
    }
 }
