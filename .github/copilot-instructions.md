@@ -129,14 +129,14 @@ enum AppGridItem: Identifiable, Equatable {
 
 #### Search Implementation
 - **Real-time Filtering**: Updates as user types using SwiftUI bindings
+- **Keyboard Input**: Characters typed anywhere in Launchpad are added to search
 - **Fuzzy Matching**: Case-insensitive substring matching
 - **Multi-source Search**: Searches both app names and folder contents
 - **Folder Awareness**: Shows folder apps when folder name matches
 - **Consistent Layout**: Search results use same grid layout as main pages
 
 #### Search Components
-- **`SearchField`**: NSSearchField wrapper with proper focus management
-- **`SearchBarView`**: Styled search container with glass morphism
+- **`SearchBarView`**: Displays current search text with glass morphism styling
 - **`SearchResultsView`**: Results display with vertical scrolling
 - **`EmptySearchView`**: Clean no-results state
 
@@ -224,7 +224,6 @@ Launchpad/
 │   ├── WindowAccessor.swift       # Window configuration
 │   ├── Search/
 │   │   ├── SearchBarView.swift
-│   │   ├── SearchField.swift
 │   │   ├── SearchResultsView.swift
 │   │   └── EmptySearchView.swift
 │   ├── Folders/

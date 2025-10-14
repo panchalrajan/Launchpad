@@ -1,6 +1,5 @@
 import AppKit
 import SwiftUI
-import Combine
 
 struct PagedGridView: View {
    @Binding var pages: [[AppGridItem]]
@@ -14,7 +13,6 @@ struct PagedGridView: View {
    @State private var searchText = ""
    @State private var draggedItem: AppGridItem?
    @State private var selectedFolder: Folder?
-   @State private var wasAlreadyActive = false
 
    var body: some View {
       VStack(spacing: 0) {
@@ -121,17 +119,10 @@ struct PagedGridView: View {
          let isSelf = activatedApp.bundleIdentifier == Bundle.main.bundleIdentifier
          Task { @MainActor in
             if (isSelf) {
-               if self.wasAlreadyActive {
-                  print("Launchpad was already active, hiding.")
-                  AppLauncher.exit()
-               } else {
-                  print("Entering Launchpad.")
-                  handleAppActivation();
-               }
-               self.wasAlreadyActive = true
+               print("Entering Launchpad.")
+               handleAppActivation();
             } else {
                print("Exiting Launchpad.")
-               self.wasAlreadyActive = false
                AppLauncher.exit()
             }
          }
@@ -180,7 +171,7 @@ struct PagedGridView: View {
       // Handle regular character input
       if let characters = event.characters, !characters.isEmpty {
          let char = characters.first!
-         if char.isLetter || char.isNumber || char.isWhitespace || char.isPunctuation || char.isSymbol {
+         if char.isLetter || char.isNumber || char.isWhitespace {
             if(char.isNewline)
             {
                launchFirstSearchResult();
@@ -201,13 +192,9 @@ struct PagedGridView: View {
       case 124:  // Right arrow key
          navigateToNextPage()
       case 43:  // Comma key
-         if event.modifierFlags.contains(.command) {
-            showSettings()
-         }
+         showSettings()
       case 51:  // Backspace key
-         if !searchText.isEmpty {
-            searchText = String(searchText.dropLast())
-         }
+         searchText = String(searchText.dropLast())
       default:
          break
       }
