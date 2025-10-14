@@ -3,7 +3,6 @@ import SwiftUI
 struct SearchBarView: View {
    var searchText: String
    var transparency: Double
-   var onEnterPressed: (() -> Void)
    
    var body: some View {
       HStack {
@@ -22,6 +21,5 @@ struct SearchBarView: View {
          Spacer()
       }
       .padding(.top, 40)
-      .padding(.bottom, 24)
    }
 }

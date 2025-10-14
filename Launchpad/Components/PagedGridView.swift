@@ -20,8 +20,7 @@ struct PagedGridView: View {
       VStack(spacing: 0) {
          SearchBarView(
             searchText: searchText,
-            transparency: settings.transparency,
-            onEnterPressed: launchFirstSearchResult
+            transparency: settings.transparency
          )
          GeometryReader { geo in
             if searchText.isEmpty {
@@ -182,7 +181,14 @@ struct PagedGridView: View {
       if let characters = event.characters, !characters.isEmpty {
          let char = characters.first!
          if char.isLetter || char.isNumber || char.isWhitespace || char.isPunctuation || char.isSymbol {
-            searchText += characters
+            if(char.isNewline)
+            {
+               launchFirstSearchResult();
+            }
+            else
+            {
+               searchText += characters
+            }
             return event
          }
       }
