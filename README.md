@@ -89,7 +89,6 @@ If you like this project and want to support further development:
 ### 💾 **Layout Management**
 - **Auto-save**: All changes saved automatically
 - **Export/Import**: Backup layouts as JSON
-- **Import from Old Launchpad**: Import your layout from macOS's native Launchpad
 - **Reset Options**: Return to defaults
 - **Cross-Device**: Share layouts between machines
 
