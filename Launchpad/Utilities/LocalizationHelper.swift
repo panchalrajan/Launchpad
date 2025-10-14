@@ -35,6 +35,7 @@ struct L10n {
     static let pageScrollThreshold = "page_scroll_threshold".localized
     static let showDock = "show_dock".localized
     static let startAtLogin = "start_at_login".localized
+    static let resetOnRelaunch = "reset_on_relaunch".localized
     static let transparency = "transparency".localized
     
     // MARK: - Actions Settings

@@ -63,7 +63,7 @@ struct SettingsView: View {
          }
          
          .padding(24)
-         .frame(width: 480, height: 460)
+         .frame(width: 500, height: 460)
          .background(
             RoundedRectangle(cornerRadius: 16)
                .fill(.regularMaterial)
@@ -101,6 +101,7 @@ struct SettingsView: View {
          showDock: settings.showDock,
          transparency: settings.transparency,
          startAtLogin: settings.startAtLogin,
+         resetOnRelaunch: settings.resetOnRelaunch,
          productKey: settings.productKey
       )
       

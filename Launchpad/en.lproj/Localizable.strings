@@ -24,6 +24,7 @@
 "page_scroll_threshold" = "Page Scroll Threshold";
 "show_dock" = "Show Dock";
 "start_at_login" = "Start at Login";
+"reset_on_relaunch" = "Reset search on Relaunch";
 "transparency" = "Transparency";
 
 // MARK: - Actions Settings

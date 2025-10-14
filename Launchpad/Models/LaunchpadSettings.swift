@@ -12,6 +12,7 @@ struct LaunchpadSettings: Codable, Equatable {
    var showDock: Bool
    var transparency: Double
    var startAtLogin: Bool
+   var resetOnRelaunch: Bool
    var productKey: String
 
    static let defaultColumns = 7
@@ -25,6 +26,7 @@ struct LaunchpadSettings: Codable, Equatable {
    static let defaultShowDock = true
    static let defaultTransparency: Double = 1.0
    static let defaultStartAtLogin = false
+   static let defaultResetOnRelaunch = true
    static let defaultProductKey = ""
 
    init(
@@ -39,6 +41,7 @@ struct LaunchpadSettings: Codable, Equatable {
       showDock: Bool = defaultShowDock,
       transparency: Double = defaultTransparency,
       startAtLogin: Bool = defaultStartAtLogin,
+      resetOnRelaunch: Bool = defaultResetOnRelaunch,
       productKey: String = defaultProductKey
    ) {
       self.columns = max(4, min(12, columns))
@@ -52,6 +55,7 @@ struct LaunchpadSettings: Codable, Equatable {
       self.showDock = showDock
       self.transparency = max(0.0, min(2.0, transparency))
       self.startAtLogin = startAtLogin
+      self.resetOnRelaunch = resetOnRelaunch
       self.productKey = productKey
    }
 

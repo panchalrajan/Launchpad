@@ -16,25 +16,26 @@ struct LayoutSettings: View {
                SettingsNumberField(title: L10n.folderColumns, value: $settings.folderColumns, range: 2...8)
                SettingsNumberField(title: L10n.folderRows, value: $settings.folderRows, range: 1...6)
             }
+            
+            
+            SettingsSlider(
+               title: L10n.iconSize,
+               value: $settings.iconSize,
+               range: 50...200,
+               step: 10,
+               minLabel: L10n.number10,
+               maxLabel: L10n.number200
+            )
+            
+            SettingsSlider(
+               title: L10n.transparency,
+               value: $settings.transparency,
+               range: 0.0...2.0,
+               step: 0.1,
+               minLabel: "0%",
+               maxLabel: "200%"
+            )
          }
-         
-         SettingsSlider(
-            title: L10n.iconSize,
-            value: $settings.iconSize,
-            range: 50...200,
-            step: 10,
-            minLabel: L10n.number10,
-            maxLabel: L10n.number200
-         )
-         
-         SettingsSlider(
-            title: L10n.transparency,
-            value: $settings.transparency,
-            range: 0.0...2.0,
-            step: 0.1,
-            minLabel: "0%",
-            maxLabel: "200%"
-         )
       }
       .padding(.horizontal, 8)
    }

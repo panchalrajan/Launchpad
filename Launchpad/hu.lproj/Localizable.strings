@@ -24,6 +24,7 @@
 "page_scroll_threshold" = "Görgetés Küszöb";
 "show_dock" = "Dock Megjelenítése";
 "start_at_login" = "Automatikus Indítás";
+"reset_on_relaunch" = "Keresés törlése Újraindításkor";
 "transparency" = "Átlátszóság";
 
 // MARK: - Actions Settings
