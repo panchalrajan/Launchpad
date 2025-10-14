@@ -13,7 +13,7 @@ struct LaunchpadSettings: Codable, Equatable {
    var transparency: Double
    var startAtLogin: Bool
    var productKey: String
-   
+
    static let defaultColumns = 7
    static let defaultRows = 5
    static let defaultIconSize: Double = 100.0
@@ -26,7 +26,7 @@ struct LaunchpadSettings: Codable, Equatable {
    static let defaultTransparency: Double = 1.0
    static let defaultStartAtLogin = false
    static let defaultProductKey = ""
-   
+
    init(
       columns: Int = defaultColumns,
       rows: Int = defaultRows,
@@ -54,12 +54,12 @@ struct LaunchpadSettings: Codable, Equatable {
       self.startAtLogin = startAtLogin
       self.productKey = productKey
    }
-   
+
    var appsPerPage: Int {
       return columns * rows
    }
-   
+
    var isActivated: Bool {
-      return productKey == LaunchPadConstants.productKey
+      return LaunchPadConstants.productKey.isEmpty || productKey == LaunchPadConstants.productKey
    }
 }

@@ -15,6 +15,7 @@ struct PagedGridView: View {
    @State private var searchText = ""
    @State private var draggedItem: AppGridItem?
    @State private var selectedFolder: Folder?
+   @State private var wasAlreadyActive = false
 
    var body: some View {
       VStack(spacing: 0) {
@@ -33,7 +34,7 @@ struct PagedGridView: View {
                         pageIndex: pageIndex,
                         settings: settings,
                         isFolderOpen: selectedFolder != nil,
-                        onItemTap: handleItemTap
+                        onItemTap: handleTap
                      )
                      .frame(width: geo.size.width, height: geo.size.height)
                   }
@@ -46,7 +47,7 @@ struct PagedGridView: View {
                SearchResultsView(
                   apps: filteredApps(),
                   settings: settings,
-                  onItemTap: handleItemTap
+                  onItemTap: handleTap
                )
                .frame(width: geo.size.width, height: geo.size.height)
             }
@@ -59,15 +60,12 @@ struct PagedGridView: View {
             settings: settings
          )
       }
-      .onReceive(NotificationCenter.default.publisher(for: NSWorkspace.didActivateApplicationNotification)) { notification in
-         handleAppActivation(notification)
-      }
 
       FolderDetailView(
          pages: $pages,
          folder: $selectedFolder,
          settings: settings,
-         onItemTap: handleItemTap
+         onItemTap: handleTap
       )
 
       PageDropZonesView(
@@ -78,15 +76,6 @@ struct PagedGridView: View {
          onNavigateRight: navigateToNextPage,
          transparency: settings.transparency
       )
-   }
-
-   private func handleItemTap(_ item: AppGridItem) {
-      switch item {
-      case .app(let app):
-         AppLauncher.launch(path: app.path)
-      case .folder(let folder):
-         selectedFolder = folder
-      }
    }
 
    private func filteredApps() -> [AppInfo] {
@@ -107,21 +96,46 @@ struct PagedGridView: View {
       }
    }
 
+   private func handleTap(item: AppGridItem) {
+      switch item {
+      case .app(let app):
+         AppLauncher.launch(path: app.path)
+      case .folder(let folder):
+         selectedFolder = folder
+      }
+   }
+
    private func setupEventMonitoring() {
       eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.scrollWheel, .keyDown]) { event in
          switch event.type {
          case .scrollWheel:
-            return handleScrollEvent(event)
+            return handleScrollEvent(event: event)
          case .keyDown:
-            return handleKeyEvent(event)
+            return handleKeyEvent(event: event)
          default:
             return event
          }
       }
 
       NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { notification in
+         guard let activatedApp = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else { return }
+
+         let isSelf = activatedApp.bundleIdentifier == Bundle.main.bundleIdentifier
          Task { @MainActor in
-            searchText = "";
+            if (isSelf) {
+               if self.wasAlreadyActive {
+                  print("Launchpad was already active, hiding.")
+                  AppLauncher.exit()
+               } else {
+                  print("Entering Launchpad.")
+                  handleAppActivation();
+               }
+               self.wasAlreadyActive = true
+            } else {
+               print("Exiting Launchpad.")
+               self.wasAlreadyActive = false
+               AppLauncher.exit()
+            }
          }
       }
    }
@@ -133,7 +147,7 @@ struct PagedGridView: View {
       }
    }
 
-   private func handleScrollEvent(_ event: NSEvent) -> NSEvent? {
+   private func handleScrollEvent(event: NSEvent) -> NSEvent? {
       guard searchText.isEmpty && selectedFolder == nil else { return event }
 
       let absX = abs(event.scrollingDeltaX)
@@ -163,7 +177,7 @@ struct PagedGridView: View {
       accumulatedScrollX = 0
    }
 
-   private func handleKeyEvent(_ event: NSEvent) -> NSEvent? {
+   private func handleKeyEvent(event: NSEvent) -> NSEvent? {
       print(event.keyCode)
       switch event.keyCode {
       case 53:  // ESC key
@@ -214,7 +228,7 @@ struct PagedGridView: View {
       AppLauncher.launch(path: firstApp.path)
    }
 
-   private func handleAppActivation(_ notification: Notification) {
+   private func handleAppActivation() {
       currentPage = 0;
       searchText = ""
    }

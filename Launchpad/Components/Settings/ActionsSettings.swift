@@ -43,21 +43,7 @@ struct ActionsSettings: View {
                .cornerRadius(8)
             }
             .buttonStyle(.plain)
-            /*
-             Button(action: importFromOldLaunchpad) {
-             HStack {
-             Image(systemName: "arrow.down.doc")
-             Text(L10n.importFromOldLaunchpad)
-             Spacer()
-             }
-             .padding(.horizontal, 16)
-             .padding(.vertical, 10)
-             .background(Color.purple.opacity(0.1))
-             .foregroundColor(.purple)
-             .cornerRadius(8)
-             }
-             .buttonStyle(.plain)
-             */
+
             Button(action: { showingClearConfirmation = true }) {
                HStack {
                   Image(systemName: "trash")
@@ -111,10 +97,6 @@ struct ActionsSettings: View {
 
    private func importLayout() {
       appManager.importLayout(appsPerPage: settingsManager.settings.appsPerPage)
-   }
-
-   private func importFromOldLaunchpad() {
-      appManager.importFromOldLaunchpad(appsPerPage: settingsManager.settings.appsPerPage)
    }
 
    private func clearGridItems() {

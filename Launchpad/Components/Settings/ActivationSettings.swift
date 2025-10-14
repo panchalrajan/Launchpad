@@ -48,7 +48,7 @@ struct ActivationSettings: View {
                .padding(.horizontal, 16)
                .padding(.vertical, 10)
                .background((isValid ? Color.green : Color.red).opacity(0.1))
-               .background(isValid ? Color.green : Color.red)
+               .foregroundColor(isValid ? Color.green : Color.red)
             }
 
             Text(L10n.purchasePrompt)
@@ -96,12 +96,11 @@ struct ActivationSettings: View {
       }
       .padding(.horizontal, 8)
    }
-
+   
    private func validateAndActivate() {
-      let trimmedKey = enteredProductKey.trimmingCharacters(in: .whitespacesAndNewlines)
+      settings.productKey = enteredProductKey.trimmingCharacters(in: .whitespacesAndNewlines)
 
-      if trimmedKey == LaunchPadConstants.productKey {
-         settings.productKey = trimmedKey
+      if settings.productKey == LaunchPadConstants.productKey {
          isValid = true
          validationMessage = L10n.activationSuccessful
          showValidationMessage = true
