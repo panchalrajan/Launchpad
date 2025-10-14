@@ -4,15 +4,15 @@ struct SettingsView: View {
    private let settingsManager = SettingsManager.shared
    private let appManager = AppManager.shared
    let onDismiss: () -> Void
-
+   
    @State private var selectedTab: Int
    @State private var settings: LaunchpadSettings = SettingsManager.shared.settings
-
+   
    init(onDismiss: @escaping () -> Void, initialTab: Int = 0) {
       self.onDismiss = onDismiss;
       _selectedTab = State(initialValue: initialTab)
    }
-
+   
    var body: some View {
       ZStack {
          Color.black.opacity(0.4)
@@ -30,7 +30,7 @@ struct SettingsView: View {
                   .font(.title3)
             }
             .padding(.bottom, 16)
-
+            
             Picker("", selection: $selectedTab) {
                Label(L10n.layout, systemImage: "grid").tag(0)
                Label(L10n.features, systemImage: "sparkles").tag(1)
@@ -39,7 +39,7 @@ struct SettingsView: View {
             }
             .pickerStyle(.segmented)
             .padding(.bottom, 16)
-
+            
             Group {
                if selectedTab == 0 {
                   LayoutSettings(settings: $settings)
@@ -51,9 +51,9 @@ struct SettingsView: View {
                   ActivationSettings(settings: $settings)
                }
             }
-
+            
             Spacer()
-
+            
             HStack(spacing: 16) {
                Button(L10n.resetToDefaults, action: reset).buttonStyle(.bordered)
                Spacer()
@@ -61,7 +61,7 @@ struct SettingsView: View {
                Button(L10n.apply, action: apply).buttonStyle(.borderedProminent)
             }
          }
-
+         
          .padding(24)
          .frame(width: 480, height: 460)
          .background(
@@ -74,21 +74,21 @@ struct SettingsView: View {
          )
       }
    }
-
+   
    private func apply() {
       updateSettings()
       onDismiss()
    }
-
+   
    private func reset() {
       settings = LaunchpadSettings()
       updateSettings()
    }
-
+   
    private func updateSettings() {
       let oldAppsPerPage = settingsManager.settings.appsPerPage
       let newAppsPerPage = settings.appsPerPage
-
+      
       settingsManager.updateSettings(
          columns: settings.columns,
          rows: settings.rows,
@@ -103,7 +103,7 @@ struct SettingsView: View {
          startAtLogin: settings.startAtLogin,
          productKey: settings.productKey
       )
-
+      
       // Recalculate pages if the number of apps per page changed
       if oldAppsPerPage != newAppsPerPage {
          appManager.recalculatePages(appsPerPage: newAppsPerPage)

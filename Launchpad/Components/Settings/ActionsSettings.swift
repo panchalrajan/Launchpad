@@ -3,19 +3,19 @@ import SwiftUI
 struct ActionsSettings: View {
    private let settingsManager = SettingsManager.shared
    private let appManager = AppManager.shared
-
+   
    @State private var showingClearConfirmation = false
    @State private var showingImportAlert = false
    @State private var importAlertTitle = ""
    @State private var importAlertMessage = ""
-
+   
    var body: some View {
       VStack(alignment: .center, spacing: 20) {
          VStack(alignment: .leading, spacing: 12) {
             Text(L10n.layoutManagement)
                .font(.headline)
                .foregroundColor(.primary)
-
+            
             Button(action: exportLayout) {
                HStack {
                   Image(systemName: "square.and.arrow.up")
@@ -29,7 +29,7 @@ struct ActionsSettings: View {
                .cornerRadius(8)
             }
             .buttonStyle(.plain)
-
+            
             Button(action: importLayout) {
                HStack {
                   Image(systemName: "square.and.arrow.down")
@@ -43,7 +43,7 @@ struct ActionsSettings: View {
                .cornerRadius(8)
             }
             .buttonStyle(.plain)
-
+            
             Button(action: { showingClearConfirmation = true }) {
                HStack {
                   Image(systemName: "trash")
@@ -58,12 +58,12 @@ struct ActionsSettings: View {
             }
             .buttonStyle(.plain)
          }
-
+         
          VStack(alignment: .leading, spacing: 12) {
             Text(L10n.applicationControl)
                .font(.headline)
                .foregroundColor(.primary)
-
+            
             Button(action: forceQuitApp) {
                HStack {
                   Image(systemName: "power")
@@ -78,7 +78,7 @@ struct ActionsSettings: View {
             }
             .buttonStyle(.plain)
          }
-
+         
       }
       .padding(.horizontal, 8)
       .alert(L10n.clearAllAppsTitle, isPresented: $showingClearConfirmation) {
@@ -90,19 +90,19 @@ struct ActionsSettings: View {
          Text(L10n.clearAllAppsMessage)
       }
    }
-
+   
    private func exportLayout() {
       appManager.exportLayout()
    }
-
+   
    private func importLayout() {
       appManager.importLayout(appsPerPage: settingsManager.settings.appsPerPage)
    }
-
+   
    private func clearGridItems() {
       appManager.clearGridItems(appsPerPage: settingsManager.settings.appsPerPage)
    }
-
+   
    private func forceQuitApp() {
       NSApplication.shared.terminate(nil)
    }

@@ -1,14 +1,14 @@
 import SwiftUI
 
 struct PageIndicatorView: View {
-
+   
    @Binding var currentPage: Int
    let pageCount: Int
    let isFolderOpen: Bool
    let searchText: String
    let settings: LaunchpadSettings
    @Environment(\.colorScheme) private var colorScheme
-
+   
    var body: some View {
       HStack(spacing: LaunchPadConstants.pageIndicatorSpacing) {
          ForEach(0..<pageCount, id: \.self) { index in

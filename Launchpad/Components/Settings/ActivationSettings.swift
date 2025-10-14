@@ -2,26 +2,26 @@ import SwiftUI
 
 struct ActivationSettings: View {
    @Binding var settings: LaunchpadSettings
-
+   
    @State private var enteredProductKey: String = ""
    @State private var showValidationMessage = false
    @State private var validationMessage = ""
    @State private var isValid = false
-
+   
    var body: some View {
       VStack(alignment: .center, spacing: 20) {
          VStack(alignment: .leading, spacing: 12) {
             Text(L10n.productKey)
                .font(.headline)
                .foregroundColor(.primary)
-
+            
             TextField(L10n.enterProductKey, text: $enteredProductKey)
                .textFieldStyle(.roundedBorder)
                .font(.system(.body, design: .monospaced))
                .onChange(of: enteredProductKey) { _, _ in
                   showValidationMessage = false
                }
-
+            
             Button(action: validateAndActivate) {
                HStack {
                   Image(systemName: "key.fill")
@@ -35,7 +35,7 @@ struct ActivationSettings: View {
                .cornerRadius(8)
             }
             .buttonStyle(.plain)
-
+            
             if showValidationMessage {
                HStack {
                   Image(systemName: isValid ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
@@ -50,12 +50,12 @@ struct ActivationSettings: View {
                .background((isValid ? Color.green : Color.red).opacity(0.1))
                .foregroundColor(isValid ? Color.green : Color.red)
             }
-
+            
             Text(L10n.purchasePrompt)
                .font(.subheadline)
                .foregroundColor(.secondary)
                .multilineTextAlignment(.center)
-
+            
             Button(action: openPurchaseLink) {
                HStack {
                   Image(systemName: "cart.fill")
@@ -70,13 +70,13 @@ struct ActivationSettings: View {
             }
             .buttonStyle(.plain)
          }
-
+         
          VStack(alignment: .center) {
             HStack {
                Image(systemName: settings.isActivated ? "checkmark.circle.fill" : "xmark.circle.fill")
                   .foregroundColor(settings.isActivated ? .green : .orange)
                   .font(.title2)
-
+               
                Text(settings.isActivated ? L10n.activated : L10n.notActivated)
                   .font(.body)
                   .fontWeight(.medium)
@@ -99,7 +99,7 @@ struct ActivationSettings: View {
    
    private func validateAndActivate() {
       settings.productKey = enteredProductKey.trimmingCharacters(in: .whitespacesAndNewlines)
-
+      
       if settings.productKey == LaunchPadConstants.productKey {
          isValid = true
          validationMessage = L10n.activationSuccessful
@@ -110,7 +110,7 @@ struct ActivationSettings: View {
          showValidationMessage = true
       }
    }
-
+   
    private func openPurchaseLink() {
       NSWorkspace.shared.open(URL(string: "https://buymeacoffee.com/waikiki.com/")!);
       AppLauncher.exit();

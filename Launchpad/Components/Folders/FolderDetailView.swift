@@ -5,14 +5,14 @@ struct FolderDetailView: View {
    @Binding var folder: Folder?
    let settings: LaunchpadSettings
    let onItemTap: (AppGridItem) -> Void
-
+   
    @State private var editingName = false
    @State private var draggedApp: AppInfo?
    @State private var isAnimatingIn = false
    @State private var opacity: Double = 0
    @State private var headerOffset: CGFloat = -20
    @Environment(\.colorScheme) private var colorScheme
-
+   
    var body: some View {
       if folder != nil {
          ZStack {
@@ -25,12 +25,12 @@ struct FolderDetailView: View {
                .onTapGesture {
                   dismissWithAnimation()
                }
-
+            
             VStack(spacing: 10) {
                FolderNameView(folder: Binding(get: { folder! }, set: { folder = $0 }), editingName: $editingName, opacity: opacity, offset: headerOffset)
                GeometryReader { geo in
                   let layout = LayoutMetrics(size: geo.size, columns: settings.folderColumns, rows: settings.folderRows + 1, iconSize: settings.iconSize)
-
+                  
                   ScrollView(.vertical, showsIndicators: false) {
                      LazyVGrid(
                         columns: GridLayoutUtility.createGridColumns(count: settings.folderColumns, cellWidth: layout.cellWidth, spacing: layout.hSpacing),
@@ -107,33 +107,33 @@ struct FolderDetailView: View {
          }
       }
    }
-
+   
    private func performEntranceAnimation() {
       withAnimation(.interpolatingSpring(stiffness: 280, damping: 22)) {
          isAnimatingIn = true
       }
-
+      
       withAnimation(.easeOut(duration: 0.3)) {
          opacity = 1.0
       }
-
+      
       withAnimation(.interpolatingSpring(stiffness: 300, damping: 25)) {
          headerOffset = 0
       }
    }
-
+   
    private func dismissWithAnimation() {
       withAnimation(.easeIn(duration: 0.1)) {
          opacity = 0
          headerOffset = -20
          isAnimatingIn = false
       }
-
+      
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
          saveFolder()
       }
    }
-
+   
    private func saveFolder() {
       guard let pageIndex = pages.firstIndex(where: { page in page.contains(where: { $0.id == folder!.id }) }),
             let itemIndex = pages[pageIndex].firstIndex(where: { $0.id == folder!.id }) else {

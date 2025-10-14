@@ -2,16 +2,16 @@ import SwiftUI
 
 struct FeaturesSettings: View {
    @Binding var settings: LaunchpadSettings
-
+   
    var body: some View {
       VStack(alignment: .center, spacing: 20) {
          VStack(alignment: .leading, spacing: 12) {
-
+            
             SettingsToggle(
                title: L10n.showDock,
                isOn: $settings.showDock
             )
-
+            
             SettingsToggle(
                title: L10n.startAtLogin,
                isOn: Binding(
@@ -26,7 +26,7 @@ struct FeaturesSettings: View {
                   }
                )
             )
-
+            
             SettingsSlider(
                title: L10n.dropAnimationDelay,
                value: $settings.dropDelay,
@@ -35,7 +35,7 @@ struct FeaturesSettings: View {
                minLabel: L10n.time00s,
                maxLabel: L10n.time30s
             )
-
+            
             SettingsSlider(
                title: L10n.pageScrollDebounce,
                value: $settings.scrollDebounceInterval,
@@ -44,7 +44,7 @@ struct FeaturesSettings: View {
                minLabel: L10n.time00s,
                maxLabel: L10n.time30s
             )
-
+            
             SettingsSlider(
                title: L10n.pageScrollThreshold,
                value: $settings.scrollActivationThreshold,
@@ -54,7 +54,7 @@ struct FeaturesSettings: View {
                maxLabel: L10n.number200
             )
          }
-
+         
          VStack(alignment: .center) {
             HStack {
                Image(systemName: "info.circle")
@@ -64,7 +64,7 @@ struct FeaturesSettings: View {
                   .fontWeight(.medium)
                   .foregroundColor(.orange)
             }
-
+            
             Text(L10n.restartWarningMessage)
                .font(.caption)
                .foregroundColor(.secondary)

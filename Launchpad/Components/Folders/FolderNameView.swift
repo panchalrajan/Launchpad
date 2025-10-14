@@ -3,12 +3,12 @@ import SwiftUI
 struct FolderNameView: View {
    @Binding var folder: Folder
    @Binding var editingName: Bool
-
+   
    let opacity: Double
    let offset: CGFloat
-
+   
    @FocusState private var nameFieldFocused: Bool
-
+   
    var body: some View {
       VStack(spacing: 16) {
          HStack {
@@ -48,7 +48,7 @@ struct FolderNameView: View {
             }
             Spacer()
          }
-
+         
          .padding(.horizontal, 32)
       }
       .offset(y: offset)
