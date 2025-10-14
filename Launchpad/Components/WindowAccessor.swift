@@ -13,7 +13,7 @@ struct WindowAccessor: NSViewRepresentable {
          window.styleMask.remove([.resizable, .titled])
          window.styleMask.insert(.fullSizeContentView)
          window.collectionBehavior.insert(.fullScreenPrimary)
-         window.level = .normal
+         window.level = .floating
          window.setFrame(NSScreen.main?.frame ?? .zero, display: true)
       }
       return view
