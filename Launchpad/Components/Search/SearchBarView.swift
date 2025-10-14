@@ -1,13 +1,15 @@
 import SwiftUI
 
 struct SearchBarView: View {
-   @Binding var searchText: String
-   let transparency: Double
-
+   var searchText: String
+   var transparency: Double
+   
    var body: some View {
       HStack {
          Spacer()
-         SearchField(text: $searchText)
+         Text(searchText.isEmpty ? L10n.searchPlaceholder : searchText)
+            .textFieldStyle(.plain)
+            .font(.system(size: 16, weight: .regular))
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .frame(width: LaunchPadConstants.searchBarWidth, height: LaunchPadConstants.searchBarHeight)
@@ -19,6 +21,5 @@ struct SearchBarView: View {
          Spacer()
       }
       .padding(.top, 40)
-      .padding(.bottom, 24)
    }
 }

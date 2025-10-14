@@ -10,12 +10,12 @@ struct SettingsNumberField: View {
          Text(title)
             .font(.subheadline)
             .foregroundColor(.secondary)
-
+         
          HStack {
             TextField(title, value: $value, format: .number)
                .textFieldStyle(.roundedBorder)
                .frame(width: 60)
-
+            
             Stepper("", value: $value, in: range)
                .labelsHidden()
          }

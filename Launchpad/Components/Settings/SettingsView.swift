@@ -5,8 +5,13 @@ struct SettingsView: View {
    private let appManager = AppManager.shared
    let onDismiss: () -> Void
    
-   @State private var selectedTab = 0
+   @State private var selectedTab: Int
    @State private var settings: LaunchpadSettings = SettingsManager.shared.settings
+   
+   init(onDismiss: @escaping () -> Void, initialTab: Int = 0) {
+      self.onDismiss = onDismiss;
+      _selectedTab = State(initialValue: initialTab)
+   }
    
    var body: some View {
       ZStack {
@@ -58,7 +63,7 @@ struct SettingsView: View {
          }
          
          .padding(24)
-         .frame(width: 480, height: 460)
+         .frame(width: 500, height: 460)
          .background(
             RoundedRectangle(cornerRadius: 16)
                .fill(.regularMaterial)
@@ -96,6 +101,7 @@ struct SettingsView: View {
          showDock: settings.showDock,
          transparency: settings.transparency,
          startAtLogin: settings.startAtLogin,
+         resetOnRelaunch: settings.resetOnRelaunch,
          productKey: settings.productKey
       )
       

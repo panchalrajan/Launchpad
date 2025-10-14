@@ -7,11 +7,11 @@ struct SinglePageView: View {
    let settings: LaunchpadSettings
    let isFolderOpen: Bool
    let onItemTap: (AppGridItem) -> Void
-
+   
    var body: some View {
       GeometryReader { pageGeo in
          let layout = LayoutMetrics(size: pageGeo.size, columns: settings.columns, rows: settings.rows, iconSize: settings.iconSize)
-
+         
          ScrollView(.horizontal, showsIndicators: false) {
             LazyVGrid(
                columns: GridLayoutUtility.createGridColumns(count: settings.columns, cellWidth: layout.cellWidth, spacing: layout.hSpacing),

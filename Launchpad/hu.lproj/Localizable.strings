@@ -1,15 +1,11 @@
-/* 
-  Localizable.strings (Hungarian)
-  Launchpad
-*/
+/*
+ Localizable.strings (Hungarian)
+ Launchpad
+ */
 
 // MARK: - General
-"app_name" = "Launchpad";
-"settings" = "Beállítások";
 "cancel" = "Mégse";
 "apply" = "Alkalmaz";
-"ok" = "Ok";
-"close" = "Bezár";
 
 // MARK: - Settings View
 "launchpad_settings" = "Beállítások";
@@ -28,6 +24,7 @@
 "page_scroll_threshold" = "Görgetés Küszöb";
 "show_dock" = "Dock Megjelenítése";
 "start_at_login" = "Automatikus Indítás";
+"reset_on_relaunch" = "Keresés törlése Újraindításkor";
 "transparency" = "Átlátszóság";
 
 // MARK: - Actions Settings
@@ -35,9 +32,7 @@
 "layout_management" = "Elrendezés";
 "export_layout" = "Exportálás";
 "import_layout" = "Importálás";
-"import_from_old_launchpad" = "Importálás Régi Launchpad-ből";
-"reset_options" = "Visszaállítás";
-"clear_all_apps" = "Törlés";
+"clear_all_apps" = "Elrendezés Törlése";
 "application_control" = "Alkalmazás Vezérlés";
 "force_quit" = "Kilépés";
 
@@ -45,29 +40,14 @@
 "clear_all_apps_title" = "Elrendezés Törlése";
 "clear_all_apps_message" = "Ez eltávolítja az összes alkalmazást az egyéni elrendezésből és visszaállítja az alapértelmezett ábécé sorrendet. Ez a művelet nem vonható vissza.";
 "clear" = "Törlés";
-"import_success" = "Sikeres Importálás";
-"import_success_message" = "Sikeresen importálva a régi macOS Launchpad elrendezés.";
-"import_failed" = "Sikertelen Importálás";
-"import_failed_message" = "Nem található vagy nem olvasható a régi Launchpad adatbázis. Győződj meg róla, hogy használtad korábban a régi Launchpad-et.";
 
 // MARK: - Search
 "search_placeholder" = "Keresés";
-"search_apps_placeholder" = "Alkalmazások keresése...";
-"no_results_title" = "Nincs Eredmény";
-"no_results_message" = "Nem található alkalmazás a keresésnek megfelelően.";
 "no_apps_found" = "Nem található alkalmazás";
 
 // MARK: - Folder Management
-"folder_name_placeholder" = "Mappa Neve";
 "untitled_folder" = "Névtelen Mappa";
 "new_folder" = "Új Mappa";
-
-// MARK: - Actions Placeholder
-"actions_placeholder" = "A műveletek itt lesznek elérhetők";
-
-// MARK: - Time Units
-"seconds_short" = "mp";
-"milliseconds_short" = "ms";
 
 // MARK: - Numbers
 "number_10" = "10";
@@ -84,8 +64,9 @@
 "product_key" = "Termékkulcs";
 "enter_product_key" = "Termékkulcs Megadása";
 "activate" = "Aktiválás";
-"activation_status" = "Aktiválási Állapot";
 "activated" = "Aktiválva";
 "not_activated" = "Nincs Aktiválva";
 "invalid_product_key" = "Érvénytelen Termékkulcs";
 "activation_successful" = "Sikeres Aktiválás";
+"purchase_prompt" = "Még nincs licenced? Vásárolj egyet az összes funkció feloldásához.";
+"purchase_license" = "Licenc Vásárlása";
