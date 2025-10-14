@@ -107,24 +107,7 @@ If you like this project and want to support further development:
 - **Launch**: Click any app icon
 - **Organize**: Drag to rearrange or create folders
 - **Rename**: Click folder names
-- **Exit**: Press ESC, activate another app, or click the Launchpad dock icon when already open
-
-### 📦 **Importing from Old macOS Launchpad**
-
-If you've used the native macOS Launchpad before and have customized your app layout, you can import it:
-
-1. Open Settings (CMD + ,)
-2. Go to the **Actions** tab
-3. Click **Import from Old Launchpad**
-4. Your existing layout will be imported automatically
-
-**How it works:**
-- Reads your existing Launchpad database at `/private$(getconf DARWIN_USER_DIR)com.apple.dock.launchpad/db/db`
-- Preserves your app positions and page organization
-- Maintains folder structures and names
-- Merges with newly discovered apps not in old layout
-
-**Note:** This feature requires that you have previously used and customized the native macOS Launchpad. If the database is not found, the import will fail gracefully.
+- **Exit**: Press ESC, activate another app, or click the Launchpad dock icon when already
 
 ## 🏗️ **Technical Overview**
 
