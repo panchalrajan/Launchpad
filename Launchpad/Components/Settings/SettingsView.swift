@@ -18,6 +18,7 @@ struct SettingsView: View {
          Color.black.opacity(0.4)
             .ignoresSafeArea()
             .onTapGesture(perform: onDismiss)
+
          VStack(spacing: 0) {
             HStack {
                Text(L10n.launchpadSettings)
@@ -31,42 +32,77 @@ struct SettingsView: View {
             }
             .padding(.bottom, 16)
             
-            Picker("", selection: $selectedTab) {
-               Label(L10n.layout, systemImage: "grid").tag(0)
-               Label(L10n.features, systemImage: "sparkles").tag(1)
-               Label(L10n.actions, systemImage: "bolt").tag(2)
-               Label(L10n.hiddenApps, systemImage: "eye.slash").tag(3)
-               Label(L10n.activation, systemImage: "key.fill").tag(4)
-            }
-            .pickerStyle(.segmented)
-            .padding(.bottom, 16)
-            
-            Group {
-               if selectedTab == 0 {
-                  LayoutSettings(settings: $settings)
-               } else if selectedTab == 1 {
-                  FeaturesSettings(settings: $settings)
-               } else if selectedTab == 2 {
-                  ActionsSettings()
-               } else if selectedTab == 3 {
-                  HiddenAppsSettings()
-               } else {
-                  ActivationSettings(settings: $settings)
+            HStack(spacing: 0) {
+               // Sidebar with vertical tabs
+               VStack(alignment: .leading, spacing: 4) {
+                  SidebarTabButton(
+                     icon: "grid",
+                     label: L10n.layout,
+                     isSelected: selectedTab == 0,
+                     action: { selectedTab = 0 }
+                  )
+                  SidebarTabButton(
+                     icon: "sparkles",
+                     label: L10n.features,
+                     isSelected: selectedTab == 1,
+                     action: { selectedTab = 1 }
+                  )
+                  SidebarTabButton(
+                     icon: "bolt",
+                     label: L10n.actions,
+                     isSelected: selectedTab == 2,
+                     action: { selectedTab = 2 }
+                  )
+                  SidebarTabButton(
+                     icon: "eye.slash",
+                     label: L10n.hiddenApps,
+                     isSelected: selectedTab == 3,
+                     action: { selectedTab = 3 }
+                  )
+                  SidebarTabButton(
+                     icon: "key.fill",
+                     label: L10n.activation,
+                     isSelected: selectedTab == 4,
+                     action: { selectedTab = 4 }
+                  )
+                  Spacer()
                }
-            }
-            
-            Spacer()
-            
-            HStack(spacing: 16) {
-               Button(L10n.resetToDefaults, action: reset).buttonStyle(.bordered)
-               Spacer()
-               Button(L10n.cancel, action: onDismiss).buttonStyle(.bordered)
-               Button(L10n.apply, action: apply).buttonStyle(.borderedProminent)
+               .frame(width: 200)
+               .padding(.trailing, 16)
+               
+               Divider()
+                  .padding(.trailing, 16)
+               
+               // Content area
+               VStack {
+                  Group {
+                     if selectedTab == 0 {
+                        LayoutSettings(settings: $settings)
+                     } else if selectedTab == 1 {
+                        FeaturesSettings(settings: $settings)
+                     } else if selectedTab == 2 {
+                        ActionsSettings()
+                     } else if selectedTab == 3 {
+                        HiddenAppsSettings()
+                     } else {
+                        ActivationSettings(settings: $settings)
+                     }
+                  }
+                  
+                  Spacer()
+                  
+                  HStack(spacing: 16) {
+                     Button(L10n.resetToDefaults, action: reset).buttonStyle(.bordered)
+                     Spacer()
+                     Button(L10n.cancel, action: onDismiss).buttonStyle(.bordered)
+                     Button(L10n.apply, action: apply).buttonStyle(.borderedProminent)
+                  }
+               }
             }
          }
          
          .padding(24)
-         .frame(width: 500, height: 460)
+         .frame(width: 720, height: 460)
          .background(
             RoundedRectangle(cornerRadius: 16)
                .fill(.regularMaterial)
