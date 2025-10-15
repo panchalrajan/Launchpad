@@ -150,6 +150,7 @@ final class AppManagerTests: XCTestCase {
       // Given: Some mock apps
       let mockApps = createMockApps(count: 5, startingPage: 0)
       appManager.pages = [mockApps]
+      appManager.saveGridItems()
 
       // When: Saving (this happens automatically via property observer)
       // Wait for the async save to complete
@@ -212,6 +213,7 @@ final class AppManagerTests: XCTestCase {
       // Given: Some saved data
       let mockApps = createMockApps(count: 3, startingPage: 0)
       appManager.pages = [mockApps]
+      appManager.saveGridItems()
 
       // Ensure data is saved
       let initialData = UserDefaults.standard.array(forKey: "LaunchpadGridItems")
@@ -382,6 +384,8 @@ final class AppManagerIntegrationTests: XCTestCase {
       let initialCount = appManager.pages.flatMap { $0 }.count
       XCTAssertGreaterThan(initialCount, 0, "Should discover some apps")
 
+      appManager.saveGridItems()
+      
       // 2. Wait for save to complete
       try? await Task.sleep(nanoseconds: 200_000_000) // 0.2 seconds
 

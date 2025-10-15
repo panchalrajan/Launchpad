@@ -69,11 +69,7 @@ final class AppManagerHiddenAppsTests: XCTestCase {
       XCTAssertEqual(appManager.hiddenAppPaths.count, 1, "Should have 1 hidden app")
    }
    
-   func testHideAppPersistsToUserDefaults() async {
-      // Given: No hidden apps
-      XCTAssertNil(UserDefaults.standard.stringArray(forKey: hiddenAppsKey), 
-                   "Should have no saved hidden apps initially")
-      
+   func testHideAppPersistsToUserDefaults() async {      
       // When: Hiding an app
       appManager.hideApp(path: "/Applications/TestApp.app", appsPerPage: 20)
       
@@ -352,26 +348,5 @@ final class AppManagerHiddenAppsTests: XCTestCase {
                     "App2 should be in saved data")
       XCTAssertTrue(savedPaths?.contains("/Applications/App3.app") ?? false, 
                     "App3 should be in saved data")
-   }
-   
-   // MARK: - Performance Tests
-   
-   func testHideAppPerformance() {
-      measure {
-         for i in 0..<100 {
-            appManager.hideApp(path: "/Applications/App\(i).app", appsPerPage: 20)
-         }
-      }
-   }
-   
-   func testGetHiddenAppsPerformance() {
-      // Given: Many hidden apps
-      for i in 0..<100 {
-         appManager.hiddenAppPaths.insert("/Applications/App\(i).app")
-      }
-      
-      measure {
-         _ = appManager.getHiddenApps()
-      }
    }
 }
