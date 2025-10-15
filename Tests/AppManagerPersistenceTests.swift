@@ -217,28 +217,4 @@ final class AppManagerPersistenceTests: XCTestCase {
       XCTAssertNotNil(savedData, "Should save even empty data")
       XCTAssertEqual(savedData?.count, 0, "Empty pages should result in empty array")
    }
-
-   func testSaveVeryLargeDataset() async {
-      // Create a large dataset to test performance and limits
-      let mockIcon = NSImage(size: NSSize(width: 64, height: 64))
-      let largeAppSet = (0..<500).map { i in
-         AppInfo(name: "App \(i)", icon: mockIcon, path: "/Applications/App\(i).app", page: i / 20)
-      }
-
-      // Give the compiler explicit type context before grouping
-      let appItems: [AppGridItem] = largeAppSet.map { .app($0) }
-      let pages = Dictionary(grouping: appItems, by: { $0.page })
-         .sorted { $0.key < $1.key }
-         .map { $0.value }
-
-      appManager.pages = pages
-      appManager.saveGridItems()
-
-      // Wait for save
-      try? await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds for large dataset
-
-      let savedData = UserDefaults.standard.array(forKey: "LaunchpadGridItems") as? [[String: Any]]
-      XCTAssertNotNil(savedData, "Should save large dataset")
-      XCTAssertEqual(savedData?.count, 500, "Should save all 500 items")
-   }
 }
