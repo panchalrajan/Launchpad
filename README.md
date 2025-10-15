@@ -1,6 +1,7 @@
 # 🚀 LaunchPad
 
-[![CI](https://github.com/kristof12345/Launchpad/actions/workflows/ci.yml/badge.svg)](https://github.com/kristof12345/Launchpad/actions/workflows/ci.yml)
+[![Build](https://github.com/kristof12345/Launchpad/actions/workflows/build.yml/badge.svg)](https://github.com/kristof12345/Launchpad/actions/workflows/build.yml)
+[![Test](https://github.com/kristof12345/Launchpad/actions/workflows/test.yml/badge.svg)](https://github.com/kristof12345/Launchpad/actions/workflows/test.yml)
 [![macOS](https://img.shields.io/badge/macOS-15.6+-blue.svg)](https://www.apple.com/macos/)
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)](https://swift.org)
 

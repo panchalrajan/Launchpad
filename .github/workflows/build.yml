@@ -1,0 +1,36 @@
+name: Build
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-26
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Show Xcode version
+      run: xcodebuild -version
+      
+    - name: Clean SwiftPM metadata
+      run: rm -rf Launchpad.xcodeproj/project.xcworkspace/xcshareddata/swiftpm
+      
+    - name: Build Launchpad
+      run: |
+        xcodebuild clean build \
+          -project Launchpad.xcodeproj \
+          -scheme Launchpad \
+          -configuration Release \
+          -destination 'platform=macOS,arch=arm64' \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
