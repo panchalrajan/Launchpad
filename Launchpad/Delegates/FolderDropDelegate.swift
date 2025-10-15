@@ -5,28 +5,24 @@ struct FolderDropDelegate: DropDelegate {
    @Binding var draggedApp: AppInfo?
    let dropDelay: Double
    let targetApp: AppInfo
-   
+
    func performDrop(info: DropInfo) -> Bool {
       guard draggedApp != nil else { return false }
-      
+
       AppManager.shared.saveGridItems()
       self.draggedApp = nil
       return true
    }
-   
+
    func dropEntered(info: DropInfo) {
-      guard let draggedApp = draggedApp,
-            draggedApp.id != targetApp.id,
-            let fromIndex = folder.apps.firstIndex(where: { $0.id == draggedApp.id }),
-            let toIndex = folder.apps.firstIndex(where: { $0.id == targetApp.id })
-      else { return }
-      
-      DropAnimationHelper.performDelayedMove(delay: dropDelay) {
+      guard let draggedApp = draggedApp else { return }
+
+      DropHelper.performDelayedMove(delay: dropDelay) {
          if self.draggedApp != nil {
-            folder.apps.move(fromOffsets: IndexSet([fromIndex]), toOffset: DropAnimationHelper.calculateMoveOffset(fromIndex: fromIndex, toIndex: toIndex))
+            let fromIndex = folder.apps.firstIndex(where: { $0.id == draggedApp.id })!
+            let toIndex = folder.apps.firstIndex(where: { $0.id == targetApp.id })!
+            folder.apps.move(fromOffsets: IndexSet([fromIndex]), toOffset: DropHelper.calculateMoveOffset(fromIndex: fromIndex, toIndex: toIndex))
          }
       }
    }
-   
-   
 }

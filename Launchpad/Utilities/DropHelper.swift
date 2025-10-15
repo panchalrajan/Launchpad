@@ -1,7 +1,7 @@
 import SwiftUI
 
 @MainActor
-struct DropAnimationHelper {
+struct DropHelper {
   static func performDelayedMove(
     delay: Double,
     animation: Animation = .easeInOut(duration: 0.2),

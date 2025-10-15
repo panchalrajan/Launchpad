@@ -75,7 +75,7 @@ final class DatabaseImportManager {
                   print("[Importer] App: \(app.bundleId) -> page=\(pageIndex)")
                   let baseApp = appsByName[app.title]
                   if baseApp != nil {
-                     results.append(.app(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: pageIndex)))
+                     results.append(.app(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: pageIndex - 1)))
                   }
                }
                // If it's a folder (type 3), process apps inside it
@@ -95,12 +95,12 @@ final class DatabaseImportManager {
                            print("[Importer]   - \(app.bundleId)")
                            let baseApp = appsByName[app.title]
                            if baseApp != nil {
-                              folderItems.append(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: pageIndex))
+                              folderItems.append(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: pageIndex - 1))
                            }
                         }
                      }
                   }
-                  results.append(.folder(Folder(name: folderName, page: pageIndex, apps: folderItems)))
+                  results.append(.folder(Folder(name: folderName, page: pageIndex - 1, apps: folderItems)))
                }
             }
          }
@@ -176,7 +176,7 @@ final class DatabaseImportManager {
 
          groups[itemId] = LaunchpadGroup(itemId: itemId,  title: title  )
       }
-      
+
       return groups
    }
 
