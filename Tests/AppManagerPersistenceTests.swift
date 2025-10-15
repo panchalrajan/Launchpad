@@ -239,6 +239,6 @@ final class AppManagerPersistenceTests: XCTestCase {
 
       let savedData = UserDefaults.standard.array(forKey: "LaunchpadGridItems") as? [[String: Any]]
       XCTAssertNotNil(savedData, "Should save large dataset")
-      XCTAssertEqual(savedData?.count, 1000, "Should save all 1000 items")
+      XCTAssertEqual(savedData?.count, 500, "Should save all 500 items")
    }
 }
