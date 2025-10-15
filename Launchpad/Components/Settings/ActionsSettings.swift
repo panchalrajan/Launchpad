@@ -126,14 +126,14 @@ struct ActionsSettings: View {
    }
 
    private func importFromOldLaunchpad() {
-        let success = appManager.importFromOldLaunchpad(appsPerPage: settingsManager.settings.appsPerPage)
-        if success {
-            importAlertTitle = L10n.importSuccess
-            importAlertMessage = L10n.importSuccessMessage
-        } else {
-            importAlertTitle = L10n.importFailed
-            importAlertMessage = L10n.importFailedMessage
-        }
-        showingImportAlert = true
-    }
+      let success = appManager.importFromOldLaunchpad(appsPerPage: settingsManager.settings.appsPerPage)
+      if success {
+         importAlertTitle = L10n.importSuccess
+         importAlertMessage = L10n.importSuccessMessage
+      } else {
+         importAlertTitle = L10n.importFailed
+         importAlertMessage = L10n.importFailedMessage
+      }
+      showingImportAlert = true
+   }
 }
