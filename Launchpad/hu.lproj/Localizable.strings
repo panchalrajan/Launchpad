@@ -33,7 +33,7 @@
 "layout_management" = "Elrendezés";
 "export_layout" = "Exportálás";
 "import_layout" = "Importálás";
-"import_from_old_launchpad" = "Importálás Régi Launchpad-ből";
+"import_from_old_launchpad" = "Importálás Régi Launchpad-ből (BETA)";
 "clear_all_apps" = "Elrendezés Törlése";
 "application_control" = "Alkalmazás Vezérlés";
 "force_quit" = "Kilépés";

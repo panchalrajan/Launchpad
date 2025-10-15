@@ -54,14 +54,9 @@ final class AppManager: ObservableObject {
          return false
       }
 
-      let gridItems = DatabaseImportManager.shared.readOldLaunchpadLayout(currentApps: apps)
+      var gridItems = DatabaseImportManager.shared.readOldLaunchpadLayout(currentApps: apps)
 
-      /*
-       // Add any remaining apps not in the old layout
-       for app in apps where !usedPaths.contains(app.name) {
-       gridItems.append(.app(app))
-       }
-       */
+      addRemainingApps(items: &gridItems, apps: apps)
 
       pages = groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
       saveGridItems()
@@ -133,9 +128,7 @@ final class AppManager: ObservableObject {
          }
       }
 
-      for app in apps where !usedPaths.contains(app.path) {
-         gridItems.append(.app(app))
-      }
+      addRemainingApps(items: &gridItems, apps: apps)
 
       return gridItems
    }
@@ -240,7 +233,7 @@ final class AppManager: ObservableObject {
          print("Failed to import layout: \(error)")
       }
    }
-
+   
    private func exportLayoutToJSON(filePath: URL) {
       do {
          let itemsData = pages.flatMap { $0 }.map { $0.serialize() }
@@ -249,6 +242,18 @@ final class AppManager: ObservableObject {
          print("Export finished successfully to \(filePath.path)!")
       } catch {
          print("Failed to export layout: \(error)")
+      }
+   }
+
+   private func addRemainingApps(items: inout [AppGridItem], apps: [AppInfo]) {
+      var usedApps = Set<String>()
+      for gridItem in items {
+         usedApps.formUnion(gridItem.appPaths)
+      }
+
+      let maxPage = items.map(\.page).max() ?? 0
+      for app in apps where !usedApps.contains(app.path) {
+         items.append(.app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: maxPage)))
       }
    }
 }

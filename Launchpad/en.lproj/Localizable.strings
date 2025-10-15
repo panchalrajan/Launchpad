@@ -33,7 +33,7 @@
 "layout_management" = "Layout Management";
 "export_layout" = "Export Layout";
 "import_layout" = "Import Layout";
-"import_from_old_launchpad" = "Import from Old Launchpad";
+"import_from_old_launchpad" = "Import from Old Launchpad (BETA)";
 "clear_all_apps" = "Clear Grid Layout";
 "application_control" = "Application Control";
 "force_quit" = "Force Quit";
