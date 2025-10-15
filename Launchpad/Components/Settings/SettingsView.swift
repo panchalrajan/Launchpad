@@ -35,7 +35,8 @@ struct SettingsView: View {
                Label(L10n.layout, systemImage: "grid").tag(0)
                Label(L10n.features, systemImage: "sparkles").tag(1)
                Label(L10n.actions, systemImage: "bolt").tag(2)
-               Label(L10n.activation, systemImage: "key.fill").tag(3)
+               Label(L10n.locations, systemImage: "folder").tag(3)
+               Label(L10n.activation, systemImage: "key.fill").tag(4)
             }
             .pickerStyle(.segmented)
             .padding(.bottom, 16)
@@ -47,6 +48,8 @@ struct SettingsView: View {
                   FeaturesSettings(settings: $settings)
                } else if selectedTab == 2 {
                   ActionsSettings()
+               } else if selectedTab == 3 {
+                  LocationsSettings(settings: $settings)
                } else {
                   ActivationSettings(settings: $settings)
                }
@@ -88,6 +91,8 @@ struct SettingsView: View {
    private func updateSettings() {
       let oldAppsPerPage = settingsManager.settings.appsPerPage
       let newAppsPerPage = settings.appsPerPage
+      let oldLocations = settingsManager.settings.customAppLocations
+      let newLocations = settings.customAppLocations
       
       settingsManager.updateSettings(
          columns: settings.columns,
@@ -102,12 +107,18 @@ struct SettingsView: View {
          transparency: settings.transparency,
          startAtLogin: settings.startAtLogin,
          resetOnRelaunch: settings.resetOnRelaunch,
-         productKey: settings.productKey
+         productKey: settings.productKey,
+         customAppLocations: settings.customAppLocations
       )
       
       // Recalculate pages if the number of apps per page changed
       if oldAppsPerPage != newAppsPerPage {
          appManager.recalculatePages(appsPerPage: newAppsPerPage)
+      }
+      
+      // Reload apps if custom locations changed
+      if oldLocations != newLocations {
+         appManager.loadGridItems(appsPerPage: settings.appsPerPage)
       }
    }
 }

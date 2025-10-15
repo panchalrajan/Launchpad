@@ -87,4 +87,19 @@ struct L10n {
    static let activationSuccessful = "activation_successful".localized
    static let purchasePrompt = "purchase_prompt".localized
    static let purchaseLicense = "purchase_license".localized
+   
+   // MARK: - Locations Settings
+   static let locations = "locations".localized
+   static let locationsDescription = "locations_description".localized
+   static let customLocations = "custom_locations".localized
+   static let noCustomLocations = "no_custom_locations".localized
+   static let addLocation = "add_location".localized
+   static let locationPlaceholder = "location_placeholder".localized
+   static let browseFolder = "browse_folder".localized
+   static let addLocationHelp = "add_location_help".localized
+   static let invalidLocation = "invalid_location".localized
+   static let locationDoesNotExist = "location_does_not_exist".localized
+   static let locationNotDirectory = "location_not_directory".localized
+   static let locationAlreadyAdded = "location_already_added".localized
+   static let selectFolderMessage = "select_folder_message".localized
 }

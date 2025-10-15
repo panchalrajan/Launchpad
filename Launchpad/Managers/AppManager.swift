@@ -73,8 +73,10 @@ final class AppManager: ObservableObject {
 
    private func discoverApps() -> [AppInfo] {
       print("Discover apps.")
-      let appPaths = ["/Applications", "/System/Applications"]
-      return appPaths.flatMap { discoverAppsRecursively(directory: $0) }.sorted { $0.name.lowercased() < $1.name.lowercased() }
+      let defaultPaths = ["/Applications", "/System/Applications"]
+      let customPaths = SettingsManager.shared.settings.customAppLocations
+      let allPaths = defaultPaths + customPaths
+      return allPaths.flatMap { discoverAppsRecursively(directory: $0) }.sorted { $0.name.lowercased() < $1.name.lowercased() }
    }
 
    private func discoverAppsRecursively(directory: String, maxDepth: Int = 3, currentDepth: Int = 0) -> [AppInfo] {

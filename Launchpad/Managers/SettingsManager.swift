@@ -44,7 +44,8 @@ final class SettingsManager: ObservableObject {
       transparency: Double? = nil,
       startAtLogin: Bool? = nil,
       resetOnRelaunch: Bool? = nil,
-      productKey: String? = nil
+      productKey: String? = nil,
+      customAppLocations: [String]? = nil
    ) {
       settings = LaunchpadSettings(
          columns: columns ?? settings.columns,
@@ -59,7 +60,8 @@ final class SettingsManager: ObservableObject {
          transparency: transparency ?? settings.transparency,
          startAtLogin: startAtLogin ?? settings.startAtLogin,
          resetOnRelaunch: resetOnRelaunch ?? settings.resetOnRelaunch,
-         productKey: productKey ?? settings.productKey
+         productKey: productKey ?? settings.productKey,
+         customAppLocations: customAppLocations ?? settings.customAppLocations
       )
    }
    
