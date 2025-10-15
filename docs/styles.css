@@ -354,7 +354,7 @@ body {
 
 /* Screenshots Section */
 .screenshots {
-  padding: 100px 0;
+  padding: 30px 0;
   background: var(--gray-100);
 }
 
@@ -388,14 +388,14 @@ body {
 
 /* macOS Tahoe Support Section */
 .tahoe-support {
-  padding: 100px 0;
+  padding: 30px 0;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   position: relative;
   overflow: hidden;
 }
 
 .tahoe-support::before {
-  content: '🏔️';
+  content: "🏔️";
   position: absolute;
   font-size: 400px;
   opacity: 0.03;
@@ -526,7 +526,7 @@ body {
 
 /* Light & Dark Mode Section */
 .mode-support {
-  padding: 100px 0;
+  padding: 30px 0;
   background: white;
 }
 
@@ -654,7 +654,7 @@ body {
 
 /* Pricing Section */
 .pricing {
-  padding: 100px 0;
+  padding: 30px 0;
 }
 
 .pricing-grid {
@@ -729,7 +729,7 @@ body {
 
 /* Download Section */
 .download {
-  padding: 100px 0;
+  padding: 30px 0;
   background: linear-gradient(
     135deg,
     var(--primary) 0%,
@@ -755,7 +755,7 @@ body {
 
 /* Installation Help Section */
 .installation-help {
-  padding: 100px 0;
+  padding: 30px 0;
   background: white;
 }
 
@@ -824,7 +824,11 @@ body {
   justify-content: center;
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-light) 100%
+  );
   color: white;
   border-radius: 50%;
   font-size: 1.5rem;
