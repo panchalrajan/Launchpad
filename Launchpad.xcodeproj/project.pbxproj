@@ -6,12 +6,28 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		624B207C2E9FF18A00DCB407 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 84DD94502E08882300F7E52A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 84DD94572E08882300F7E52A;
+			remoteInfo = Launchpad;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		624B20782E9FF18A00DCB407 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D43C0B02E7F05EF00259811 /* Launchpad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Launchpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		622855E72E8EBE74002073FA /* Tests */ = {
+		624B1FC82E9FF08900DCB407 /* Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		624B20792E9FF18A00DCB407 /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Tests;
 			sourceTree = "<group>";
@@ -24,6 +40,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		624B20752E9FF18A00DCB407 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		84DD94552E08882300F7E52A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -39,13 +62,38 @@
 			children = (
 				84DD945A2E08882300F7E52A /* Launchpad */,
 				6D43C0B02E7F05EF00259811 /* Launchpad.app */,
-				622855E72E8EBE74002073FA /* Tests */,
+				624B1FC82E9FF08900DCB407 /* Tests */,
+				624B20782E9FF18A00DCB407 /* Tests.xctest */,
+				624B20792E9FF18A00DCB407 /* Tests */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		624B20772E9FF18A00DCB407 /* Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 624B207E2E9FF18A00DCB407 /* Build configuration list for PBXNativeTarget "Tests" */;
+			buildPhases = (
+				624B20742E9FF18A00DCB407 /* Sources */,
+				624B20752E9FF18A00DCB407 /* Frameworks */,
+				624B20762E9FF18A00DCB407 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				624B207D2E9FF18A00DCB407 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				624B20792E9FF18A00DCB407 /* Tests */,
+			);
+			name = Tests;
+			packageProductDependencies = (
+			);
+			productName = Tests;
+			productReference = 624B20782E9FF18A00DCB407 /* Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		84DD94572E08882300F7E52A /* Launchpad */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 84DD947A2E08882400F7E52A /* Build configuration list for PBXNativeTarget "Launchpad" */;
@@ -78,6 +126,10 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					624B20772E9FF18A00DCB407 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 84DD94572E08882300F7E52A;
+					};
 					84DD94572E08882300F7E52A = {
 						CreatedOnToolsVersion = 16.4;
 					};
@@ -99,11 +151,19 @@
 			projectRoot = "";
 			targets = (
 				84DD94572E08882300F7E52A /* Launchpad */,
+				624B20772E9FF18A00DCB407 /* Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		624B20762E9FF18A00DCB407 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		84DD94562E08882300F7E52A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -114,6 +174,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		624B20742E9FF18A00DCB407 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		84DD94542E08882300F7E52A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -123,7 +190,67 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		624B207D2E9FF18A00DCB407 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 84DD94572E08882300F7E52A /* Launchpad */;
+			targetProxy = 624B207C2E9FF18A00DCB407 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		624B207F2E9FF18A00DCB407 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LWZF89AHWT;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.waikiki.LaunchpadTests.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Launchpad.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Launchpad";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		624B20802E9FF18A00DCB407 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LWZF89AHWT;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.waikiki.LaunchpadTests.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Launchpad.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Launchpad";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
 		84DD94782E08882400F7E52A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -327,6 +454,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		624B207E2E9FF18A00DCB407 /* Build configuration list for PBXNativeTarget "Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				624B207F2E9FF18A00DCB407 /* Debug */,
+				624B20802E9FF18A00DCB407 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		84DD94532E08882300F7E52A /* Build configuration list for PBXProject "Launchpad" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
