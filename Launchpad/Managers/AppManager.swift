@@ -5,20 +5,31 @@ import Foundation
 final class AppManager: ObservableObject {
    private let userDefaults = UserDefaults.standard
    private let gridItemsKey = "LaunchpadGridItems"
+   private let hiddenAppsKey = "LaunchpadHiddenApps"
 
    static let shared = AppManager()
 
    private init() {
       self.pages = [[]]
+      self.hiddenAppPaths = Set(userDefaults.stringArray(forKey: hiddenAppsKey) ?? [])
    }
 
    @Published var pages: [[AppGridItem]]
+   @Published var hiddenAppPaths: Set<String> {
+      didSet {
+         saveHiddenApps()
+      }
+   }
 
    func loadGridItems(appsPerPage: Int) {
       print("Load grid items.")
       let apps = discoverApps()
       let gridItems = loadLayoutFromUserDefaults(for: apps)
-      pages = groupItemsByPage(items: gridItems, appsPerPage: appsPerPage)
+      // Filter out hidden apps
+      let visibleItems = gridItems.filter { item in
+         !isItemHidden(item)
+      }
+      pages = groupItemsByPage(items: visibleItems, appsPerPage: appsPerPage)
    }
 
    func saveGridItems() {
@@ -253,6 +264,42 @@ final class AppManager: ObservableObject {
       let maxPage = items.map(\.page).max() ?? 0
       for app in apps where !usedApps.contains(app.path) {
          items.append(.app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: maxPage)))
+      }
+   }
+   
+   // MARK: - Hidden Apps Management
+   
+   private func saveHiddenApps() {
+      print("Save hidden apps.")
+      userDefaults.set(Array(hiddenAppPaths), forKey: hiddenAppsKey)
+      userDefaults.synchronize()
+   }
+   
+   func hideApp(path: String, appsPerPage: Int) {
+      print("Hide app: \(path)")
+      hiddenAppPaths.insert(path)
+      loadGridItems(appsPerPage: appsPerPage)
+   }
+   
+   func unhideApp(path: String, appsPerPage: Int) {
+      print("Unhide app: \(path)")
+      hiddenAppPaths.remove(path)
+      loadGridItems(appsPerPage: appsPerPage)
+   }
+   
+   func getHiddenApps() -> [AppInfo] {
+      let allApps = discoverApps()
+      return allApps.filter { hiddenAppPaths.contains($0.path) }
+   }
+   
+   private func isItemHidden(_ item: AppGridItem) -> Bool {
+      switch item {
+      case .app(let app):
+         return hiddenAppPaths.contains(app.path)
+      case .folder(let folder):
+         // If all apps in a folder are hidden, hide the folder
+         let allHidden = folder.apps.allSatisfy { hiddenAppPaths.contains($0.path) }
+         return allHidden && !folder.apps.isEmpty
       }
    }
 }

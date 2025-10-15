@@ -92,9 +92,7 @@ struct ActionsSettings: View {
             }
             .buttonStyle(.plain)
          }
-
       }
-      .padding(.horizontal, 8)
       .alert(L10n.clearAllAppsTitle, isPresented: $showingClearConfirmation) {
          Button(L10n.cancel, role: .cancel) { }
          Button(L10n.clear, role: .destructive) {
@@ -102,11 +100,13 @@ struct ActionsSettings: View {
          }
       } message: {
          Text(L10n.clearAllAppsMessage)
-      }       .alert(importAlertTitle, isPresented: $showingImportAlert) {
+      }
+      .alert(importAlertTitle, isPresented: $showingImportAlert) {
          Button(L10n.ok) { }
       } message: {
          Text(importAlertMessage)
       }
+      .padding(.horizontal, 8)
    }
 
    private func exportLayout() {

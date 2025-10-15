@@ -102,4 +102,12 @@ struct L10n {
    static let locationNotDirectory = "location_not_directory".localized
    static let locationAlreadyAdded = "location_already_added".localized
    static let selectFolderMessage = "select_folder_message".localized
+   
+   // MARK: - Hidden Apps
+   static let hiddenApps = "hidden_apps".localized
+   static let hideApp = "hide_app".localized
+   static let unhideApp = "unhide_app".localized
+   static let noHiddenApps = "no_hidden_apps".localized
+   static let hiddenAppsDescription = "hidden_apps_description".localized
+   static let unhideAllApps = "unhide_all_apps".localized
 }
