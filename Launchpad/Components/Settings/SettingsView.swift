@@ -60,10 +60,16 @@ struct SettingsView: View {
                      action: { selectedTab = 3 }
                   )
                   SidebarTabButton(
-                     icon: "key.fill",
-                     label: L10n.activation,
+                     icon: "folder",
+                     label: L10n.locations,
                      isSelected: selectedTab == 4,
                      action: { selectedTab = 4 }
+                  )
+                  SidebarTabButton(
+                     icon: "key.fill",
+                     label: L10n.activation,
+                     isSelected: selectedTab == 5,
+                     action: { selectedTab = 5 }
                   )
                   Spacer()
                }
@@ -84,6 +90,8 @@ struct SettingsView: View {
                         ActionsSettings()
                      } else if selectedTab == 3 {
                         HiddenAppsSettings()
+                     } else if selectedTab == 4 {
+                        LocationsSettings(settings: $settings)
                      } else {
                         ActivationSettings(settings: $settings)
                      }
@@ -127,6 +135,8 @@ struct SettingsView: View {
    private func updateSettings() {
       let oldAppsPerPage = settingsManager.settings.appsPerPage
       let newAppsPerPage = settings.appsPerPage
+      let oldLocations = settingsManager.settings.customAppLocations
+      let newLocations = settings.customAppLocations
       
       settingsManager.updateSettings(
          columns: settings.columns,
@@ -141,12 +151,18 @@ struct SettingsView: View {
          transparency: settings.transparency,
          startAtLogin: settings.startAtLogin,
          resetOnRelaunch: settings.resetOnRelaunch,
-         productKey: settings.productKey
+         productKey: settings.productKey,
+         customAppLocations: settings.customAppLocations
       )
       
       // Recalculate pages if the number of apps per page changed
       if oldAppsPerPage != newAppsPerPage {
          appManager.recalculatePages(appsPerPage: newAppsPerPage)
+      }
+      
+      // Reload apps if custom locations changed
+      if oldLocations != newLocations {
+         appManager.loadGridItems(appsPerPage: settings.appsPerPage)
       }
    }
 }

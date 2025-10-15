@@ -84,3 +84,18 @@
 "activation_successful" = "Sikeres Aktiválás";
 "purchase_prompt" = "Még nincs licenced? Vásárolj egyet az összes funkció feloldásához.";
 "purchase_license" = "Licenc Vásárlása";
+
+// MARK: - Locations Settings
+"locations" = "Helyek";
+"locations_description" = "Adj hozzá egyéni mappákat, ahol a Launchpad alkalmazásokat keres. Alapértelmezetten a Launchpad az /Applications és /System/Applications mappákban keres.";
+"custom_locations" = "Egyéni Helyek";
+"no_custom_locations" = "Még nincsenek hozzáadott helyek";
+"add_location" = "Hely Hozzáadása";
+"location_placeholder" = "/útvonal/a/mappához";
+"browse_folder" = "Mappa böngészése";
+"add_location_help" = "Hely hozzáadása";
+"invalid_location" = "Érvénytelen Hely";
+"location_does_not_exist" = "A megadott útvonal nem létezik.";
+"location_not_directory" = "A megadott útvonal nem mappa.";
+"location_already_added" = "Ez a hely már hozzá lett adva.";
+"select_folder_message" = "Válassz egy mappát az alkalmazások kereséséhez";

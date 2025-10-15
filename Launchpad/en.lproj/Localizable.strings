@@ -84,3 +84,18 @@
 "activation_successful" = "Activation Successful";
 "purchase_prompt" = "Don't have a license yet? Purchase one to unlock all features.";
 "purchase_license" = "Purchase License";
+
+// MARK: - Locations Settings
+"locations" = "Locations";
+"locations_description" = "Add custom folder locations where Launchpad will search for applications. By default, Launchpad searches in /Applications and /System/Applications.";
+"custom_locations" = "Custom Locations";
+"no_custom_locations" = "No custom locations added yet";
+"add_location" = "Add Location";
+"location_placeholder" = "/path/to/folder";
+"browse_folder" = "Browse for folder";
+"add_location_help" = "Add this location";
+"invalid_location" = "Invalid Location";
+"location_does_not_exist" = "The specified path does not exist.";
+"location_not_directory" = "The specified path is not a directory.";
+"location_already_added" = "This location has already been added.";
+"select_folder_message" = "Select a folder to search for applications";
