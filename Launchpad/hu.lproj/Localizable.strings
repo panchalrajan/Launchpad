@@ -38,6 +38,14 @@
 "application_control" = "Alkalmazás Vezérlés";
 "force_quit" = "Kilépés";
 
+// MARK: - Hidden Apps
+"hidden_apps" = "Rejtett Alkalmazások";
+"hide_app" = "Alkalmazás Elrejtése";
+"unhide_app" = "Alkalmazás Megjelenítése";
+"no_hidden_apps" = "Nincsenek rejtett alkalmazások";
+"hidden_apps_description" = "A rejtett alkalmazások itt jelennek meg. Kattints rájuk a megjelenítéshez.";
+"unhide_all_apps" = "Összes Megjelenítése";
+
 // MARK: - Alerts and Confirmations
 "clear_all_apps_title" = "Elrendezés Törlése";
 "clear_all_apps_message" = "Ez eltávolítja az összes alkalmazást az egyéni elrendezésből és visszaállítja az alapértelmezett ábécé sorrendet. Ez a művelet nem vonható vissza.";
