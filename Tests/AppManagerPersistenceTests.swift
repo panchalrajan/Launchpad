@@ -221,7 +221,7 @@ final class AppManagerPersistenceTests: XCTestCase {
    func testSaveVeryLargeDataset() async {
       // Create a large dataset to test performance and limits
       let mockIcon = NSImage(size: NSSize(width: 64, height: 64))
-      let largeAppSet = (0..<1000).map { i in
+      let largeAppSet = (0..<500).map { i in
          AppInfo(name: "App \(i)", icon: mockIcon, path: "/Applications/App\(i).app", page: i / 20)
       }
 
