@@ -12,7 +12,7 @@ final class AppManager: ObservableObject {
       self.pages = [[]]
    }
 
-   var pages: [[AppGridItem]]
+   @Published var pages: [[AppGridItem]]
 
    func loadGridItems(appsPerPage: Int) {
       print("Load grid items.")
