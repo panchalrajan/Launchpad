@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		6D43C0B02E7F05EF00259811 /* Launchpad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Launchpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		62285F092E8EC000002073FA /* LaunchpadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LaunchpadTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -23,8 +24,33 @@
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
+/* Begin PBXContainerItemProxy section */
+		62285F082E8EC000002073FA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 84DD94502E08882300F7E52A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 84DD94572E08882300F7E52A;
+			remoteInfo = Launchpad;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		62285F072E8EC000002073FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 84DD94572E08882300F7E52A /* Launchpad */;
+			targetProxy = 62285F082E8EC000002073FA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		84DD94552E08882300F7E52A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62285F052E8EC000002073FA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -34,12 +60,8 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		84DD944F2E08882300F7E52A = {
-			isa = PBXGroup;
-			children = (
-				84DD945A2E08882300F7E52A /* Launchpad */,
-				6D43C0B02E7F05EF00259811 /* Launchpad.app */,
-				622855E72E8EBE74002073FA /* Tests */,
+		r285F092E8EC000002073FA /* LaunchpadTests.xctest */,
+				
 			);
 			sourceTree = "<group>";
 		};
@@ -68,6 +90,29 @@
 			productReference = 6D43C0B02E7F05EF00259811 /* Launchpad.app */;
 			productType = "com.apple.product-type.application";
 		};
+		62285F002E8EC000002073FA /* LaunchpadTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 62285F012E8EC000002073FA /* Build configuration list for PBXNativeTarget "LaunchpadTests" */;
+			buildPhases = (
+				62285F042E8EC000002073FA /* Sources */,
+				62285F052E8EC000002073FA /* Frameworks */,
+				62285F062E8EC000002073FA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				62285F072E8EC000002073FA /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				622855E72E8EBE74002073FA /* Tests */,
+			);
+			name = LaunchpadTests;
+			packageProductDependencies = (
+			);
+			productName = LaunchpadTests;
+			productReference = 62285F092E8EC000002073FA /* LaunchpadTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -78,7 +123,11 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
-					84DD94572E08882300F7E52A = {
+										62285F002E8EC000002073FA = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 84DD94572E08882300F7E52A;
+					};
+					
 						CreatedOnToolsVersion = 16.4;
 					};
 				};
@@ -99,6 +148,7 @@
 			projectRoot = "";
 			targets = (
 				84DD94572E08882300F7E52A /* Launchpad */,
+				62285F002E8EC000002073FA /* LaunchpadTests */,
 			);
 		};
 /* End PBXProject section */
@@ -111,10 +161,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		62285F062E8EC000002073FA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		84DD94542E08882300F7E52A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62285F042E8EC000002073FA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -324,6 +388,38 @@
 			};
 			name = Release;
 		};
+		62285F022E8EC000002073FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = waikiki.program.LaunchpadTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Launchpad.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Launchpad";
+			};
+			name = Debug;
+		};
+		62285F032E8EC000002073FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = waikiki.program.LaunchpadTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Launchpad.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Launchpad";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -341,6 +437,15 @@
 			buildConfigurations = (
 				84DD947B2E08882400F7E52A /* Debug */,
 				84DD947C2E08882400F7E52A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		62285F012E8EC000002073FA /* Build configuration list for PBXNativeTarget "LaunchpadTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				62285F022E8EC000002073FA /* Debug */,
+				62285F032E8EC000002073FA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
