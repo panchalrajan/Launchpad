@@ -60,10 +60,16 @@ struct SettingsView: View {
                      action: { selectedTab = 3 }
                   )
                   SidebarTabButton(
-                     icon: "key.fill",
-                     label: L10n.activation,
+                     icon: "folder",
+                     label: L10n.locations,
                      isSelected: selectedTab == 4,
                      action: { selectedTab = 4 }
+                  )
+                  SidebarTabButton(
+                     icon: "key.fill",
+                     label: L10n.activation,
+                     isSelected: selectedTab == 5,
+                     action: { selectedTab = 5 }
                   )
                   Spacer()
                }
@@ -84,6 +90,8 @@ struct SettingsView: View {
                         ActionsSettings()
                      } else if selectedTab == 3 {
                         HiddenAppsSettings()
+                     } else if selectedTab == 4 {
+                        LocationsSettings(settings: $settings)
                      } else {
                         ActivationSettings(settings: $settings)
                      }
