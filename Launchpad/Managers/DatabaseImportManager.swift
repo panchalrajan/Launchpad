@@ -12,7 +12,6 @@ final class DatabaseImportManager {
 
    func readOldLaunchpadLayout(currentApps: [AppInfo]) -> [AppGridItem] {
       guard let dbPath = getOldLaunchpadDatabasePath() else {
-         print("Could not determine old Launchpad database path")
          return []
       }
 
@@ -41,25 +40,24 @@ final class DatabaseImportManager {
          let groups = try parseGroups(from: db)
          let items = try parseItems(from: db)
 
-         print("[Importer][Debug] Parsed \(apps.count) apps, \(groups.count) groups, \(items.count) items")
+         print("[Importer] Parsed \(apps.count) apps, \(groups.count) groups, \(items.count) items")
 
-         // Build hierarchy: find root, pages, and items
          // Type: 1=root, 2=page, 3=folder, 4=app
 
          // Find root item
          guard let rootItem = items.first(where: { $0.type == 1 }) else {
-            print("[Importer][Error] No root item found in database")
+            print("[Importer] No root item found in database")
             return []
          }
 
-         print("[Importer][Debug] Root item found: rowId=\(rootItem.rowId)")
+         print("[Importer] Root item found: rowId=\(rootItem.rowId)")
 
          // Find all pages (children of root)
          let pages = items
             .filter { $0.parentId == Int(rootItem.rowId)! }
             .sorted { $0.ordering < $1.ordering }
 
-         print("[Importer][Debug] Found \(pages.count) pages")
+         print("[Importer] Found \(pages.count) pages")
 
          // Process each page
          for (pageIndex, page) in pages.enumerated() {
@@ -68,13 +66,13 @@ final class DatabaseImportManager {
                .filter { $0.parentId == Int(page.rowId)! }
                .sorted { $0.ordering < $1.ordering }
 
-            print("[Importer][Debug] Page \(pageIndex): \(pageItems.count) items")
+            print("[Importer] Page \(pageIndex): \(pageItems.count) items")
 
             // Process each item on the page
             for (position, item) in pageItems.enumerated() {
                // If it's an app, add it to results
                if item.type == 4, let app = apps[item.rowId] {
-                  print("[Importer][Debug] App: \(app.bundleId) -> page=\(pageIndex), pos=\(position)")
+                  print("[Importer] App: \(app.bundleId) -> page=\(pageIndex), pos=\(position)")
                   let baseApp = appsByName[app.title]
                   if baseApp != nil {
                      results.append(.app(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: pageIndex)))
@@ -83,26 +81,26 @@ final class DatabaseImportManager {
                // If it's a folder (type 3), process apps inside it
                else {
                   let folderName = groups[item.rowId]?.title ?? "Unknown"
-                  let p = items.first { $0.parentId == Int(item.rowId)! }!
+                  let folderPages = items.filter { $0.parentId == Int(item.rowId)! }
 
-                  let folderApps = items
-                     .filter { $0.parentId == Int(p.rowId)! }
-                     .sorted { $0.ordering < $1.ordering }
+                  var folderItems : [AppInfo] = []
 
-                  print("[Importer][Debug] Folder '\(item.rowId)' '\(folderName)': \(folderApps.count) apps at page=\(pageIndex), pos=\(position)")
+                  for folderPage in folderPages {
+                     let folderApps = items
+                        .filter { $0.parentId == Int(folderPage.rowId)! }
+                        .sorted { $0.ordering < $1.ordering }
 
-                  var a : [AppInfo] = []
-                  // Add folder apps to results (they stay on the same page as the folder)
-                  for folderApp in folderApps {
-                     if let app = apps[folderApp.rowId] {
-                        print("[Importer][Debug]   - \(app.bundleId)")
-                        let baseApp = appsByName[app.title]
-                        if baseApp != nil {
-                           a.append(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: pageIndex))
+                     for folderApp in folderApps {
+                        if let app = apps[folderApp.rowId] {
+                           print("[Importer]   - \(app.bundleId)")
+                           let baseApp = appsByName[app.title]
+                           if baseApp != nil {
+                              folderItems.append(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: pageIndex))
+                           }
                         }
                      }
                   }
-                  results.append(.folder(Folder(name: folderName, page: pageIndex, apps: a)))
+                  results.append(.folder(Folder(name: folderName, page: pageIndex, apps: folderItems)))
                }
             }
          }
@@ -110,7 +108,7 @@ final class DatabaseImportManager {
          print("[Importer][Success] Successfully read \(results.count) apps from old Launchpad database")
          return results
       } catch {
-         print("[Importer][Error] Error parsing old Launchpad database: \(error)")
+         print("[Importer] Error parsing old Launchpad database: \(error)")
          return []
       }
    }
@@ -130,12 +128,12 @@ final class DatabaseImportManager {
 
          let data = pipe.fileHandleForReading.readDataToEndOfFile()
          if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) {
-            let dbPath = "/private\(output)db/db"
-            print(dbPath)
+            let dbPath = "/private\(output)com.apple.dock.launchpad/db/db"
+            print("Old Launchpad database path: " + dbPath)
             return dbPath
          }
       } catch {
-         print("Failed to get DARWIN_USER_DIR: \(error)")
+         print("Could not determine old Launchpad database path")
       }
 
       return nil
@@ -153,19 +151,8 @@ final class DatabaseImportManager {
 
       while sqlite3_step(stmt) == SQLITE_ROW {
          let itemId = String(sqlite3_column_int(stmt, 0))
-
-         // 安全获取字符串，处理 NULL 值
-         let title = sqlite3_column_text(stmt, 1) != nil
-         ? String(cString: sqlite3_column_text(stmt, 1))
-         : "Unknown App"
-
-         let bundleId = sqlite3_column_text(stmt, 2) != nil
-         ? String(cString: sqlite3_column_text(stmt, 2))
-         : ""
-
-         if bundleId == "com.apple.Maps" || bundleId == "com.apple.Music" {
-            print("[Importer][Debug] bundleId=\(bundleId) title=\(title)")
-         }
+         let title = sqlite3_column_text(stmt, 1) != nil ? String(cString: sqlite3_column_text(stmt, 1)) : "Unknown App"
+         let bundleId = sqlite3_column_text(stmt, 2) != nil ? String(cString: sqlite3_column_text(stmt, 2)): ""
 
          apps[itemId] = LaunchpadDBApp( itemId: itemId,  title: title,  bundleId: bundleId  )
       }
@@ -185,24 +172,17 @@ final class DatabaseImportManager {
 
       while sqlite3_step(stmt) == SQLITE_ROW {
          let itemId = String(sqlite3_column_int(stmt, 0))
-         let title = sqlite3_column_text(stmt, 1) != nil
-         ? String(cString: sqlite3_column_text(stmt, 1))
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-         : "Untitled"
+         let title = sqlite3_column_text(stmt, 1) != nil ? String(cString: sqlite3_column_text(stmt, 1)).trimmingCharacters(in: .whitespacesAndNewlines) : "Untitled"
 
-         groups[itemId] = LaunchpadGroup(itemId: itemId,  title: title.isEmpty ? "Untitled" : title  )
+         groups[itemId] = LaunchpadGroup(itemId: itemId,  title: title  )
       }
-
+      
       return groups
    }
 
    private func parseItems(from db: OpaquePointer?) throws -> [LaunchpadDBItem] {
       var items: [LaunchpadDBItem] = []
-      let query = """
-            SELECT rowid, uuid, flags, type, parent_id, ordering
-            FROM items
-            ORDER BY parent_id, ordering
-        """
+      let query = "SELECT rowid, uuid, flags, type, parent_id, ordering FROM items ORDER BY parent_id, ordering"
       var stmt: OpaquePointer?
 
       guard sqlite3_prepare_v2(db, query, -1, &stmt, nil) == SQLITE_OK else {

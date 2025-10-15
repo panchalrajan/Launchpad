@@ -6,6 +6,7 @@
 // MARK: - General
 "cancel" = "Mégse";
 "apply" = "Alkalmaz";
+"ok" = "Ok";
 
 // MARK: - Settings View
 "launchpad_settings" = "Beállítások";
@@ -32,6 +33,7 @@
 "layout_management" = "Elrendezés";
 "export_layout" = "Exportálás";
 "import_layout" = "Importálás";
+"import_from_old_launchpad" = "Importálás Régi Launchpad-ből";
 "clear_all_apps" = "Elrendezés Törlése";
 "application_control" = "Alkalmazás Vezérlés";
 "force_quit" = "Kilépés";
@@ -40,6 +42,10 @@
 "clear_all_apps_title" = "Elrendezés Törlése";
 "clear_all_apps_message" = "Ez eltávolítja az összes alkalmazást az egyéni elrendezésből és visszaállítja az alapértelmezett ábécé sorrendet. Ez a művelet nem vonható vissza.";
 "clear" = "Törlés";
+"import_success" = "Sikeres Importálás";
+"import_success_message" = "Sikeresen importálva a régi macOS Launchpad elrendezés.";
+"import_failed" = "Sikertelen Importálás";
+"import_failed_message" = "Nem található vagy nem olvasható a régi Launchpad adatbázis. Győződj meg róla, hogy használtad korábban a régi Launchpad-et.";
 
 // MARK: - Search
 "search_placeholder" = "Keresés";
