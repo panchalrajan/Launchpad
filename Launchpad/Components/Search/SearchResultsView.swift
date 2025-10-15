@@ -22,6 +22,13 @@ struct SearchResultsView: View {
                         .onTapGesture {
                            onItemTap(.app(app))
                         }
+                        .contextMenu {
+                           Button(action: {
+                              AppManager.shared.hideApp(path: app.path, appsPerPage: settings.appsPerPage)
+                           }) {
+                              Label(L10n.hideApp, systemImage: "eye.slash")
+                           }
+                        }
                   }
                }
                .padding(.horizontal, layout.hPadding)

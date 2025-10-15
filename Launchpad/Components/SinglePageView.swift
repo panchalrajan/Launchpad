@@ -22,6 +22,15 @@ struct SinglePageView: View {
                   )
                   .opacity(isFolderOpen ? LaunchPadConstants.folderOpenOpacity : 1)
                   .onTapGesture { onItemTap(item)  }
+                  .contextMenu {
+                     if case .app(let app) = item {
+                        Button(action: {
+                           AppManager.shared.hideApp(path: app.path, appsPerPage: settings.appsPerPage)
+                        }) {
+                           Label(L10n.hideApp, systemImage: "eye.slash")
+                        }
+                     }
+                  }
                   .onDrag {
                      draggedItem = item
                      return NSItemProvider(object: item.id.uuidString as NSString)

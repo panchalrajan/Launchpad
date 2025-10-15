@@ -38,6 +38,14 @@
 "application_control" = "Application Control";
 "force_quit" = "Force Quit";
 
+// MARK: - Hidden Apps
+"hidden_apps" = "Hidden Apps";
+"hide_app" = "Hide App";
+"unhide_app" = "Unhide App";
+"no_hidden_apps" = "No hidden apps";
+"hidden_apps_description" = "Apps hidden from the launcher grid are listed here. Click to unhide them.";
+"unhide_all_apps" = "Unhide All Apps";
+
 // MARK: - Alerts and Confirmations
 "clear_all_apps_title" = "Clear All Apps";
 "clear_all_apps_message" = "This will remove all apps from your custom layout and reset to the default alphabetical order. This action cannot be undone.";
