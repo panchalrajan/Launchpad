@@ -69,10 +69,10 @@ final class DatabaseImportManager {
             print("[Importer] Page \(pageIndex): \(pageItems.count) items")
 
             // Process each item on the page
-            for (position, item) in pageItems.enumerated() {
+            for item in pageItems {
                // If it's an app, add it to results
                if item.type == 4, let app = apps[item.rowId] {
-                  print("[Importer] App: \(app.bundleId) -> page=\(pageIndex), pos=\(position)")
+                  print("[Importer] App: \(app.bundleId) -> page=\(pageIndex)")
                   let baseApp = appsByName[app.title]
                   if baseApp != nil {
                      results.append(.app(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: pageIndex)))
@@ -141,7 +141,7 @@ final class DatabaseImportManager {
 
    private func parseApps(from db: OpaquePointer?) throws -> [String: LaunchpadDBApp] {
       var apps: [String: LaunchpadDBApp] = [:]
-      let query = "SELECT item_id, title, bundleid, storeid FROM apps"
+      let query = "SELECT item_id, title, bundleid FROM apps"
       var stmt: OpaquePointer?
 
       guard sqlite3_prepare_v2(db, query, -1, &stmt, nil) == SQLITE_OK else {

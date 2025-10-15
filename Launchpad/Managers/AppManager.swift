@@ -108,7 +108,6 @@ final class AppManager: ObservableObject {
 
       let appsByPath = Dictionary(uniqueKeysWithValues: apps.map { ($0.path, $0) })
       var gridItems: [AppGridItem] = []
-      var usedPaths = Set<String>()
 
       for itemData in savedData {
          guard let type = itemData["type"] as? String else { continue }
@@ -116,12 +115,10 @@ final class AppManager: ObservableObject {
          case "app":
             if let gridItem = loadAppItem(from: itemData, appsByPath: appsByPath) {
                gridItems.append(gridItem)
-               usedPaths.insert(gridItem.path)
             }
          case "folder":
             if let gridItem = loadFolderItem(from: itemData, appsByPath: appsByPath) {
                gridItems.append(gridItem)
-               usedPaths.formUnion(gridItem.appPaths)
             }
          default:
             break
@@ -233,7 +230,7 @@ final class AppManager: ObservableObject {
          print("Failed to import layout: \(error)")
       }
    }
-   
+
    private func exportLayoutToJSON(filePath: URL) {
       do {
          let itemsData = pages.flatMap { $0 }.map { $0.serialize() }
