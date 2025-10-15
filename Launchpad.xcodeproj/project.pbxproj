@@ -22,11 +22,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		624B1FC82E9FF08900DCB407 /* Tests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Tests;
-			sourceTree = "<group>";
-		};
 		624B20792E9FF18A00DCB407 /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Tests;
@@ -62,7 +57,6 @@
 			children = (
 				84DD945A2E08882300F7E52A /* Launchpad */,
 				6D43C0B02E7F05EF00259811 /* Launchpad.app */,
-				624B1FC82E9FF08900DCB407 /* Tests */,
 				624B20782E9FF18A00DCB407 /* Tests.xctest */,
 				624B20792E9FF18A00DCB407 /* Tests */,
 			);
