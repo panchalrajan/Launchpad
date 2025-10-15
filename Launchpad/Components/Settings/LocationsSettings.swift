@@ -13,6 +13,31 @@ struct LocationsSettings: View {
             .foregroundColor(.secondary)
             .fixedSize(horizontal: false, vertical: true)
          
+         VStack(alignment: .leading, spacing: 8) {
+            Text(L10n.addLocation)
+               .font(.headline)
+               .foregroundColor(.primary)
+            
+            HStack(spacing: 8) {
+               TextField(L10n.locationPlaceholder, text: $newLocation)
+                  .textFieldStyle(.roundedBorder)
+                  .font(.system(.body, design: .monospaced))
+               
+               Button(action: selectFolder) {
+                  Image(systemName: "folder")
+               }
+               .buttonStyle(.bordered)
+               .help(L10n.browseFolder)
+               
+               Button(action: addLocation) {
+                  Image(systemName: "plus.circle.fill")
+               }
+               .buttonStyle(.borderedProminent)
+               .disabled(newLocation.trimmingCharacters(in: .whitespaces).isEmpty)
+               .help(L10n.addLocationHelp)
+            }
+         }
+         
          VStack(alignment: .leading, spacing: 12) {
             Text(L10n.customLocations)
                .font(.headline)
@@ -54,31 +79,6 @@ struct LocationsSettings: View {
                   }
                }
                .frame(maxHeight: 150)
-            }
-         }
-         
-         VStack(alignment: .leading, spacing: 8) {
-            Text(L10n.addLocation)
-               .font(.headline)
-               .foregroundColor(.primary)
-            
-            HStack(spacing: 8) {
-               TextField(L10n.locationPlaceholder, text: $newLocation)
-                  .textFieldStyle(.roundedBorder)
-                  .font(.system(.body, design: .monospaced))
-               
-               Button(action: selectFolder) {
-                  Image(systemName: "folder")
-               }
-               .buttonStyle(.bordered)
-               .help(L10n.browseFolder)
-               
-               Button(action: addLocation) {
-                  Image(systemName: "plus.circle.fill")
-               }
-               .buttonStyle(.borderedProminent)
-               .disabled(newLocation.trimmingCharacters(in: .whitespaces).isEmpty)
-               .help(L10n.addLocationHelp)
             }
          }
       }
