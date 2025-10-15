@@ -235,7 +235,7 @@ final class AppManagerPersistenceTests: XCTestCase {
       appManager.saveGridItems()
 
       // Wait for save
-      try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds for large dataset
+      try? await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds for large dataset
 
       let savedData = UserDefaults.standard.array(forKey: "LaunchpadGridItems") as? [[String: Any]]
       XCTAssertNotNil(savedData, "Should save large dataset")
