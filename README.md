@@ -129,6 +129,8 @@ If you like this project and want to support further development:
 ## Hot corner support
 Use this free app to assign any app to your macOS hot corners:
 https://apps.apple.com/hu/app/hot-corners/id1672176975?l=hu&mt=12
+<img width="727" height="501" alt="Képernyőfotó 2025-10-16 - 16 00 06" src="https://github.com/user-attachments/assets/cb0368f1-aadb-4f03-9107-d6398c2fa8e7" />
+
 
 ## 🎹 AppleScript Integration
 
