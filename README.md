@@ -126,6 +126,10 @@ If you like this project and want to support further development:
 - Swift 6.0
 - Universal binary (Apple Silicon + Intel)
 
+## Hot corner support
+Use this free app to assign any app to your macOS hot corners:
+https://apps.apple.com/hu/app/hot-corners/id1672176975?l=hu&mt=12
+
 ## 🎹 AppleScript Integration
 
 Create a keyboard shortcut using BetterTouchTool or similar:
