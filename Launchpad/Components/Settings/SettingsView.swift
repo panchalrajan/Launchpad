@@ -4,15 +4,15 @@ struct SettingsView: View {
    private let settingsManager = SettingsManager.shared
    private let appManager = AppManager.shared
    let onDismiss: () -> Void
-   
+
    @State private var selectedTab: Int
    @State private var settings: LaunchpadSettings = SettingsManager.shared.settings
-   
+
    init(onDismiss: @escaping () -> Void, initialTab: Int = 0) {
       self.onDismiss = onDismiss;
       _selectedTab = State(initialValue: initialTab)
    }
-   
+
    var body: some View {
       ZStack {
          Color.black.opacity(0.4)
@@ -31,7 +31,7 @@ struct SettingsView: View {
                   .font(.title3)
             }
             .padding(.bottom, 16)
-            
+
             HStack(spacing: 0) {
                // Sidebar with vertical tabs
                VStack(alignment: .leading, spacing: 4) {
@@ -75,10 +75,10 @@ struct SettingsView: View {
                }
                .frame(width: 200)
                .padding(.trailing, 16)
-               
+
                Divider()
                   .padding(.trailing, 16)
-               
+
                // Content area
                VStack {
                   Group {
@@ -96,9 +96,9 @@ struct SettingsView: View {
                         ActivationSettings(settings: $settings)
                      }
                   }
-                  
+
                   Spacer()
-                  
+
                   HStack(spacing: 16) {
                      Button(L10n.resetToDefaults, action: reset).buttonStyle(.bordered)
                      Spacer()
@@ -108,7 +108,7 @@ struct SettingsView: View {
                }
             }
          }
-         
+
          .padding(24)
          .frame(width: 720, height: 460)
          .background(
@@ -121,23 +121,23 @@ struct SettingsView: View {
          )
       }
    }
-   
+
    private func apply() {
       updateSettings()
       onDismiss()
    }
-   
+
    private func reset() {
       settings = LaunchpadSettings()
       updateSettings()
    }
-   
+
    private func updateSettings() {
       let oldAppsPerPage = settingsManager.settings.appsPerPage
       let newAppsPerPage = settings.appsPerPage
       let oldLocations = settingsManager.settings.customAppLocations
       let newLocations = settings.customAppLocations
-      
+
       settingsManager.updateSettings(
          columns: settings.columns,
          rows: settings.rows,
@@ -154,12 +154,18 @@ struct SettingsView: View {
          productKey: settings.productKey,
          customAppLocations: settings.customAppLocations
       )
+
+      if(settings.showDock) {
+         NSMenu.setMenuBarVisible(true)
+      } else {
+         NSMenu.setMenuBarVisible(false)
+      }
       
       // Recalculate pages if the number of apps per page changed
       if oldAppsPerPage != newAppsPerPage {
          appManager.recalculatePages(appsPerPage: newAppsPerPage)
       }
-      
+
       // Reload apps if custom locations changed
       if oldLocations != newLocations {
          appManager.loadGridItems(appsPerPage: settings.appsPerPage)
