@@ -21,7 +21,7 @@ struct LaunchpadApp: App {
             .onTapGesture(perform: AppLauncher.exit)
 
             if showSettings {
-               SettingsView(onDismiss: { showSettings = false }, initialTab: settingsManager.settings.isActivated ? 0 : 3)
+               SettingsView(onDismiss: { showSettings = false }, initialTab: settingsManager.settings.isActivated ? 0 : 5)
             }
          }
          .background(VisualEffectView(material: .fullScreenUI, blendingMode: .behindWindow))
