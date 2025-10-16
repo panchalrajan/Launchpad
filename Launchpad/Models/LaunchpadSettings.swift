@@ -68,6 +68,6 @@ struct LaunchpadSettings: Codable, Equatable {
    }
 
    var isActivated: Bool {
-      return LaunchPadConstants.productKey.isEmpty || productKey == LaunchPadConstants.productKey
+      return LaunchPadKey.productKey.isEmpty || productKey == LaunchPadKey.productKey
    }
 }

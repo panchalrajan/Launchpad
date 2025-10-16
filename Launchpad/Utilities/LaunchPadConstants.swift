@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Constants used throughout the LaunchPad application
-enum LaunchPadConstants {
+class LaunchPadConstants {
 
    // MARK: - Animation Constants
    static let springAnimation = Animation.interpolatingSpring(stiffness: 300, damping: 100)
@@ -35,7 +35,6 @@ enum LaunchPadConstants {
    static let folderOpenOpacity: Double = 0.2
    static let draggedAppScale: CGFloat = 0.95
    static let draggedAppOpacity: Double = 0.7
-
-   // MARK: - Activation Constants
-   static let productKey = ""
 }
+
+
