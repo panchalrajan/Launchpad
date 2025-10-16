@@ -100,7 +100,8 @@ final class AppManager: ObservableObject {
             let fallbackName = item.replacingOccurrences(of: ".app", with: "")
             let appName = getLocalizedAppName(for: URL(fileURLWithPath: fullPath), fallbackName: fallbackName)
             let icon = IconCache.shared.icon(forPath: fullPath)
-            foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath))
+            let bundleId = Bundle(path: fullPath)?.bundleIdentifier ?? "unknown.bundle.\(fallbackName)"
+            foundApps.append(AppInfo(name: appName, icon: icon, path: fullPath, bundleId: bundleId))
          } else if shouldSearchDirectory(item: item, at: fullPath) {
             foundApps.append(contentsOf: discoverAppsRecursively(directory: fullPath, maxDepth: maxDepth, currentDepth: currentDepth + 1))
          }
@@ -148,7 +149,7 @@ final class AppManager: ObservableObject {
       let page = itemData["page"] as! Int
       let baseApp = appsByPath[path]
       if baseApp == nil {  return nil  }
-      return .app(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: page))
+      return .app(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, bundleId: baseApp!.bundleId, page: page))
 
    }
 
@@ -159,7 +160,7 @@ final class AppManager: ObservableObject {
          guard let path = appData["path"] as? String,
                let baseApp = appsByPath[path] else { return nil }
          let savedPage = appData["page"] as? Int ?? 0
-         return AppInfo(name: baseApp.name, icon: baseApp.icon, path: baseApp.path, page: savedPage)
+         return AppInfo(name: baseApp.name, icon: baseApp.icon, path: baseApp.path, bundleId: baseApp.bundleId, page: savedPage)
       }
       guard !folderApps.isEmpty else { return nil }
       let savedPage = itemData["page"] as? Int ?? 0
@@ -263,7 +264,7 @@ final class AppManager: ObservableObject {
 
       let maxPage = items.map(\.page).max() ?? 0
       for app in apps where !usedApps.contains(app.path) {
-         items.append(.app(AppInfo(name: app.name, icon: app.icon, path: app.path, page: maxPage)))
+         items.append(.app(AppInfo(name: app.name, icon: app.icon, path: app.path, bundleId: app.bundleId, page: maxPage)))
       }
    }
    

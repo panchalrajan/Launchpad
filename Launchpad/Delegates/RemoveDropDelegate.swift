@@ -21,7 +21,7 @@ struct RemoveDropDelegate: DropDelegate {
    
    private func addAppToPage(app: AppInfo) {
       guard let pageIndex = pages.firstIndex(where: { page in page.contains(where: { $0.id == folder.id }) }) else { return }
-      let updatedApp = AppInfo(name: app.name, icon: app.icon, path: app.path, page: pageIndex)
+      let updatedApp = AppInfo(name: app.name, icon: app.icon, path: app.path, bundleId: app.bundleId, page: pageIndex)
       pages[pageIndex].append(.app(updatedApp))
       handlePageOverflow(pageIndex: pageIndex)
    }

@@ -20,7 +20,7 @@ final class DatabaseImportManager {
          return []
       }
 
-      let appsByName = Dictionary(uniqueKeysWithValues: currentApps.map { ($0.name, $0) })
+      let appsById = Dictionary(uniqueKeysWithValues: currentApps.unique(by: \.bundleId).map { ($0.bundleId, $0) })
 
       var db: OpaquePointer?
       var results: [AppGridItem] = []
@@ -73,9 +73,9 @@ final class DatabaseImportManager {
                // If it's an app, add it to results
                if item.type == 4, let app = apps[item.rowId] {
                   print("[Importer] App: \(app.bundleId) -> page=\(pageIndex)")
-                  let baseApp = appsByName[app.title]
+                  let baseApp = appsById[app.bundleId]
                   if baseApp != nil {
-                     results.append(.app(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: pageIndex - 1)))
+                     results.append(.app(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, bundleId: baseApp!.bundleId, page: pageIndex - 1)))
                   }
                }
                // If it's a folder (type 3), process apps inside it
@@ -93,9 +93,9 @@ final class DatabaseImportManager {
                      for folderApp in folderApps {
                         if let app = apps[folderApp.rowId] {
                            print("[Importer]   - \(app.bundleId)")
-                           let baseApp = appsByName[app.title]
+                           let baseApp = appsById[app.bundleId]
                            if baseApp != nil {
-                              folderItems.append(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, page: pageIndex - 1))
+                              folderItems.append(AppInfo(name: baseApp!.name, icon: baseApp!.icon, path: baseApp!.path, bundleId: baseApp!.bundleId, page: pageIndex - 1))
                            }
                         }
                      }
@@ -128,7 +128,7 @@ final class DatabaseImportManager {
 
          let data = pipe.fileHandleForReading.readDataToEndOfFile()
          if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) {
-            let dbPath = "/private\(output)com.apple.dock.launchpad/db/db"
+            let dbPath = "/private\(output)com.apple.dock.launchpad/db2/db"
             print("Old Launchpad database path: " + dbPath)
             return dbPath
          }
@@ -154,7 +154,7 @@ final class DatabaseImportManager {
          let title = sqlite3_column_text(stmt, 1) != nil ? String(cString: sqlite3_column_text(stmt, 1)) : "Unknown App"
          let bundleId = sqlite3_column_text(stmt, 2) != nil ? String(cString: sqlite3_column_text(stmt, 2)): ""
 
-         apps[itemId] = LaunchpadDBApp( itemId: itemId,  title: title,  bundleId: bundleId  )
+         apps[itemId] = LaunchpadDBApp(itemId: itemId, title: title, bundleId: bundleId)
       }
 
       return apps
@@ -174,7 +174,7 @@ final class DatabaseImportManager {
          let itemId = String(sqlite3_column_int(stmt, 0))
          let title = sqlite3_column_text(stmt, 1) != nil ? String(cString: sqlite3_column_text(stmt, 1)).trimmingCharacters(in: .whitespacesAndNewlines) : "Untitled"
 
-         groups[itemId] = LaunchpadGroup(itemId: itemId,  title: title  )
+         groups[itemId] = LaunchpadGroup(itemId: itemId, title: title)
       }
 
       return groups
@@ -196,7 +196,7 @@ final class DatabaseImportManager {
          let parentId = sqlite3_column_int(stmt, 4)
          let ordering = sqlite3_column_int(stmt, 5)
 
-         items.append(LaunchpadDBItem(rowId: rowId, type: Int(type),  parentId: Int(parentId),   ordering: Int(ordering)))
+         items.append(LaunchpadDBItem(rowId: rowId, type: Int(type), parentId: Int(parentId), ordering: Int(ordering)))
       }
 
       return items
