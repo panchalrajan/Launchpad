@@ -3,6 +3,7 @@ import SwiftUI
 struct SearchResultsView: View {
    let apps: [AppInfo]
    let settings: LaunchpadSettings
+   let selectedIndex: Int
    let onItemTap: (AppGridItem) -> Void
    
    var body: some View {
@@ -17,8 +18,14 @@ struct SearchResultsView: View {
                   columns: GridLayoutUtility.createGridColumns(count: settings.columns, cellWidth: layout.cellWidth, spacing: layout.hSpacing),
                   spacing: layout.hSpacing
                ) {
-                  ForEach(apps) { app in
+                  ForEach(Array(apps.enumerated()), id: \.element.id) { index, app in
                      AppIconView(app: app, layout: layout, isDragged: false)
+                        .background(
+                           RoundedRectangle(cornerRadius: 12)
+                              .fill(index == selectedIndex ? Color.gray.opacity(0.3) : Color.clear)
+                              .padding(-8)
+                              .aspectRatio(1.0, contentMode: .fit)
+                        )
                         .onTapGesture {
                            onItemTap(.app(app))
                         }
